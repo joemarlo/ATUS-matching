@@ -30,11 +30,13 @@ atus_sampled <- atus_raw %>%
   pivot_wider(values_from = description, names_from = period, names_prefix = "p_") %>% 
   right_join(IDs, by = "ID") %>% 
   slice_sample(n = n_sample, weight_by = survey_weight) %>% 
-  dplyr::select(-survey_weight)
+  dplyr::select(-survey_weight) %>% 
+  arrange(ID)
 
 # create df of just the demographics for the sample
 demographics_sample <- demographics %>% 
   filter(ID %in% atus_sampled$ID) %>% 
+  arrange(ID) %>% 
   select(age, sex, age_youngest, n_child, HH_income, married, year)
 
 
