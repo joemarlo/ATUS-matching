@@ -1,3 +1,8 @@
+Inputs/ATUS-2003-2018
+Data/*.tsv
+.DS_Store
+.DS_store
+
 # History files
 .Rhistory
 .Rapp.history
