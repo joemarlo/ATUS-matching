@@ -1,4 +1,4 @@
-# Unsupervised learning and matching of sequence data
+# Unsupervised learning and matching 
 
 Data available for download [here](https://www.dropbox.com/sh/hqx7dlh3cc6843i/AABXhrbnFJFgEnTN-6S-60Rda?dl=0).
 
@@ -25,4 +25,4 @@ See also: [ATUS repo](https://github.com/joemarlo/ATUS)
     - Financial crisis occurred over many months. Does it make more sense to compare 2007 to 2009?
     - Look at dates that participants were surveyed
 - Do we need full matching? Or just matching for all of 2007 or all of 2009
-- Should we test IPTW matching?
+- Should we also try IPTW matching?

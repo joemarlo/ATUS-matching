@@ -1,6 +1,8 @@
 library(tidyverse)
+library(arm)
 source('analyses/plots/ggplot_settings.R')
 source('analyses/demographics.R')
+source('analyses/helpers_analyses.R')
 set.seed(44)
 
 # convert year to boolean
@@ -9,7 +11,7 @@ demographics$treatment <- demographics$year == 2009
 
 # propensity model --------------------------------------------------------
 
-# scale inputs?
+# TODO: scale inputs?
 
 # construct formula to calculate propensity scores
 propensity_formula <- reformulate(
@@ -60,17 +62,6 @@ match_k1_w_glm <- MatchIt::matchit(
   replace = TRUE
 )
 
-# create df of the treated data and the matched control data
-match_indices <- as.numeric(match_k1_w_glm$match.matrix)
-control_df <- distinct(demographics[match_indices,])
-treated_df <- demographics[demographics$treatment,]
-matches <- bind_rows(control_df, treated_df)
-
-# calculate balance stats
-balance_with <- arm::balance(demographics, matches, propensity_model)
-# plot_diff_means(balance_with)
-
-
 ## nearest neighbor -- without replacement
 match_k1_wo_glm <- MatchIt::matchit(
   propensity_formula,
@@ -80,15 +71,6 @@ match_k1_wo_glm <- MatchIt::matchit(
   link = "logit",
   replace = FALSE
 )
-
-# create df of the treated data and the matched control data
-match_indices <- as.numeric(match_k1_wo_glm$match.matrix)
-control_df <- distinct(demographics[match_indices,])
-matches <- bind_rows(control_df, treated_df)
-
-# calculate balance stats
-balance_wo <- arm::balance(demographics, matches, propensity_model)
-
 
 ## caliper matching
 match_caliper_glm <- MatchIt::matchit(
@@ -100,18 +82,15 @@ match_caliper_glm <- MatchIt::matchit(
   caliper = 0.1
 )
 
-# create df of the treated data and the matched control data
-match_indices <- as.numeric(match_caliper_glm$match.matrix)
-control_df <- distinct(demographics[match_indices,])
-matches <- bind_rows(control_df, treated_df)
-
-# calculate balance stats 
-balance_caliper <- arm::balance(demographics, matches, propensity_model)
-
 ## IPTW
 
 
 # assess balance ----------------------------------------------------------
+
+# calculate balance stats
+balance_with <- calculate_balance(demographics, match_k1_w_glm, propensity_model)
+balance_wo <- calculate_balance(demographics, match_k1_wo_glm, propensity_model)
+balance_caliper <- calculate_balance(demographics, match_caliper_glm, propensity_model)
 
 # combine all and plot the standardized difference in means
 balance_df <- tibble(
@@ -138,5 +117,5 @@ balance_df %>%
        y = NULL,
        color = NULL) +
   theme(legend.position = 'bottom')
-ggsave("analyses/plots/balance_assessment.png", height = 5, width = 9)
+# ggsave("analyses/plots/balance_assessment.png", height = 5, width = 9)
 

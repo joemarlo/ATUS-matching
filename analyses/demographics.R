@@ -40,6 +40,7 @@ demographics$married <- recode(demographics$married, `1` = 'married', `0` = 'not
 
 # demographic var selection -----------------------------------------------
 
+# TODO:
 # matching: follow this but try a few different (SES is primary goal)
 # hard match: gender, race, urban/rural, region, partnership
 # soft match: age, income, number of children, education (+/- 1); is there  relative within X miles

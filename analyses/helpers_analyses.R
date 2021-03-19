@@ -19,3 +19,24 @@ plot_diff_means <- function(.matches){
   
   return(p)
 }
+
+calculate_balance <- function(rawdata, .matches, .propensity_model){
+
+  if (isFALSE(is(.matches, 'matchit'))) stop(".matches must be class 'matchit'")
+  if (isFALSE('treatment' %in% colnames(rawdata))) stop("rawdata must have column 'treatment'")
+    
+  # create df of the treated data and the matched control data
+  match_indices <- as.numeric(.matches$match.matrix)
+  control_df <- distinct(rawdata[match_indices,])
+  treated_df <- rawdata[rawdata$treatment,]
+  matched <- bind_rows(control_df, treated_df)
+  
+  # calculate balance stats
+  balance_stats <- arm::balance(
+    rawdata = rawdata,
+    matched = matched,
+    pscore.fit = .propensity_model
+  )
+  
+  return(balance_stats)
+}
