@@ -12,10 +12,17 @@ See also: [ATUS repo](https://github.com/joemarlo/ATUS)
 </p>
 -->
 
-
+### Folder structure
     .
     ├── analyses          # Clustering, propensity matching, etc.
     │   └── plots         # Plots
     ├── Data              # Cleaned data and cleaning scripts
     ├── Inputs            # Raw input data
     └── README.md
+
+### Outstanding questions / notes
+- Dates for two groups: 
+    - Financial crisis occurred over many months. Does it make more sense to compare 2007 to 2009?
+    - Look at dates that participants were surveyed
+- Do we need full matching? Or just matching for all of 2007 or all of 2009
+- Should we test IPTW matching?

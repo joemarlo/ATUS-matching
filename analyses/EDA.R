@@ -60,18 +60,15 @@ atus_seq <- seqdef(data = atus_sampled[, -1],
 
 launch_sequenchr(atus_seq, demographics_sample)
 
-# todo: look at seperation metrics aacross 2007:2009 indiviudally
+# todo: look at separation metrics across 2007:2009 individually
 
 # add capability to break by group before cluster??
 # add x breaks to seperate breaks
 # look for test for 1 vs many clusters under heierachcal (hennig from fpc)
 #   https://link.springer.com/article/10.1007/s11222-015-9566-5
 
-# matching: follow this but try a few different (SES is primary goal)
-# hard match: gender, race, urban/rural, region, partnership
-# soft match: age, income, number of children, education (+/- 1); is there  relative within X miles
-# covariate: is there an elder in the hosuehold; health
-# come up with list and run by Marc
+
+# manual clustering -------------------------------------------------------
 
 # compute optimal matching distances
 # dist_om_TRATE <- seqdist(atus_seq, method = "OM", indel = 1, sm = "TRATE")
