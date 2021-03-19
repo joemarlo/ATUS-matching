@@ -1,4 +1,4 @@
-source('Cleaning/helpers.R')
+source('data/helpers.R')
 library(lubridate)
 options(mc.cores = parallel::detectCores())
 
@@ -144,6 +144,6 @@ demographic_vars <- atus_vars %>%
 
 
 # write out the final datasets --------------------------------------------
-write_tsv(ATUS_1, 'Data/atus.tsv')
-write_tsv(ATUS_30, 'Data/atus_30min.tsv')
-write_tsv(demographic_vars, 'Data/demographic.tsv')
+write_tsv(ATUS_1, 'data/atus.tsv')
+write_tsv(ATUS_30, 'data/atus_30min.tsv')
+write_tsv(demographic_vars, 'data/demographic.tsv')

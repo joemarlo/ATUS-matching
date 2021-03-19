@@ -3,10 +3,10 @@ require(rvest)
 
 # import 2003-2018 files ----------------------------------------------------
 # download data here: https://www.bls.gov/tus/datafiles-2018.htm
-#  and store in Inputs/ATUS-2018
+#  and store in inputs/ATUS-2018
 
-dat.files <- list.files('Inputs/ATUS-2003-2018', '*.dat')
-files <- lapply(dat.files, function(file) read_csv(paste0("Inputs/ATUS-2003-2018/", file)))
+dat.files <- list.files('inputs/ATUS-2003-2018', '*.dat')
+files <- lapply(dat.files, function(file) read_csv(paste0("inputs/ATUS-2003-2018/", file)))
 names(files) <- str_remove(dat.files, ".dat")
 list2env(files, envir = .GlobalEnv)
 rm(files, dat.files)
@@ -15,10 +15,10 @@ rm(files, dat.files)
 # import field labels -------------------------------------------------------------
 # also see: https://www.bls.gov/tus/lexiconwex2018.pdf
 
-specific.codes <- read_delim("Inputs/specific_codes.csv", 
+specific.codes <- read_delim("inputs/specific_codes.csv", 
                              "+", escape_double = FALSE, trim_ws = TRUE)
 
-simple.codes <- read_delim("Inputs/simple_codes.csv", 
+simple.codes <- read_delim("inputs/simple_codes.csv", 
                            "+", escape_double = FALSE, trim_ws = TRUE)
 
 # custom mapping for activities
@@ -115,20 +115,20 @@ income.levels.HUFAMINC <- tribble(
 # FIPS state codes --------------------------------------------------------
 
 # scrape FIPS state codes if it doesn't exist
-if (!file.exists('Inputs/FIPS.csv')) {
+if (!file.exists('inputs/FIPS.csv')) {
   xml2::read_html('https://www.nrcs.usda.gov/wps/portal/nrcs/detail/?cid=nrcs143_013696') %>% 
   rvest::html_nodes(xpath = '//table[contains(@class, "data")]') %>% 
   rvest::html_table() %>% 
   .[[1]] %>% 
   rename(State = 'Postal Code') %>% 
-  write_csv('Inputs/FIPS.csv')
+  write_csv('inputs/FIPS.csv')
 }
 
 # read in the data
-FIPS <- read_csv('Inputs/FIPS.csv')
+FIPS <- read_csv('inputs/FIPS.csv')
 
 
 # state regions -----------------------------------------------------------
 
-state.regions <- read_csv('Inputs/state_regions.csv')
+state.regions <- read_csv('inputs/state_regions.csv')
 

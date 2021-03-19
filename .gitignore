@@ -1,5 +1,5 @@
-Inputs/ATUS-2003-2018
-Data/*.tsv
+inputs/ATUS-2003-2018
+data/*.tsv
 .DS_Store
 .DS_store
 

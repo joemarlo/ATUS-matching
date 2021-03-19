@@ -2,15 +2,13 @@ library(tidyverse)
 library(TraMineR)
 library(fastcluster)
 library(sequenchr)
-# library(NbClust)
-# source("Plots/ggplot_settings.R")
 set.seed(44)
 
 # read in ATUS data
-atus_raw <- read_tsv("Data/atus_30min.tsv")
+atus_raw <- read_tsv("data/atus_30min.tsv")
 
 # read in the demographics data
-demographics <- read_delim(file = "Data/demographic.tsv",
+demographics <- read_delim(file = "data/demographic.tsv",
                            delim = "\t",
                            escape_double = FALSE,
                            trim_ws = TRUE)
@@ -61,6 +59,19 @@ atus_seq <- seqdef(data = atus_sampled[, -1],
 # sequenchr ---------------------------------------------------------------
 
 launch_sequenchr(atus_seq, demographics_sample)
+
+# todo: look at seperation metrics aacross 2007:2009 indiviudally
+
+# add capability to break by group before cluster??
+# add x breaks to seperate breaks
+# look for test for 1 vs many clusters under heierachcal (hennig from fpc)
+#   https://link.springer.com/article/10.1007/s11222-015-9566-5
+
+# matching: follow this but try a few different (SES is primary goal)
+# hard match: gender, race, urban/rural, region, partnership
+# soft match: age, income, number of children, education (+/- 1); is there  relative within X miles
+# covariate: is there an elder in the hosuehold; health
+# come up with list and run by Marc
 
 # compute optimal matching distances
 # dist_om_TRATE <- seqdist(atus_seq, method = "OM", indel = 1, sm = "TRATE")
