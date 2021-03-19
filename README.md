@@ -13,9 +13,9 @@ See also: [ATUS repo](https://github.com/joemarlo/ATUS)
 -->
 
 
-.
-├── analyses          # Clustering, propensity matching, etc.
-│   └── plots         # Plots
-├── Data              # Cleaned data and cleaning scripts
-├── Inputs            # Raw input data
-└── README.md
+    .
+    ├── analyses          # Clustering, propensity matching, etc.
+    │   └── plots         # Plots
+    ├── Data              # Cleaned data and cleaning scripts
+    ├── Inputs            # Raw input data
+    └── README.md
