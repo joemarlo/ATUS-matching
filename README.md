@@ -6,6 +6,7 @@
     │   └── plots         # Plots
     ├── data              # Cleaned data and cleaning scripts
     ├── inputs            # Raw input data
+    ├── outputs           # Formal write-ups
     └── README.md
 
 ### Next steps

@@ -1,0 +1,47 @@
+---
+title: "Summary results"
+author: "Joe Marlo"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+# Summary
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+# Matching
+
+## Overlap of unmatched data
+
+```{r echo=FALSE, out.width='80%', fig.align="center"}
+knitr::include_graphics(normalizePath(file.path("analyses", "plots", "overlap_raw.png")))
+```
+
+
+## Overlap and balance of matched data
+
+```{r echo=FALSE, out.width='80%', fig.align="center"}
+knitr::include_graphics(normalizePath(file.path("analyses", "plots", "overlap_propensity_scores.png")))
+knitr::include_graphics(normalizePath(file.path("analyses", "plots", "balance_matched.png")))
+```
+
+
+## Key population
+
+```{r echo=FALSE, out.width='80%', fig.align="center"}
+knitr::include_graphics(normalizePath(file.path("analyses", "plots", "counts_matched.png")))
+```
+
+
+# Clustering
+
+
+# Matching clusters
+
+
+# Conclusion

@@ -161,7 +161,7 @@ demographics_control$pair_id <- 1:nrow(demographics_control)
 # examine overlap for key variables ---------------------------------------
 
 # how many control participants are we keeping?
-orig_in_control <- (demographics[demographics$year == 2007,]$ID %in% demographics_control$ID)
+orig_in_control <- demographics$ID[demographics$year == 2007] %in% demographics_control$ID
 sum(orig_in_control)
 percent_kept <- mean(orig_in_control)
 writeLines(paste0("We're losing ", round((1 - percent_kept) * 100, 2), "% of the control data"))
