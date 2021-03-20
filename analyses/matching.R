@@ -1,6 +1,6 @@
-library(tidyverse)
+# library(tidyverse)
 library(arm)
-source('analyses/plots/ggplot_settings.R')
+# source('analyses/plots/ggplot_settings.R')
 source('analyses/demographics.R')
 source('analyses/helpers_analyses.R')
 set.seed(44)
@@ -39,7 +39,7 @@ propensity_scores <- predict(propensity_model, type = 'response')
 
 # assessing overlap -------------------------------------------------------
 
-# propensity scores by treatment group
+# plot propensity scores by treatment group
 tibble(pscore = propensity_scores,
        treatment = demographics$treatment) %>%
   mutate(year = if_else(treatment, 2009, 2007)) %>% 
@@ -73,16 +73,41 @@ match_k1_wo_glm <- MatchIt::matchit(
 )
 
 ## caliper matching
+# first search for idea width based on minimum std diff
+caliper_widths <- seq(0.05, 0.4, 0.05)
+caliper_search <- sapply(caliper_widths, function(width) {
+  match_caliper_glm <- MatchIt::matchit(
+    propensity_formula,
+    data = demographics,
+    method = 'nearest', 
+    distance = "glm",
+    link = "logit",
+    caliper = width
+  )
+  balance_caliper <- calculate_balance(demographics, match_caliper_glm, propensity_model)
+  mean_diff <- mean(balance_caliper$diff.means.matched[, 'diff.std'])
+  return(mean_diff)
+})
+# plot(x = caliper_widths, y = caliper_search)
+rm(caliper_widths, caliper_search)
+
+# calculate using ideal caliper width
 match_caliper_glm <- MatchIt::matchit(
   propensity_formula,
   data = demographics,
   method = 'nearest', # 'optimal' 'full' 
   distance = "glm",
   link = "logit",
-  caliper = 0.1
+  caliper = 0.25
 )
 
-## IPTW
+
+## IPTW -- its unclear how to implement this with sequences b/c we would
+  # have to weight the sequences
+# iptw_weights <- ifelse(demographics$treatment == 1, 
+#                        1,
+#                        propensity_scores / (1 - propensity_scores))
+
 
 
 # assess balance ----------------------------------------------------------
@@ -92,7 +117,7 @@ balance_with <- calculate_balance(demographics, match_k1_w_glm, propensity_model
 balance_wo <- calculate_balance(demographics, match_k1_wo_glm, propensity_model)
 balance_caliper <- calculate_balance(demographics, match_caliper_glm, propensity_model)
 
-# combine all and plot the standardized difference in means
+## combine all stats and plot the standardized difference in means
 balance_df <- tibble(
   covs = setdiff(balance_with$covnames, 'treat'),
   unmatched = balance_with$diff.means.raw[, 'diff.std'],
@@ -100,22 +125,49 @@ balance_df <- tibble(
   NN_wo = balance_wo$diff.means.matched[, 'diff.std'],
   Caliper = balance_caliper$diff.means.matched[, 'diff.std']
 )
-
-options(scipen=9999)
-summary_means <- apply(balance_df[, 2:5], 2, mean) %>% round(4)
+options(scipen = 9999)
+summary_means <- round(apply(balance_df[, 2:5], 2, mean), 4)
 caption <- paste0(names(summary_means), ": ", summary_means)
 names(caption) <- names(summary_means)
 balance_df %>% 
   pivot_longer(-covs) %>% 
-  ggplot(aes(x = value, y = covs, group = name, color = name)) +
+  ggplot(aes(x = value, y = covs, group = name, fill = name)) +
   geom_vline(xintercept = 0, linetype = 'dashed', color = 'grey70') +
-  geom_point(alpha = 0.6, size = 4) +
-  scale_color_discrete(labels = caption) +
-  labs(title = "Standardized difference in means",
+  geom_point(alpha = 0.6, size = 4, pch = 21, color = 'grey10') +
+  scale_fill_discrete(labels = caption) +
+  labs(title = "Standardized difference in means between treatment and control",
+       subtitle = 'Closer to zero is better',
        caption = "Legend values represent the mean of means",
        x = NULL,
        y = NULL,
-       color = NULL) +
+       fill = NULL) +
   theme(legend.position = 'bottom')
-# ggsave("analyses/plots/balance_assessment.png", height = 5, width = 9)
+# ggsave("analyses/plots/balance_assessment.png", height = 6, width = 9)
 
+
+# final matches -----------------------------------------------------------
+
+# create final matches
+which.min(summary_means)
+demographics_treated <- demographics[demographics$treatment,]
+demographics_control <- demographics[match_k1_w_glm$match.matrix,]
+
+# add pair id so its easy to identify the matched pairs
+demographics_treated$pair_id <- 1:nrow(demographics_treated)
+demographics_control$pair_id <- 1:nrow(demographics_control)
+
+
+# examine overlap for key variables ---------------------------------------
+
+# how many control participants are we keeping?
+# orig_in_control <- (demographics[demographics$year == 2007,]$id %in% demographics_control$id)
+# sum(orig_in_control)
+# mean(orig_in_control)
+
+
+
+
+# write out matches -------------------------------------------------------
+
+# write_csv(demographics_treated, path = 'data/matched_treatment.csv')
+# write_csv(demographics_control, path = 'data/matched_control.csv')

@@ -8,6 +8,7 @@ demographics <- read_delim(file = "data/demographic.tsv",
                            escape_double = FALSE,
                            trim_ws = TRUE)
 
+# TOOO: need to keep the participant ID intact for later merging with time use data
 
 # data cleaning -----------------------------------------------------------
 
