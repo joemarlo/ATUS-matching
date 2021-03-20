@@ -1,6 +1,4 @@
-# Unsupervised learning and matching 
-
-See also: [ATUS repo](https://github.com/joemarlo/ATUS)
+# Unsupervised learning and matching within sequence analysis
 
 ### Folder structure
     .
@@ -9,6 +7,11 @@ See also: [ATUS repo](https://github.com/joemarlo/ATUS)
     ├── data              # Cleaned data and cleaning scripts
     ├── inputs            # Raw input data
     └── README.md
+
+### Next steps
+- Review demographics variable selection
+- Review hard vs soft matching
+
 
 ### Outstanding questions / notes
 - Dates for two groups: 
@@ -30,3 +33,8 @@ See also: [ATUS repo](https://github.com/joemarlo/ATUS)
 <p align="center">
 <img src="analyses/plots/balance_matched.png" width=80%>
 </p>
+
+<br>
+<br>
+
+See also: [ATUS repo](https://github.com/joemarlo/ATUS)

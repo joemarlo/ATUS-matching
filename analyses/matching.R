@@ -44,10 +44,11 @@ tibble(pscore = propensity_scores,
        treatment = demographics$treatment) %>%
   mutate(year = if_else(treatment, 2009, 2007)) %>% 
   ggplot(aes(x = pscore, fill = as.factor(year))) +
-  geom_histogram(alpha = 0.7, position = 'identity') +
+  geom_histogram(color = 'grey90', alpha = 0.7, position = 'identity') +
   labs(title = 'Overlap of propensity scores by year',
        x = 'Propensity score',
        fill = NULL)
+# ggsave("analyses/plots/overlap_propensity_scores.png", height = 5, width = 9)
 
 
 # matching ----------------------------------------------------------------
@@ -98,7 +99,7 @@ match_caliper_glm <- MatchIt::matchit(
   method = 'nearest', # 'optimal' 'full' 
   distance = "glm",
   link = "logit",
-  caliper = 0.20
+  caliper = 0.10
 )
 
 

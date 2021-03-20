@@ -36,6 +36,12 @@ demographics$education <- factor(
 demographics$sex <- recode(demographics$sex, `1` = 'male', `2` = 'female')
 demographics$married <- recode(demographics$married, `1` = 'married', `0` = 'not married')
 
+# add geographic region
+state_regions <- read_csv("inputs/state_regions.csv")
+colnames(state_regions) <- tolower(colnames(state_regions))
+demographics <- left_join(demographics, y = state_regions, by = 'state')
+rm(state_regions)
+
 
 # demographic var selection -----------------------------------------------
 
@@ -46,7 +52,7 @@ demographics$married <- recode(demographics$married, `1` = 'married', `0` = 'not
 # covariate: is there an elder in the household; health
 # come up with list and run by Marc
 
-matching_vars <- c('age', 'sex', 'race', 'HH_income', 'married', 'education', 'n_child')
+matching_vars <- c('age', 'sex', 'race', 'HH_income', 'married', 'education', 'n_child', 'age_youngest', 'region')
 demographics <- demographics[, c('ID', 'year', matching_vars)]
 
 # remove NAs
