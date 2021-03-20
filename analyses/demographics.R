@@ -42,6 +42,11 @@ colnames(state_regions) <- tolower(colnames(state_regions))
 demographics <- left_join(demographics, y = state_regions, by = 'state')
 rm(state_regions)
 
+# replace NAs with 0s
+# TODO: does this match the documentation?
+demographics$age_youngest[is.na(demographics$age_youngest)] <- 0
+demographics$HH_income[is.na(demographics$HH_income)] <- 0
+
 
 # demographic var selection -----------------------------------------------
 
@@ -87,7 +92,7 @@ overlap_categorical <- demographics %>%
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         plot.background = element_rect(color = NA))
 overlap_continuous / overlap_categorical + plot_layout(heights = c(3, 7))
-# ggsave('analyses/plots/overlap_raw.png', height = 10, width = 9)
+# ggsave('analyses/plots/overlap_raw.png', height = 12, width = 9)
  
 
 # sizing up key population ------------------------------------------------

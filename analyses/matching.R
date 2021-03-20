@@ -167,27 +167,41 @@ percent_kept <- mean(orig_in_control)
 writeLines(paste0("We're losing ", round((1 - percent_kept) * 100, 2), "% of the control data"))
 rm(percent_kept)
 
-# what's our n for our target population?
-bind_rows(demographics_treated, demographics_control) %>% 
+## what's our n for our target population?
+target_pop <- bind_rows(demographics_treated, demographics_control) %>% 
   select(-pair_id) %>% 
   distinct() %>%
   filter(sex == 'female',
          n_child > 0) %>% 
-  group_by(treatment, race, married) %>% # add more vars here
-  tally() %>% 
-  pivot_longer(cols = c('race', 'married')) %>% 
-  mutate(year = if_else(treatment, '2009', '2007')) %>% 
-  ggplot(aes(x = value, y = n, group = year, fill = year)) +
-  geom_col(position = 'dodge') +
+  select(year, race, married, n_child, age_youngest, region) # add more vars here
+subtitle <- paste0(
+  'Data only includes respondents that are female and have children in the household', 
+  '\nn 2007 = ', scales::comma_format()(sum(target_pop$year == 2007)),
+  ';   n 2009 = ', scales::comma_format()(sum(target_pop$year == 2009))
+)
+# plot the counts
+target_pop %>% 
+  mutate(across(everything(), as.character)) %>% 
+  pivot_longer(cols = -year) %>% 
+  mutate(value = factor(
+    value, 
+    levels = c(0:17, 
+               'asian', 'black', 'white', 'other',
+               'married', 'not married',
+               'Midwest', 'Northeast', 'South', 'West')
+    )
+  ) %>% 
+  ggplot(aes(x = value, group = year, fill = year)) +
+  geom_bar(position = 'dodge') +
   facet_wrap(~name, scales = 'free') +
   labs(title = 'Counts of key groups within matched data',
-       subtitle = 'Key groups = has children, is female',
+       subtitle = subtitle,
        caption = 'Only includes distinct observations (i.e. removes duplicates due to matching with replacement)',
        x = NULL,
        fill = NULL) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         legend.position = 'bottom')
-# ggsave("analyses/plots/counts_matched.png", height = 6, width = 9)
+# ggsave("analyses/plots/counts_matched.png", height = 8, width = 9)
 
 
 # write out matches -------------------------------------------------------
