@@ -98,7 +98,7 @@ match_caliper_glm <- MatchIt::matchit(
   method = 'nearest', # 'optimal' 'full' 
   distance = "glm",
   link = "logit",
-  caliper = 0.25
+  caliper = 0.20
 )
 
 
@@ -126,7 +126,7 @@ balance_df <- tibble(
   Caliper = balance_caliper$diff.means.matched[, 'diff.std']
 )
 options(scipen = 9999)
-summary_means <- round(apply(balance_df[, 2:5], 2, mean), 4)
+summary_means <- round(apply(balance_df[, 2:5], 2, function(x) mean(abs(x))), 4)
 caption <- paste0(names(summary_means), ": ", summary_means)
 names(caption) <- names(summary_means)
 balance_df %>% 
@@ -137,12 +137,12 @@ balance_df %>%
   scale_fill_discrete(labels = caption) +
   labs(title = "Standardized difference in means between treatment and control",
        subtitle = 'Closer to zero is better',
-       caption = "Legend values represent the mean of means",
+       caption = "Legend values represent the mean of |means|",
        x = NULL,
        y = NULL,
        fill = NULL) +
   theme(legend.position = 'bottom')
-# ggsave("analyses/plots/balance_assessment.png", height = 6, width = 9)
+# ggsave("analyses/plots/balance_matched.png", height = 6, width = 9)
 
 
 # final matches -----------------------------------------------------------
@@ -160,11 +160,34 @@ demographics_control$pair_id <- 1:nrow(demographics_control)
 # examine overlap for key variables ---------------------------------------
 
 # how many control participants are we keeping?
-# orig_in_control <- (demographics[demographics$year == 2007,]$id %in% demographics_control$id)
-# sum(orig_in_control)
-# mean(orig_in_control)
+orig_in_control <- (demographics[demographics$year == 2007,]$ID %in% demographics_control$ID)
+sum(orig_in_control)
+percent_kept <- mean(orig_in_control)
+writeLines(paste0("We're losing ", round((1 - percent_kept) * 100, 2), "% of the control data"))
+rm(percent_kept)
 
-
+# what's our n for our target population?
+bind_rows(demographics_treated, demographics_control) %>% 
+  select(-pair_id) %>% 
+  distinct() %>%
+  filter(sex == 'female',
+         n_child > 0) %>% 
+  group_by(treatment, race, married) %>% # add more vars here
+  tally() %>% 
+  pivot_longer(cols = c('race', 'married')) %>% 
+  # arrange(married, race, treatment) %>% 
+  # unite('id', c('race', 'married'), sep = " : ") %>% 
+  mutate(year = if_else(treatment, '2009', '2007')) %>% 
+  ggplot(aes(x = value, y = n, group = year, fill = year)) +
+  geom_col(position = 'dodge') +
+  facet_wrap(~name, scales = 'free') +
+  labs(title = 'Counts of key groups within matched data',
+       subtitle = 'Only includes distinct observations (i.e. removes duplicates due to matching with replacement)',
+       x = NULL,
+       fill = NULL) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = 'bottom')
+# ggsave("analyses/plots/counts_matched.png", height = 6, width = 9)
 
 
 # write out matches -------------------------------------------------------

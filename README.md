@@ -26,3 +26,4 @@ See also: [ATUS repo](https://github.com/joemarlo/ATUS)
     - Look at dates that participants were surveyed
 - Do we need full matching? Or just matching for all of 2007 or all of 2009
 - Should we also try IPTW matching?
+- How to do hard and soft matching? Just stratify and then propensity scores?

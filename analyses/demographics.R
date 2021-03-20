@@ -1,4 +1,5 @@
 library(tidyverse)
+library(patchwork) # for stiching together multiple plots
 source('analyses/plots/ggplot_settings.R')
 set.seed(44)
 
@@ -32,10 +33,8 @@ demographics$education <- factor(
   )
 )
 
-# recode sex
+# recode sex and married
 demographics$sex <- recode(demographics$sex, `1` = 'male', `2` = 'female')
-
-# recode married
 demographics$married <- recode(demographics$married, `1` = 'married', `0` = 'not married')
 
 
@@ -48,8 +47,8 @@ demographics$married <- recode(demographics$married, `1` = 'married', `0` = 'not
 # covariate: is there an elder in the household; health
 # come up with list and run by Marc
 
-matching_vars <- c('age', 'sex', 'race', 'HH_income', 'married', 'education')
-demographics <- demographics[, c('year', matching_vars)]
+matching_vars <- c('age', 'sex', 'race', 'HH_income', 'married', 'education', 'n_child')
+demographics <- demographics[, c('ID', 'year', matching_vars)]
 
 # remove NAs
 demographics <- na.omit(demographics)
@@ -58,7 +57,7 @@ demographics <- na.omit(demographics)
 # overlap -----------------------------------------------------------------
 
 # histograms showing overlaps
-demographics %>%
+overlap_continuous <- demographics %>%
   dplyr::select_if(is.numeric) %>%
   pivot_longer(cols = -year) %>%
   ggplot(aes(x = value, fill = as.factor(year))) +
@@ -66,26 +65,30 @@ demographics %>%
   facet_wrap(~name, scales = 'free') +
   labs(title = "Overlap of key demographic variables by year",
        x = NULL,
-       fill = NULL)
-demographics %>% 
+       fill = NULL) +
+  theme(plot.background = element_rect(color = NA))
+overlap_categorical <- demographics %>% 
   dplyr::select(where(~!is.numeric(.x))) %>%
   bind_cols(year = demographics$year) %>% 
   pivot_longer(cols = -year) %>%
   ggplot(aes(x = value, fill = as.factor(year))) +
   geom_bar(alpha = 0.7, position = 'dodge') +
   facet_wrap(~name, scales = 'free') +
-  labs(title = "Overlap of key demographic variables by year",
+  labs(title = NULL,
        x = NULL,
        fill = NULL) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        plot.background = element_rect(color = NA))
+overlap_continuous / overlap_categorical + plot_layout(heights = c(3, 7))
+# ggsave('analyses/plots/overlap_raw.png', height = 10, width = 9)
+ 
 
 # sizing up key population ------------------------------------------------
 
 # how big are our groups
 demographics %>% 
   filter(sex == 'female') %>% 
-  mutate(age = cut(age, breaks = seq(0, 100, 10))) %>% 
+  mutate(age = cut(age, breaks = c(0, 18, 60, 100))) %>% 
   group_by(year, age, race) %>% 
   tally() %>% 
   arrange(race, age, year)
