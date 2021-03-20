@@ -9,7 +9,6 @@ demographics <- read_delim(file = "data/demographic.tsv",
                            escape_double = FALSE,
                            trim_ws = TRUE)
 
-# TOOO: need to keep the participant ID intact for later merging with time use data
 
 # data cleaning -----------------------------------------------------------
 
@@ -42,7 +41,7 @@ demographics$married <- recode(demographics$married, `1` = 'married', `0` = 'not
 
 # TODO:
 # matching: follow this but try a few different (SES is primary goal)
-# hard match: gender, race, urban/rural, region, partnership
+# hard match: gender, race, urban/rural, region, partnership, essential worker status
 # soft match: age, income, number of children, education (+/- 1); is there  relative within X miles
 # covariate: is there an elder in the household; health
 # come up with list and run by Marc
@@ -58,12 +57,14 @@ demographics <- na.omit(demographics)
 
 # histograms showing overlaps
 overlap_continuous <- demographics %>%
+  select(-ID) %>% 
   dplyr::select_if(is.numeric) %>%
   pivot_longer(cols = -year) %>%
   ggplot(aes(x = value, fill = as.factor(year))) +
   geom_histogram(alpha = 0.7, position = 'identity') +
   facet_wrap(~name, scales = 'free') +
   labs(title = "Overlap of key demographic variables by year",
+       subtitle = "These data are before any matching is performed",
        x = NULL,
        fill = NULL) +
   theme(plot.background = element_rect(color = NA))
@@ -92,3 +93,4 @@ demographics %>%
   group_by(year, age, race) %>% 
   tally() %>% 
   arrange(race, age, year)
+

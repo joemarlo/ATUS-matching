@@ -26,7 +26,7 @@ propensity_scores <- predict(propensity_model, type = 'response')
 # range(propensity_scores)
 # plot(density(propensity_scores))
 
-# alternative bayesian method
+# # alternative bayesian method
 # propensity_model <- rstanarm::stan_glm(
 #   propensity_formula,
 #   family = binomial('logit'),
@@ -175,14 +175,13 @@ bind_rows(demographics_treated, demographics_control) %>%
   group_by(treatment, race, married) %>% # add more vars here
   tally() %>% 
   pivot_longer(cols = c('race', 'married')) %>% 
-  # arrange(married, race, treatment) %>% 
-  # unite('id', c('race', 'married'), sep = " : ") %>% 
   mutate(year = if_else(treatment, '2009', '2007')) %>% 
   ggplot(aes(x = value, y = n, group = year, fill = year)) +
   geom_col(position = 'dodge') +
   facet_wrap(~name, scales = 'free') +
   labs(title = 'Counts of key groups within matched data',
-       subtitle = 'Only includes distinct observations (i.e. removes duplicates due to matching with replacement)',
+       subtitle = 'Key groups = has children, is female',
+       caption = 'Only includes distinct observations (i.e. removes duplicates due to matching with replacement)',
        x = NULL,
        fill = NULL) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),

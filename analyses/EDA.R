@@ -42,7 +42,6 @@ demographics_sample <- demographics %>%
 
 # define alphabet as all unique states
 alphabet <- atus_sampled[,-1] %>% unlist() %>% unique() %>% sort()
-# states <- c("CHH")
 labels <- c("Care_HH", "Care_NHH", "Cons_Pur", "Eat_drink", "Edu", 
             "HH_activ", "Other", "Prsl_care", "Care_svcs", "Rel_spirit", 
             "Sleep", "Leisure", "Recreation", "Volunteer", "Work")
@@ -63,9 +62,9 @@ launch_sequenchr(atus_seq, demographics_sample)
 # todo: look at separation metrics across 2007:2009 individually
 
 # add capability to break by group before cluster??
-# add x breaks to seperate breaks
 # look for test for 1 vs many clusters under heierachcal (hennig from fpc)
 #   https://link.springer.com/article/10.1007/s11222-015-9566-5
+# add loading screen so users know whats going on
 
 
 # manual clustering -------------------------------------------------------
