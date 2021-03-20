@@ -1,16 +1,6 @@
 # Unsupervised learning and matching 
 
-Data available for download [here](https://www.dropbox.com/sh/hqx7dlh3cc6843i/AABXhrbnFJFgEnTN-6S-60Rda?dl=0).
-
 See also: [ATUS repo](https://github.com/joemarlo/ATUS)
-
-<!--
-<br>
-<br>
-<p align="center">
-<img src="Plots/mean_alone_time.png" width=79%>
-</p>
--->
 
 ### Folder structure
     .
@@ -27,3 +17,16 @@ See also: [ATUS repo](https://github.com/joemarlo/ATUS)
 - Do we need full matching? Or just matching for all of 2007 or all of 2009
 - Should we also try IPTW matching?
 - How to do hard and soft matching? Just stratify and then propensity scores?
+
+
+### Current matching results
+
+<br>
+<p align="center">
+<img src="analyses/plots/overlap_raw.png" width=80%>
+</p>
+
+<br>
+<p align="center">
+<img src="analyses/plots/balance_matched.png" width=80%>
+</p>
