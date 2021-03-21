@@ -49,7 +49,6 @@ labels <- c("Care_HH", "Care_NHH", "Cons_Pur", "Eat_drink", "Edu",
 # create state sequence object
 atus_seq <- seqdef(data = atus_sampled[, -1], 
                    alphabet = alphabet, 
-                   # states = mvad.scodes,
                    id = atus_sampled$ID,
                    labels = labels,
                    xtstep = 1)
@@ -62,17 +61,6 @@ launch_sequenchr(atus_seq, demographics_sample)
 # todo: look at separation metrics across 2007:2009 individually
 
 # add capability to break by group before cluster??
-# look for test for 1 vs many clusters under heierachcal (hennig from fpc)
+# look for test for 1 vs many clusters under hierarchical (hennig from fpc)
 #   https://link.springer.com/article/10.1007/s11222-015-9566-5
 # add loading screen so users know whats going on
-
-
-# manual clustering -------------------------------------------------------
-
-# compute optimal matching distances
-# dist_om_TRATE <- seqdist(atus_seq, method = "OM", indel = 1, sm = "TRATE")
-# dist_om_DHD <- seqdist(atus_seq, method = "DHD")
-
-# cluster the data
-# clusters <- fastcluster::hclust(as.dist(dist_om_DHD), method = "ward.D2")
-

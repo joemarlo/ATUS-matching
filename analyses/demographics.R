@@ -7,7 +7,8 @@ set.seed(44)
 demographics <- read_delim(file = "data/demographic.tsv",
                            delim = "\t",
                            escape_double = FALSE,
-                           trim_ws = TRUE)
+                           trim_ws = TRUE,
+                           col_types = cols(metropolitan = col_character()))
 
 
 # data cleaning -----------------------------------------------------------
@@ -42,25 +43,35 @@ colnames(state_regions) <- tolower(colnames(state_regions))
 demographics <- left_join(demographics, y = state_regions, by = 'state')
 rm(state_regions)
 
-# replace NAs with 0s
-# TODO: does this match the documentation?
+# replace age_youngest NAs with 0s (these are NA b/c they don't have a child)
 demographics$age_youngest[is.na(demographics$age_youngest)] <- 0
-demographics$HH_income[is.na(demographics$HH_income)] <- 0
+
+# replace partner_working NA with 'NA' (b/c propensity score matching)
+demographics$partner_working[is.na(demographics$partner_working)] <- 'NA'
+
+# replace metropolitan NA with 'NA' (b/c propensity score matching)
+demographics$metropolitan[is.na(demographics$metropolitan)] <- 'NA'
+
+# TODO: should we remove these observations?
+sum(is.na(demographics$fam_income))
 
 
 # demographic var selection -----------------------------------------------
 
 # TODO:
 # matching: follow this but try a few different (SES is primary goal)
-# hard match: gender, race, urban/rural, region, partnership, essential worker status
-# soft match: age, income, number of children, education (+/- 1); is there  relative within X miles
+# hard match: gender, race, urban/rural, region, partnership, essential worker status, labor force status
+# soft match: age, income, number of children, education (+/- 1); is there  relative within X miles, is spouse working?
 # covariate: is there an elder in the household; health
 # come up with list and run by Marc
 
-matching_vars <- c('age', 'sex', 'race', 'HH_income', 'married', 'education', 'n_child', 'age_youngest', 'region')
+matching_vars <- c('age', 'sex', 'race', 'fam_income', 'married', 
+                   'education', 'n_child', 'age_youngest', 'region', 
+                   'labor_force_status', 'partner_working', 'elder_in_HH',
+                   'metropolitan')
 demographics <- demographics[, c('ID', 'year', matching_vars)]
 
-# remove NAs
+# remove NAs b/c income unknown for 13%
 demographics <- na.omit(demographics)
 
 
@@ -81,6 +92,7 @@ overlap_continuous <- demographics %>%
   theme(plot.background = element_rect(color = NA))
 overlap_categorical <- demographics %>% 
   dplyr::select(where(~!is.numeric(.x))) %>%
+  mutate(across(everything(), as.character)) %>% 
   bind_cols(year = demographics$year) %>% 
   pivot_longer(cols = -year) %>%
   ggplot(aes(x = value, fill = as.factor(year))) +
@@ -91,9 +103,21 @@ overlap_categorical <- demographics %>%
        fill = NULL) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         plot.background = element_rect(color = NA))
-overlap_continuous / overlap_categorical + plot_layout(heights = c(3, 7))
+overlap_continuous / overlap_categorical + plot_layout(heights = c(2, 3))
 # ggsave('analyses/plots/overlap_raw.png', height = 12, width = 9)
- 
+
+
+# basic stats -------------------------------------------------------------
+
+# counts by group
+demographics %>% 
+  group_by(year) %>% 
+  tally() %>% 
+  mutate(year = as.character(year)) %>% 
+  add_row(tibble(year = 'Total',
+                 n = sum(.$n))) %>% 
+  write_csv('data/summary_stats_raw_n.csv')
+
 
 # sizing up key population ------------------------------------------------
 

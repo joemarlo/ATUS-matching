@@ -90,25 +90,26 @@ atussum_0318 <- atussum_0318 %>%
 # income ------------------------------------------------------------------
 
 # family income CPS data is HEFAMINC
-# set income levels to match data code
-income.levels.HUFAMINC <- tribble(
-  ~HUFAMINC, ~HH.income.new,
-  1, 0,
-  2, mean(5000, 7499),
-  3, mean(7500, 9999),
-  4, mean(10000, 12499),
-  5, mean(12500, 14999),
-  6, mean(15000, 19999),
-  7, mean(20000, 24999),
-  8, mean(25000, 29999),
-  9, mean(30000, 34999),
-  10, mean(35000, 39999),
-  11, mean(40000, 49999),
-  12, mean(50000, 59999),
-  13, mean(60000, 74999),
-  14, mean(75000, 99999),
-  15, mean(100000, 149999),
-  16, 150000
+# HUFAMINC: >=2010
+# HEFAMINC: <2010
+income.levels <- tribble(
+  ~HUFAMINC, ~HEFAMINC, ~HH.income.new,
+  1, 1, 0,
+  2, 2, mean(5000, 7499),
+  3, 3, mean(7500, 9999),
+  4, 4, mean(10000, 12499),
+  5, 5, mean(12500, 14999),
+  6, 6, mean(15000, 19999),
+  7, 7,mean(20000, 24999),
+  8, 8, mean(25000, 29999),
+  9, 9, mean(30000, 34999),
+  10, 10, mean(35000, 39999),
+  11, 11, mean(40000, 49999),
+  12, 12, mean(50000, 59999),
+  13, 13, mean(60000, 74999),
+  14, 14, mean(75000, 99999),
+  15, 15, mean(100000, 149999),
+  16, 15, 150000
 )
 
 
@@ -130,5 +131,54 @@ FIPS <- read_csv('inputs/FIPS.csv')
 
 # state regions -----------------------------------------------------------
 
+# read in the data
 state.regions <- read_csv('inputs/state_regions.csv')
 
+
+# essential indutries ----------------------------------------------------
+
+# scrape FIPS state codes if it doesn't exist
+if (!file.exists('inputs/essential_industries.csv')) {
+  
+  # get industry code mapping from Deleware list
+  raw <- pdftools::pdf_data('https://coronavirus.delaware.gov/wp-content/uploads/sites/177/2020/04/DE-Industry-List-4.21.pdf')
+  
+  # convert pdf data to dataframe containing just the NAICS code
+  #   and essential worker status
+  essential_jobs <- map_dfr(raw, function(tbl) {
+    tab <- tbl %>%
+      filter(grepl("[0-9]{4}", text) | grepl("^(Yes|No)$", text)) %>%
+      select(y, text)
+    
+    full_join(tab, tab, by = 'y') %>%
+      filter(text.x != text.y) %>%
+      distinct(y, .keep_all = TRUE) %>% 
+      mutate(Essential = text.y == 'Yes') %>% 
+      select(NAICS = text.x, Essential)
+  })
+  
+  # add essential status
+  # issue where with code mapping
+  industry_codes <- read_csv(
+      "https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2014-2018.csv",
+      col_names = FALSE,
+      col_types = cols(`1` = col_character(),
+                       X4 = col_character()),
+      trim_ws = FALSE,
+      skip = 1
+    )
+  
+  # join the two tables
+  industry_code_mapping <- industry_codes %>% 
+    filter(X2 == 'NAICSP') %>% 
+    select(NAICSP = X5, Description = X7) %>% 
+    left_join(essential_jobs, by = c("NAICSP" = "NAICS")) %>% 
+    replace_na(list(Essential = FALSE))
+
+  # write out
+  write_csv(industry_code_mapping, 'inputs/essential_industries.csv')
+  rm(essential_jobs, industry_codes, industry_code_mapping)
+}
+
+# read in the data
+essential_industries <- read_csv('inputs/essential_industries.csv')

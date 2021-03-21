@@ -75,7 +75,7 @@ match_k1_wo_glm <- MatchIt::matchit(
 
 ## caliper matching
 # first search for idea width based on minimum std diff
-caliper_widths <- seq(0.05, 0.4, 0.05)
+caliper_widths <- seq(0.05, 0.3, 0.05)
 caliper_search <- sapply(caliper_widths, function(width) {
   match_caliper_glm <- MatchIt::matchit(
     propensity_formula,
@@ -99,7 +99,7 @@ match_caliper_glm <- MatchIt::matchit(
   method = 'nearest', # 'optimal' 'full' 
   distance = "glm",
   link = "logit",
-  caliper = 0.10
+  caliper = 0.15
 )
 
 
@@ -164,16 +164,16 @@ demographics_control$pair_id <- 1:nrow(demographics_control)
 orig_in_control <- demographics$ID[demographics$year == 2007] %in% demographics_control$ID
 sum(orig_in_control)
 percent_kept <- mean(orig_in_control)
-writeLines(paste0("We're losing ", round((1 - percent_kept) * 100, 2), "% of the control data"))
+writeLines(paste0("We're losing ", round((1 - percent_kept) * 100, 2), "% of the control data through matching"))
 rm(percent_kept)
 
 ## what's our n for our target population?
 target_pop <- bind_rows(demographics_treated, demographics_control) %>% 
-  select(-pair_id) %>% 
+  dplyr::select(-pair_id) %>% 
   distinct() %>%
   filter(sex == 'female',
          n_child > 0) %>% 
-  select(year, race, married, n_child, age_youngest, region) # add more vars here
+  dplyr::select(-ID, -treatment, -sex) #year, race, married, n_child, age_youngest, region, fam_income) # add more vars here
 subtitle <- paste0(
   'Data only includes respondents that are female and have children in the household', 
   '\nn 2007 = ', scales::comma_format()(sum(target_pop$year == 2007)),
@@ -185,15 +185,21 @@ target_pop %>%
   pivot_longer(cols = -year) %>% 
   mutate(value = factor(
     value, 
-    levels = c(0:17, 
+    levels = c(0:99, 
                'asian', 'black', 'white', 'other',
                'married', 'not married',
-               'Midwest', 'Northeast', 'South', 'West')
+               'Midwest', 'Northeast', 'South', 'West',
+               'TRUE', 'FALSE',
+               'employed', 'not employed',
+               unique(target_pop$labor_force_status),
+               levels(target_pop$education),
+               unique(target_pop$metropolitan),
+               sort(unique(target_pop$fam_income))[-1])
     )
   ) %>% 
   ggplot(aes(x = value, group = year, fill = year)) +
   geom_bar(position = 'dodge') +
-  facet_wrap(~name, scales = 'free') +
+  facet_wrap(~name, scales = 'free', ncol = 3) +
   labs(title = 'Counts of key groups within matched data',
        subtitle = subtitle,
        caption = 'Only includes distinct observations (i.e. removes duplicates due to matching with replacement)',
@@ -201,7 +207,7 @@ target_pop %>%
        fill = NULL) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         legend.position = 'bottom')
-# ggsave("analyses/plots/counts_matched.png", height = 8, width = 9)
+# ggsave("analyses/plots/counts_matched.png", height = 12, width = 9)
 
 
 # write out matches -------------------------------------------------------

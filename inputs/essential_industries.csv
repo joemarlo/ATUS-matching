@@ -1,0 +1,273 @@
+NAICSP,Description,Essential
+North American Industry Classification System (NAICS) recode for 2018 and later based on 2017 NAICS codes,NA,FALSE
+bbbbbbbb,N/A (less than 16 years old/NILF who last worked more than 5 years ago or never worked),FALSE
+111,AGR-Crop Production,FALSE
+112,AGR-Animal Production And Aquaculture,FALSE
+1133,AGR-Logging,TRUE
+113M,AGR-Forestry Except Logging,FALSE
+114,"AGR-Fishing, Hunting, And Trapping",FALSE
+115,AGR-Support Activities For Agriculture And Forestry,FALSE
+211,EXT-Oil And Gas Extraction,FALSE
+2121,EXT-Coal Mining,TRUE
+2122,EXT-Metal Ore Mining,TRUE
+2123,EXT-Nonmetallic Mineral Mining And Quarrying,TRUE
+213,EXT-Support Activities For Mining,FALSE
+2211P,"UTL-Electric Power Generation, Transmission And Distribution",FALSE
+2212P,UTL-Natural Gas Distribution,FALSE
+22132,UTL-Sewage Treatment Facilities,FALSE
+2213M,"UTL-Water, Steam, Air Conditioning, And Irrigation Systems",FALSE
+221MP,"UTL-Electric And Gas, And Other Combinations",FALSE
+22S,UTL-Not Specified Utilities,FALSE
+23,"CON-Construction, (The Cleaning Of Buildings And Dwellings Is Incidental During Construction And Immediately After Construction)",FALSE
+3113,MFG-Sugar And Confectionery Products,TRUE
+3114,MFG-Fruit And Vegetable Preserving And Specialty Foods,TRUE
+3115,MFG-Dairy Products,TRUE
+3116,MFG-Animal Slaughtering And Processing,TRUE
+311811,MFG-Retail Bakeries,FALSE
+3118Z,"MFG-Bakeries And Tortilla, Except Retail Bakeries",FALSE
+311M1,"MFG-Animal Food, Grain And Oilseed Milling",FALSE
+311M2,"MFG-Seafood And Other Miscellaneous Foods, N.E.C.",FALSE
+311S,MFG-Not Specified Food Industries,FALSE
+3121,MFG-Beverage,TRUE
+3122,MFG-Tobacco,TRUE
+3131,"MFG-Fiber, Yarn, And Thread Mills",TRUE
+3132Z,"MFG-Fabric Mills, Except Knitting Mills",FALSE
+3133,MFG-Textile And Fabric Finishing And Fabric Coating Mills,TRUE
+31411,MFG-Carpet And Rug Mills,FALSE
+314Z,"MFG-Textile Product Mills, Except Carpet And Rug",FALSE
+315M,"MFG-Cut And Sew, And Apparel Accessories And Other Apparel",FALSE
+3162,MFG-Footwear,TRUE
+316M,MFG-Leather Tanning And Finishing And Other Allied Products Manufacturing,FALSE
+31M,"MFG-Knitting Fabric Mills, And Apparel Knitting Mills",FALSE
+3211,MFG-Sawmills And Wood Preservation,TRUE
+3212,"MFG-Veneer, Plywood, And Engineered Wood Products",TRUE
+32199M,MFG-Prefabricated Wood Buildings And Mobile Homes,FALSE
+3219ZM,MFG-Miscellaneous Wood Products,FALSE
+3221,"MFG-Pulp, Paper, And Paperboard Mills",TRUE
+32221,MFG-Paperboard Container,FALSE
+3222M,MFG-Miscellaneous Paper And Pulp Products,FALSE
+3231,MFG-Printing And Related Support Activities,TRUE
+3241M,MFG-Miscellaneous Petroleum And Coal Products,FALSE
+32411,MFG-Petroleum Refining,FALSE
+3252,"MFG-Resin, Synthetic Rubber, And Fibers And Filaments",TRUE
+3253,MFG-Agricultural Chemicals,TRUE
+3254,MFG-Pharmaceuticals And Medicines,TRUE
+3255,"MFG-Paint, Coating, And Adhesives",TRUE
+3256,"MFG-Soap, Cleaning Compound, And Cosmetics",TRUE
+325M,MFG-Industrial And Miscellaneous Chemicals,FALSE
+3261,MFG-Plastics Products,TRUE
+32621,MFG-Tires,FALSE
+3262M,"MFG-Rubber Products, Except Tires",FALSE
+32711,"MFG-Pottery, Ceramics, And Plumbing Fixture Manufacturing",FALSE
+327120,MFG-Clay Building Material And Refractories,FALSE
+3272,MFG-Glass And Glass Products,TRUE
+3279,MFG-Miscellaneous Nonmetallic Mineral Products,TRUE
+327M,"MFG-Cement, Concrete, Lime, And Gypsum Products",FALSE
+3313,MFG-Aluminum Production And Processing,TRUE
+3314,"MFG-Nonferrous Metal, Except Aluminum, Production And Processing",TRUE
+3315,MFG-Foundries,TRUE
+331M,MFG-Iron And Steel Mills And Steel Products,FALSE
+3321,MFG-Metal Forgings And Stampings,TRUE
+3322,MFG-Cutlery And Hand Tools,TRUE
+3327,"MFG-Machine Shops; Turned Products; Screws, Nuts And Bolts",TRUE
+3328,"MFG-Coating, Engraving, Heat Treating And Allied Activities",TRUE
+33299M,MFG-Ordnance,FALSE
+332M,"MFG-Structural Metals, And Boiler, Tank, And Shipping Containers",FALSE
+332MZ,MFG-Miscellaneous Fabricated Metal Products,FALSE
+33311,MFG-Agricultural Implements,FALSE
+3331M,"MFG-Construction, And Mining And Oil And Gas Field Machinery",FALSE
+3333,MFG-Commercial And Service Industry Machinery,TRUE
+3335,MFG-Metalworking Machinery,TRUE
+3336,"MFG-Engine, Turbine, And Power Transmission Equipment",TRUE
+333MS,"MFG-Machinery Manufacturing, N.E.C. Or Not Specified",FALSE
+3341,MFG-Computer And Peripheral Equipment,TRUE
+3345,"MFG-Navigational, Measuring, Electromedical, And Control Instruments",TRUE
+334M1,"MFG-Communications, And Audio And Video Equipment",FALSE
+334M2,"MFG-Electronic Components And Products, N.E.C.",FALSE
+3352,MFG-Household Appliances,TRUE
+335M,"MFG-Electric Lighting, And Electrical Equipment Manufacturing, And Other Electrical Component Manufacturing, N.E.C.",FALSE
+33641M1,MFG-Aircraft And Parts,FALSE
+33641M2,MFG-Aerospace Products And Parts,FALSE
+3365,MFG-Railroad Rolling Stock,TRUE
+3366,MFG-Ship And Boat Building,TRUE
+3369,MFG-Other Transportation Equipment,TRUE
+336M,MFG-Motor Vehicles And Motor Vehicle Equipment,FALSE
+337,MFG-Furniture And Related Products,FALSE
+3391,MFG-Medical Equipment And Supplies,TRUE
+3399M,"MFG-Sporting And Athletic Goods, And Doll, Toy, And Game Manufacturing",FALSE
+3399ZM,"MFG-Miscellaneous Manufacturing, N.E.C.",FALSE
+33MS,MFG-Not Specified Metal Industries,FALSE
+3MS,MFG-Not Specified Industries,FALSE
+4231,WHL-Motor Vehicles And Motor Vehicle Parts And Supplies Merchant Wholesalers,TRUE
+4232,WHL-Furniture And Home Furnishing Merchant Wholesalers,FALSE
+4233,WHL-Lumber And Other Construction Materials Merchant Wholesalers,TRUE
+4234,WHL-Professional And Commercial Equipment And Supplies Merchant Wholesalers,TRUE
+4235,"WHL-Metals And Minerals, Except Petroleum, Merchant Wholesalers",TRUE
+4236,WHL-Household Appliances And Electrical And Electronic Goods Merchant Wholesalers,TRUE
+4237,"WHL-Hardware, And Plumbing And Heating Equipment, And Supplies Merchant Wholesalers",TRUE
+4238,"WHL-Machinery, Equipment, And Supplies Merchant Wholesalers",TRUE
+42393,WHL-Recyclable Material Merchant Wholesalers,FALSE
+4239Z,WHL-Miscellaneous Durable Goods Merchant Wholesalers,FALSE
+4241,WHL-Paper And Paper Products Merchant Wholesalers,TRUE
+4243,"WHL-Apparel, Piece Goods, And Notions Merchant Wholesalers",FALSE
+4244,WHL-Grocery And Related Product Merchant Wholesalers,TRUE
+4245,WHL-Farm Product Raw Material Merchant Wholesalers,TRUE
+4247,WHL-Petroleum And Petroleum Products Merchant Wholesalers,TRUE
+4248,WHL-Alcoholic Beverages Merchant Wholesalers,TRUE
+42491,WHL-Farm Supplies Merchant Wholesalers,FALSE
+4249Z,WHL-Miscellaneous Nondurable Goods Merchant Wholesalers,FALSE
+424M,"WHL-Drugs, Sundries, And Chemical And Allied Products Merchant Wholesalers",FALSE
+4251,WHL-Wholesale Electronic Markets And Agents And Brokers,TRUE
+42S,WHL-Not Specified Wholesale Trade,FALSE
+4411,RET-Automobile Dealers,FALSE
+4412,RET-Other Motor Vehicle Dealers,FALSE
+4413,"RET-Automotive Parts, Accessories, And Tire Stores",TRUE
+442,RET-Furniture And Home Furnishings Stores,FALSE
+443141,RET-Household Appliance Stores,FALSE
+443142,RET-Electronics Stores,FALSE
+44413,RET-Hardware Stores,FALSE
+4441Z,RET-Building Material And Supplies Dealers,FALSE
+4442,RET-Lawn And Garden Equipment And Supplies Stores,TRUE
+44511,RET-Supermarkets And Grocery (Except Convenience) Stores,FALSE
+44512,RET-Convenience Stores,FALSE
+4452,RET-Specialty Food Stores,TRUE
+4453,"RET-Beer, Wine, And Liquor Stores",TRUE
+44611,RET-Pharmacies And Drug Stores,FALSE
+446Z,"RET-Health And Personal Care, Except Drug, Stores",FALSE
+447,RET-Gasoline Stations,FALSE
+44821,RET-Shoe Stores,FALSE
+4483,"RET-Jewelry, Luggage, And Leather Goods Stores",FALSE
+4481,RET-Clothing Stores,FALSE
+45113,"RET-Sewing, Needlework, And Piece Goods Stores",FALSE
+45114,RET-Musical Instrument And Supplies Stores,FALSE
+4511M,"RET-Sporting Goods, And Hobby And Toy Stores",FALSE
+45121,RET-Book Stores And News Dealers,FALSE
+45221,RET-Department Stores,FALSE
+4523,"RET-General Merchandise Stores, Including Warehouse Clubs and Supercenters",FALSE
+4531,RET-Florists,FALSE
+45321,RET-Office Supplies And Stationery Stores,FALSE
+45322,"RET-Gift, Novelty, And Souvenir Shops",FALSE
+4533,RET-Used Merchandise Stores,FALSE
+4539,RET-Miscellaneous Retail Stores,FALSE
+454110,RET-Electronic Shopping And Mail-Order Houses,FALSE
+4542,RET-Vending Machine Operators,FALSE
+454310,RET-Fuel Dealers,FALSE
+45439,RET-Other Direct Selling Establishments,FALSE
+4MS,RET-Not Specified Retail Trade,FALSE
+481,TRN-Air Transportation,FALSE
+482,TRN-Rail Transportation,FALSE
+483,TRN-Water Transportation,FALSE
+484,TRN-Truck Transportation,FALSE
+4853,TRN-Taxi And Limousine Service,TRUE
+485M,TRN-Bus Service And Urban Transit,FALSE
+486,TRN-Pipeline Transportation,FALSE
+487,TRN-Scenic And Sightseeing Transportation,FALSE
+488,TRN-Services Incidental To Transportation,FALSE
+491,TRN-Postal Service,FALSE
+492,TRN-Couriers And Messengers,FALSE
+493,TRN-Warehousing And Storage,FALSE
+51111,INF-Newspaper Publishers,FALSE
+5111Z,"INF-Periodical, Book, And Directory Publishers",FALSE
+5112,INF-Software Publishers,FALSE
+5121,INF-Motion Picture And Video Industries,FALSE
+5122,INF-Sound Recording Industries,FALSE
+515,"INF-Broadcasting, Except Internet",FALSE
+517311,INF-Wired Telecommunications Carriers,FALSE
+517Z,"INF-Telecommunications, Except Wired Telecommunications Carriers",FALSE
+5182,"INF-Data Processing, Hosting, And Related Services",TRUE
+51912,INF-Libraries And Archives,FALSE
+51913,INF-Internet Publishing And Broadcasting And Web Search Portals,FALSE
+5191ZM,"INF-Other Information Services, Except Libraries And Archives, And Internet Publishing And Broadcasting And Web Search Portals",FALSE
+5221M,"FIN-Savings Institutions, Including Credit Unions",FALSE
+522M,FIN-Nondepository Credit And Related Activities,FALSE
+5241,FIN-Insurance Carriers,TRUE
+5242,"FIN-Agencies, Brokerages, And Other Insurance Related Activities",TRUE
+52M1,FIN-Banking And Related Activities,FALSE
+52M2,"FIN-Securities, Commodities, Funds, Trusts, And Other Financial Investments",FALSE
+531M,"FIN-Lessors Of Real Estate, And Offices Of Real Estate Agents And Brokers",FALSE
+5313,"FIN-Real Estate Property Managers, Offices of Real Estate Appraisers, And Other Activities Related to Real Estate",TRUE
+5321,FIN-Automotive Equipment Rental And Leasing,TRUE
+532M2,FIN-Other Consumer Goods Rental,FALSE
+53M,"FIN-Commercial, Industrial, And Other Intangible Assets Rental And Leasing",FALSE
+5411,PRF-Legal Services,TRUE
+5412,"PRF-Accounting, Tax Preparation, Bookkeeping, And Payroll Services",TRUE
+5413,"PRF-Architectural, Engineering, And Related Services",TRUE
+5414,PRF-Specialized Design Services,FALSE
+5415,PRF-Computer Systems Design And Related Services,TRUE
+5416,"PRF-Management, Scientific, And Technical Consulting Services",TRUE
+5417,PRF-Scientific Research And Development Services,TRUE
+5418,"PRF-Advertising, Public Relations, And Related Services",FALSE
+54194,PRF-Veterinary Services,FALSE
+5419Z,"PRF-Other Professional, Scientific, And Technical Services",FALSE
+55,PRF-Management Of Companies And Enterprises,FALSE
+5613,PRF-Employment Services,TRUE
+5614,PRF-Business Support Services,FALSE
+5615,PRF-Travel Arrangements And Reservation Services,FALSE
+5616,PRF-Investigation And Security Services,TRUE
+56173,PRF-Landscaping Services,FALSE
+5617Z,PRF-Services To Buildings And Dwellings (Except Cleaning During Construction And Immediately After Construction),FALSE
+561M,PRF-Other Administrative And Other Support Services,FALSE
+562,PRF-Waste Management And Remediation Services,FALSE
+6111,EDU-Elementary And Secondary Schools,FALSE
+611M1,"EDU-Colleges, Universities, And Professional Schools, Including Junior Colleges",FALSE
+611M2,"EDU-Business, Technical, And Trade Schools And Training",FALSE
+611M3,"EDU-Other Schools And Instruction, And Educational Support Services",FALSE
+6211,MED-Offices Of Physicians,TRUE
+6212,MED-Offices Of Dentists,TRUE
+62131,MED-Offices Of Chiropractors,FALSE
+62132,MED-Offices Of Optometrists,FALSE
+6213ZM,MED-Offices Of Other Health Practitioners,FALSE
+6214,MED-Outpatient Care Centers,TRUE
+6216,MED-Home Health Care Services,TRUE
+621M,MED-Other Health Care Services,FALSE
+622M,"MED-General Medical And Surgical Hospitals, And Specialty (Except Psychiatric And Substance Abuse) Hospitals",FALSE
+6222,MED-Psychiatric And Substance Abuse Hospitals,TRUE
+6231,MED-Nursing Care Facilities (Skilled Nursing Facilities),TRUE
+623M,"MED-Residential Care Facilities, Except Skilled Nursing Facilities",FALSE
+6241,SCA-Individual And Family Services,TRUE
+6242,"SCA-Community Food And Housing, And Emergency Services",TRUE
+6243,SCA-Vocational Rehabilitation Services,TRUE
+6244,SCA-Child Day Care Services,FALSE
+7111,ENT-Performing Arts Companies,FALSE
+7112,ENT-Spectator Sports,FALSE
+711M,"ENT-Promoters Of Performing Arts, Sports, And Similar Events, Agents And Managers For Artists, Athletes, Entertainers, And Other Public Figures",FALSE
+7115,"Independent Artists, Writers, And Performers",FALSE
+712,"ENT-Museums, Art Galleries, Historical Sites, And Similar Institutions",FALSE
+71395,ENT-Bowling Centers,FALSE
+713Z,"ENT-Other Amusement, Gambling, And Recreation Industries",FALSE
+7211,ENT-Traveler Accommodation,FALSE
+721M,"Recreational Vehicle Parks And Camps, And Rooming And Boarding House, Dormitories, And Workers' Camps",FALSE
+7224,"ENT-Drinking Places, Alcoholic Beverages",FALSE
+722Z,ENT-Restaurants And Other Food Services,FALSE
+811192,SRV-Car Washes,FALSE
+8111Z,SRV-Automotive Repair And Maintenance,FALSE
+8112,SRV-Electronic And Precision Equipment Repair And Maintenance,TRUE
+8113,SRV-Commercial And Industrial Machinery And Equipment Repair And Maintenance,TRUE
+8114,SRV-Personal And Household Goods Repair And Maintenance,TRUE
+812111,SRV-Barber Shops,FALSE
+812112,SRV-Beauty Salons,FALSE
+8121M,SRV-Nail Salons And Other Personal Care Services,FALSE
+8122,"SRV-Funeral Homes, Cemeteries And Crematories",TRUE
+8123,SRV-Drycleaning And Laundry Services,TRUE
+8129,SRV-Other Personal Services,FALSE
+8131,SRV-Religious Organizations,TRUE
+81393,SRV-Labor Unions,FALSE
+8139Z,"SRV-Business, Professional, Political, And Similar Organizations",FALSE
+813M,"SRV-Civic, Social, Advocacy Organizations, And Grantmaking And Giving Services",FALSE
+814,SRV-Private Households,FALSE
+92113,ADM-Public Finance Activities,FALSE
+92119,ADM-Other General Government And Support,FALSE
+9211MP,ADM-Executive Offices And Legislative Bodies,FALSE
+923,ADM-Administration Of Human Resource Programs,FALSE
+928110P1,MIL-U.S. Army,FALSE
+928110P2,MIL-U.S. Air Force,FALSE
+928110P3,MIL-U.S. Navy,FALSE
+928110P4,MIL-U.S. Marines,FALSE
+928110P5,MIL-U.S. Coast Guard,FALSE
+928110P6,"MIL-U.S. Armed Forces, Branch Not Specified",FALSE
+928110P7,MIL-Military Reserves Or National Guard,FALSE
+928P,ADM-National Security And International Affairs,FALSE
+92M1,ADM-Administration Of Environmental Quality And Housing Programs,FALSE
+92M2,ADM-Administration Of Economic Programs And Space Research,FALSE
+92MP,"ADM-Justice, Public Order, And Safety Activities",FALSE
+999920,Unemployed And Last Worked 5 Years Ago Or Earlier Or Never Worked,FALSE

@@ -43,7 +43,7 @@ calculate_balance <- function(rawdata, .matches, .propensity_model){
   
   # create df of the treated data and the matched control data
   match_indices <- as.numeric(.matches$match.matrix)
-  control_df <- distinct(rawdata[match_indices,])
+  control_df <- distinct(rawdata[match_indices,]) #TODO should this be distinct???
   treated_df <- rawdata[rawdata$treatment,]
   matched <- bind_rows(control_df, treated_df)
   

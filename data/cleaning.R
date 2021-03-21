@@ -2,10 +2,10 @@ source('data/helpers.R')
 library(lubridate)
 options(mc.cores = parallel::detectCores())
 
-# remove unneccessary data from environment
-# memory management is important as datasets are large
-rm(atusrost_0318, atuswgts_0318, atuswho_0318)
-gc()
+# # remove unnecessary data from environment
+# # memory management is important as datasets are large
+# rm(atusrost_0318, atuswgts_0318)
+# gc()
 
 
 # cut down atus activity file ---------------------------------------------
@@ -91,12 +91,23 @@ ATUS_30 <- ATUS_1 %>%
 
 # create final datasets  ----------------------------------------------------
 
-# from CPS data, get race, marriage status, education, and state 
-# TODO: add more CPS vars here
+# from CPS, check if there is an elder in the household
+# elder = parent or other relative who is >=1 year older than respondent
+elder_in_HH <- atusrost_0318 %>% 
+  group_by(TUCASEID) %>% 
+  arrange(TUCASEID, TULINENO) %>%
+  mutate(resp_age = first(TEAGE),
+         is_elder = TERRP %in% c(24, 26) & TEAGE >= (resp_age + 1)) %>%
+  summarize(elder_in_HH = any(is_elder),
+            .groups = 'drop') %>% 
+  rename(ID = TUCASEID)
+
+# from CPS data, get race, marriage status, education, metropolitan status, and state 
+# TODO: figure out how to get NAICS code and match to essential_industries 
+# data dictionary here: https://www2.census.gov/programs-surveys/cps/datasets/2021/basic/2021_Basic_CPS_Public_Use_Record_Layout_plus_IO_Code_list.txt
 CPS_vars <- atuscps_0318 %>%
-  # filter so only person responding to ATUS is included
-  filter(TULINENO == 1) %>% 
-  select(TUCASEID, PEMARITL, PTDTRACE, PEEDUCA, GESTFIPS) %>%
+  filter(TULINENO == 1) %>%   # filter so only person responding to ATUS is included
+  select(TUCASEID, PEMARITL, PTDTRACE, PEEDUCA, GESTFIPS, GTMETSTA) %>%
   mutate(
     married = as.numeric(PEMARITL == 1),
     race = case_when(
@@ -112,31 +123,51 @@ CPS_vars <- atuscps_0318 %>%
       PEEDUCA == 43 ~ "Bachelors",
       PEEDUCA == 44 ~ "Masters",
       PEEDUCA %in% 44:45 ~ "Doctoral"
+    ),
+    metropolitan = case_when(
+      GTMETSTA == 1 ~ 'metropolitan',
+      GTMETSTA == 2 ~ 'non-metropolitan',
+      GTMETSTA %in% c(-1, 3) ~ 'NA',
     )
   ) %>% 
   left_join(FIPS[, c('Name', 'FIPS')], by = c(GESTFIPS = 'FIPS')) %>%
-  select(ID = TUCASEID, married, race, education, state = Name) %>% 
+  select(ID = TUCASEID, married, race, education, state = Name, metropolitan) %>% 
   distinct()
-
 
 # from ATUS data, get weights, age, sex, children, income,  
 atus_vars <- atussum_0318 %>% 
   select(TUCASEID, survey_weight = TUFNWGTP, age = TEAGE,
-         sex = TESEX, age_youngest = TRYHHCHILD, n_child = TRCHILDNUM) %>%
-  mutate(age_youngest = ifelse(age_youngest == -1, NA, age_youngest)) %>%
-  left_join(distinct(atuscps_0318[, c('TUCASEID', 'HEFAMINC', 'HUFAMINC')])) %>%
-  left_join(income.levels) %>% 
-  left_join(income.levels.HUFAMINC) %>% 
-  mutate(HH.income = pmax(HH.income, HH.income.new, na.rm = TRUE)) %>% 
-  select(-c('HEFAMINC', 'HUFAMINC', 'HH.income.new')) %>% 
+         sex = TESEX, age_youngest = TRYHHCHILD, n_child = TRCHILDNUM,
+         labor_force_status = TELFS, partner_working = TESPEMPNOT) %>%
+  mutate(age_youngest = ifelse(age_youngest == -1, NA, age_youngest),
+         labor_force_status = case_when(
+           labor_force_status == 1 ~ 'employed - at work',
+           labor_force_status == 2 ~ 'employed - absent',
+           labor_force_status == 3 ~ 'unemployed - on layoff',
+           labor_force_status == 4 ~ 'unemployed - looking',
+           labor_force_status == 5 ~ 'not in labor force',
+           TRUE ~ 'NA'
+         ),
+         partner_working = case_when(
+           partner_working == -1 ~ 'NA',
+           partner_working == 1 ~ 'employed',
+           partner_working == 2 ~ 'not employed'
+         )) %>%
+  left_join(distinct(atuscps_0318[, c('TUCASEID', 'HEFAMINC', 'HUFAMINC')]),
+            by = 'TUCASEID') %>%
+  left_join(select(income.levels, HUFAMINC, HH.income.new), by = 'HUFAMINC') %>%
+  left_join(select(income.levels, HEFAMINC, HH.income.new), by = 'HEFAMINC') %>% 
+  mutate(HH.income = pmax(HH.income.new.x, HH.income.new.y, na.rm = TRUE)) %>% 
+  select(-c('HEFAMINC', 'HUFAMINC', 'HH.income.new.x', 'HH.income.new.y')) %>% 
   rename(ID = TUCASEID,
-         HH_income = HH.income) %>% 
+         fam_income = HH.income) %>% 
   distinct()
 
 # final dataset of demographic variables
 demographic_vars <- atus_vars %>% 
+  left_join(elder_in_HH, by = 'ID') %>% 
   left_join(CPS_vars, by = 'ID') %>% 
-  semi_join(distinct(ATUS_30, ID)) %>% 
+  semi_join(distinct(ATUS_30, ID), by = 'ID') %>% 
   left_join(atusresp_0318 %>% 
               select(ID = TUCASEID, day_of_week = TUDIARYDAY, holiday = TRHOLIDAY,
                      year = TUYEAR, TRTALONE, TRTALONE_WK, TESCHFT),
@@ -144,6 +175,6 @@ demographic_vars <- atus_vars %>%
 
 
 # write out the final datasets --------------------------------------------
-write_tsv(ATUS_1, 'data/atus.tsv')
-write_tsv(ATUS_30, 'data/atus_30min.tsv')
-write_tsv(demographic_vars, 'data/demographic.tsv')
+# write_tsv(ATUS_1, 'data/atus.tsv')
+# write_tsv(ATUS_30, 'data/atus_30min.tsv')
+# write_tsv(demographic_vars, 'data/demographic.tsv')
