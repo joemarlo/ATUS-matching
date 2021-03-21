@@ -61,7 +61,7 @@ sum(is.na(demographics$fam_income))
 # TODO:
 # matching: follow this but try a few different (SES is primary goal)
 # hard match: gender, race, urban/rural, region, partnership, essential worker status, labor force status
-# soft match: age, income, number of children, education (+/- 1); is there  relative within X miles, is spouse working?
+# soft match: age, income, number of children, education (+/- 1); is there  relative within X miles, is spouse working
 # covariate: is there an elder in the household; health
 # come up with list and run by Marc
 

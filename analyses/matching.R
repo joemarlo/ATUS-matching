@@ -128,14 +128,14 @@ balance_df <- tibble(
 )
 options(scipen = 9999)
 summary_means <- round(apply(balance_df[, 2:5], 2, function(x) mean(abs(x))), 4)
-caption <- paste0(names(summary_means), ": ", summary_means)
-names(caption) <- names(summary_means)
+legend_stats <- paste0(names(summary_means), ": ", summary_means)
+names(legend_stats) <- names(summary_means)
 balance_df %>% 
   pivot_longer(-covs) %>% 
   ggplot(aes(x = value, y = covs, group = name, fill = name)) +
   geom_vline(xintercept = 0, linetype = 'dashed', color = 'grey70') +
   geom_point(alpha = 0.6, size = 4, pch = 21, color = 'grey10') +
-  scale_fill_discrete(labels = caption) +
+  scale_fill_discrete(labels = legend_stats) +
   labs(title = "Standardized difference in means between treatment and control",
        subtitle = 'Closer to zero is better',
        caption = "Legend values represent the mean of |means|",
@@ -143,7 +143,7 @@ balance_df %>%
        y = NULL,
        fill = NULL) +
   theme(legend.position = 'bottom')
-# ggsave("analyses/plots/balance_matched.png", height = 6, width = 9)
+# ggsave("analyses/plots/balance_matched.png", height = 9, width = 9)
 
 
 # final matches -----------------------------------------------------------

@@ -9,7 +9,7 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, out.width = '95%', fig.align = 'center')
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 ```
 
@@ -34,14 +34,14 @@ read_csv("data/summary_stats_raw_n.csv") %>%
 
 ## Overlap of unmatched data
 
-```{r echo=FALSE, out.width='80%', fig.align="center"}
+```{r echo=FALSE}
 knitr::include_graphics(normalizePath(file.path("analyses", "plots", "overlap_raw.png")))
 ```
 
 
 ## Overlap and balance of matched data
 
-```{r echo=FALSE, out.width='80%', fig.align="center"}
+```{r echo=FALSE}
 knitr::include_graphics(normalizePath(file.path("analyses", "plots", "overlap_propensity_scores.png")))
 knitr::include_graphics(normalizePath(file.path("analyses", "plots", "balance_matched.png")))
 ```
@@ -49,7 +49,7 @@ knitr::include_graphics(normalizePath(file.path("analyses", "plots", "balance_ma
 
 ## Key population
 
-```{r echo=FALSE, out.width='80%', fig.align="center"}
+```{r echo=FALSE}
 knitr::include_graphics(normalizePath(file.path("analyses", "plots", "counts_matched.png")))
 ```
 
@@ -78,6 +78,8 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     - other = all other fields
     - Note: hispanic status available through CPS PEHSPNON
   - `labor_force_status` = self described 
+  - `partner_working` = employment status of spouse or unmarried partner
   - `essential_worker` = status according to NAICS industry list and mapping to [Deleware list of essential industries](https://coronavirus.delaware.gov/wp-content/uploads/sites/177/2020/04/DE-Industry-List-4.21.pdf)
   - `metropolitan` = metropolitan vs non-metropolitan according to CPS (definition not available !?)
   - `elder_in_HH` = does the respondent have a parent or 'other relative' who is at least one year older in the household
+  - `education` = self-described. Consolidated from a more detailed list
