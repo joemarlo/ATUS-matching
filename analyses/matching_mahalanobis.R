@@ -1,0 +1,182 @@
+# library(tidyverse)
+library(arm)
+# source('analyses/plots/ggplot_settings.R')
+source('analyses/demographics.R')
+source('analyses/helpers_analyses.R')
+set.seed(44)
+
+
+# pre-processing ----------------------------------------------------------
+
+# convert year to boolean
+demographics$treatment <- demographics$year == 2009
+
+# remove unnecessary columns
+demographics_trimmed <- demographics[, matching_vars]
+
+# split into treat and control
+demographics_treatment <- demographics_trimmed[demographics$treatment,]
+demographics_control <- demographics_trimmed[!demographics$treatment,]
+
+# dummy code categoricals
+# TODO: remove first dummy?
+demographics_treatment <- fastDummies::dummy_cols(
+  demographics_treatment, 
+  remove_selected_columns = TRUE,
+  remove_first_dummy = TRUE)
+demographics_control <- fastDummies::dummy_cols(
+  demographics_control, 
+  remove_selected_columns = TRUE,
+  remove_first_dummy = TRUE)
+
+# clean up column names
+col_names <- colnames(demographics_treatment)
+col_names <- stringr::str_replace_all(col_names, '[.]|[-]', " ")
+col_names <- stringr::str_squish(col_names)
+col_names <- stringr::str_replace_all(col_names, "[ ]", "_")
+colnames(demographics_treatment) <- col_names
+colnames(demographics_control) <- col_names
+
+
+# weighting ---------------------------------------------------------------
+
+# TODO: this is all TBD; unsure how to weight mahalanobis distance
+# prescaling and pre-weighting before calcualting mdistance doesn't make sense
+# http://isl.anthropomatik.kit.edu/pdf/Woelfel2005.pdf
+# https://rdrr.io/cran/WMDB/man/wmahalanobis.html
+# https://www.researchgate.net/publication/290037437_Application_of_weighted_Mahalanobis_distance_discriminant_analysis_method_to_classification_of_rock_mass_quality
+# just weight the covariance matrix before inverting?
+  # cov_weighted <- weight %*% solve(cov)
+  # mdist <- diag(x %*% cov_weighted %*% t(x))
+
+# scale variables
+# demographics_treatment <- as_tibble(scale(demographics_treatment))
+# demographics_control <- as_tibble(scale(demographics_control))
+# colnames(demographics_treatment) <- col_names
+# colnames(demographics_control) <- col_names
+
+# check colmeans and variance
+# tibble(
+#   column = col_names,
+#   means = round(colMeans(demographics_treatment), 10),
+#   sd = apply(demographics_treatment, 2, sd)
+# ) %>% View
+  
+# set variable weights
+var_weights <- c(
+  'age' = 1,
+  'fam_income' = 1,
+  'child_in_HH' = 1,
+  'n_child' = 1,
+  'age_youngest' = 1,
+  'elder_in_HH' = 1,
+  'sex_male' = 1,
+  'race_black' = 1,
+  'race_other' = 1,
+  'race_white' = 1,
+  'married_not_married' = 1,
+  'education_HS' = 1,
+  'education_Some_college' = 1,
+  'education_Bachelors' = 1,
+  'education_Masters' = 1,
+  'education_Doctoral' = 1,
+  'region_Northeast' = 1,
+  'region_South' = 1,
+  'region_West' = 1,
+  'labor_force_status_employed_at_work' = 1,
+  'labor_force_status_not_in_labor_force' = 1,
+  'labor_force_status_unemployed_looking' = 1,
+  'labor_force_status_unemployed_on_layoff' = 1,
+  'partner_working_NA' = 1,
+  'partner_working_not_employed' = 1,
+  'metropolitan_non_metropolitan' = 1
+)
+
+# apply weights column-wise
+# demographics_treatment <- as_tibble(t(t(demographics_treatment) * var_weights))
+
+# apply weights to covariance matrix and calculate mdistance
+X <- as.matrix(demographics_treatment[, names(var_weights)])
+cov <- cov(X)
+cov_weighted <- diag(var_weights) %*% solve(cov)
+X <- sweep(X, 2, colMeans(X))
+mdist <- diag(X %*% cov_weighted %*% t(X))
+
+
+
+# non weighted method -----------------------------------------------------
+
+# calculate mahalanobis distance
+demographics_mdistance <- StatMatch::mahalanobis.dist(
+  data.x = demographics_treatment,
+  data.y = demographics_control,
+  vc = cov(demographics_treatment)
+)
+
+# get match by choosing row with smallest distance
+# this matches all of the treatments to some of the controls
+#   akin to matching with replacement
+match_indices <- apply(demographics_mdistance, 1, which.min)
+# length(match_indices) == nrow(demographics_treatment)
+
+
+# create dataframe of the matches -----------------------------------------
+
+# create treatment and control dfs that have matching orders
+demographics_treated <- demographics[demographics$treatment,]
+demographics_control <- demographics[!demographics$treatment,][match_indices,]
+
+# add pair id so its easy to identify the matched pairs
+demographics_treated$pair_id <- 1:nrow(demographics_treated)
+demographics_control$pair_id <- 1:nrow(demographics_control)
+
+# combine the data
+final_matches <- bind_rows(demographics_treated, demographics_control)
+
+# move id columns to first column
+final_matches <- select(final_matches, 'treatment', 'pair_id', 'ID', everything())
+
+# final_matches %>% arrange(pair_id) %>% View
+# final_matches %>% arrange_at(c(blocking_vars, 'pair_id')) %>% View
+
+
+# assess balance and overlap ----------------------------------------------
+
+# TODO: calculate balance
+
+
+# plot distributions by variable
+final_matches %>% 
+  select(-c('treatment', 'pair_id', 'ID')) %>% 
+  distinct() %>% 
+  mutate(across(everything(), as.character)) %>% 
+  pivot_longer(cols = -year) %>% 
+  mutate(value = factor(
+    value, 
+    levels = c(0:99, 
+               'asian', 'black', 'white', 'other',
+               'married', 'not married',
+               'Midwest', 'Northeast', 'South', 'West',
+               'TRUE', 'FALSE',
+               'employed', 'not employed',
+               unique(final_matches$sex),
+               unique(final_matches$labor_force_status),
+               levels(final_matches$education),
+               unique(final_matches$metropolitan),
+               sort(unique(final_matches$fam_income))[-1])
+  )
+  ) %>% 
+  ggplot(aes(x = value, group = year, fill = year)) +
+  geom_bar(aes(y = ..prop..), position = 'dodge', stat = 'count') +
+  scale_y_continuous(labels = scales::percent_format(1)) +
+  facet_wrap(~name, scales = 'free', ncol = 3) +
+  labs(title = 'Counts of key groups within matched data',
+       subtitle = "Matching via Mahalanobis distance",
+       caption = 'Only includes distinct observations (i.e. removes duplicates due to matching with replacement)',
+       x = NULL,
+       y = NULL,
+       fill = NULL) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = 'bottom')
+# ggsave("analyses/plots/counts_matched_mahalanobis.png", height = 12, width = 9)
+

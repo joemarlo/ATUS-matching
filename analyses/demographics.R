@@ -79,6 +79,13 @@ demographics <- demographics[, c('ID', 'year', matching_vars)]
 demographics <- na.omit(demographics)
 
 
+
+# set blocking variables --------------------------------------------------
+
+# blocking_vars <- c('sex', 'race', 'metropolitan', 'region', 'married', 'labor_force_status') #'essential_worker # add child_in_HH?
+blocking_vars <- c('sex', 'race', 'metropolitan', 'married') #'essential_worker
+# demographics %>% group_by_at(all_of(blocking_vars)) %>% tally() %>% arrange(desc(n)) %>% View
+
 # overlap -----------------------------------------------------------------
 
 # histograms showing overlaps
