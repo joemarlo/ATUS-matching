@@ -50,7 +50,10 @@ demographics$age_youngest[is.na(demographics$age_youngest)] <- 0
 demographics$partner_working[is.na(demographics$partner_working)] <- 'NA'
 
 # replace metropolitan NA with 'NA' (b/c propensity score matching)
-demographics$metropolitan[is.na(demographics$metropolitan)] <- 'NA'
+# demographics$metropolitan[is.na(demographics$metropolitan)] <- 'NA'
+
+# add indicator if child in household
+demographics$child_in_HH <- demographics$n_child > 0
 
 # TODO: should we remove these observations?
 sum(is.na(demographics$fam_income))
@@ -62,11 +65,12 @@ sum(is.na(demographics$fam_income))
 # matching: follow this but try a few different (SES is primary goal)
 # hard match: gender, race, urban/rural, region, partnership, essential worker status, labor force status
 # soft match: age, income, number of children, education (+/- 1); is there  relative within X miles, is spouse working
-# covariate: is there an elder in the household; health
+# covariate: is there an elder in the household; **health**, neighborhood attributes (eg crime), length of commute (or public transport?)
 # come up with list and run by Marc
+# change married to if there is a partner
 
 matching_vars <- c('age', 'sex', 'race', 'fam_income', 'married', 
-                   'education', 'n_child', 'age_youngest', 'region', 
+                   'education', 'child_in_HH', 'n_child', 'age_youngest', 'region', 
                    'labor_force_status', 'partner_working', 'elder_in_HH',
                    'metropolitan')
 demographics <- demographics[, c('ID', 'year', matching_vars)]

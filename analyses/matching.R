@@ -11,7 +11,7 @@ demographics$treatment <- demographics$year == 2009
 
 # propensity model --------------------------------------------------------
 
-# TODO: scale inputs?
+# TODO: scale inputs? not necessary for regression but may be for other models
 
 # construct formula to calculate propensity scores
 propensity_formula <- reformulate(
@@ -44,14 +44,113 @@ tibble(pscore = propensity_scores,
        treatment = demographics$treatment) %>%
   mutate(year = if_else(treatment, 2009, 2007)) %>% 
   ggplot(aes(x = pscore, fill = as.factor(year))) +
-  geom_histogram(color = 'grey90', alpha = 0.7, position = 'identity') +
+  geom_histogram(bins = 60, color = 'grey90', alpha = 0.7, position = 'identity') +
+  scale_x_continuous(limits = 0:1) +
   labs(title = 'Overlap of propensity scores by year',
        x = 'Propensity score',
-       fill = NULL)
+       fill = NULL) +
+  theme(legend.position = 'bottom')
 # ggsave("analyses/plots/overlap_propensity_scores.png", height = 5, width = 9)
 
 
 # matching ----------------------------------------------------------------
+
+# TODO: implement hard matching via stratification?
+# stratify_vars <- c('sex', 'race', 'metropolitan', 'region', 'married', 'labor_force_status') #'essential_worker # add child_in_HH?
+stratify_vars <- c('sex', 'race', 'metropolitan', 'married') #'essential_worker
+# i think group_by(all_of(stratify_vars)) %>% group_split() %>% fit model
+demographics %>% group_by_at(all_of(stratify_vars)) %>% tally() %>% arrange(desc(n)) %>% View
+
+
+
+# test: blocked prop scores -----------------------------------------------
+
+# remove stratify vars from propensity score model 
+propensity_formula_blocked <- reformulate(
+  termlabels = setdiff(matching_vars, stratify_vars),
+  response = 'treatment',
+  intercept = TRUE
+)
+
+# split the data into blocks
+demographics_blocked <- demographics %>% 
+  group_by_at(all_of(stratify_vars)) %>% 
+  add_tally() %>% 
+  mutate(block = cur_group_id()) %>% 
+  filter(n > 100) %>% # this throws out the smaller groups
+  select(-n) %>% 
+  group_split()
+
+# calculate propensity scores  
+match_k1_blocked <- map(demographics_blocked, function(tbl){
+    MatchIt::matchit(
+      propensity_formula_blocked,
+      data = tbl,
+      method = 'nearest', 
+      distance = "glm",
+      link = "logit",
+      replace = TRUE
+    )
+})
+
+# calculate balance for each block
+balance_stats <- map2_dfr(match_k1_blocked, demographics_blocked, function(match_model, match_data){
+  propensity_model <- glm(propensity_formula_blocked, family = binomial('logit'), data = match_data)
+  balance_stats <- calculate_balance(match_data, match_model, propensity_model)
+  balance_df <- tibble(
+    block = unique(match_data$block),
+    covs = setdiff(balance_stats$covnames, 'treat'),
+    unmatched = balance_stats$diff.means.raw[, 'diff.std'],
+    NN_with = balance_stats$diff.means.matched[, 'diff.std'],
+  )
+  return(balance_df)
+})
+
+# plot the balance
+# should really look at overlap across all groups though
+balance_stats %>% 
+  group_by(block) %>% 
+  summarize(balance = mean(abs(NN_with))) %>% 
+  ggplot(aes(x = as.character(block), y = balance)) +
+  geom_col() +
+  labs(title = 'Balance summary stat by block',
+       subtitle = 'Smaller is better',
+       x = 'Block',
+       y = 'Mean of absolute standardized difference in means')
+balance_stats %>% 
+  pivot_longer(-c('block', 'covs')) %>% 
+  ggplot(aes(x = value, y = covs, group = name, fill = name)) +
+  geom_vline(xintercept = 0, linetype = 'dashed', color = 'grey70') +
+  geom_point(alpha = 0.6, size = 4, pch = 21, color = 'grey10') +
+  facet_wrap(~block, ncol = 1) +
+  labs(title = "Standardized difference in means between treatment and control",
+       subtitle = 'Closer to zero is better',
+       x = NULL,
+       y = NULL,
+       fill = NULL) +
+  theme(legend.position = 'bottom')
+
+# final matches
+final_matches <- map2_dfr(match_k1_blocked, demographics_blocked, function(match_model, match_data){
+  demographics_treated <- match_data[match_data$treatment,]
+  demographics_control <- match_data[match_model$match.matrix,]
+  
+  # add pair id so its easy to identify the matched pairs
+  demographics_treated$pair_id <- paste0(demographics_treated$block, '_', 1:nrow(demographics_treated))
+  demographics_control$pair_id <- paste0(demographics_control$block, '_', 1:nrow(demographics_control))
+  
+  # combine the data
+  final_matches <- bind_rows(demographics_treated, demographics_control)
+  
+  # move id columns to first
+  final_matches <- select(final_matches, 'block', 'pair_id', everything())
+  
+  return(final_matches)
+})
+# final_matches %>% arrange(desc(n), pair_id) %>% View
+
+
+# end test ----------------------------------------------------------------
 
 ## nearest neighbor -- with replacement
 match_k1_w_glm <- MatchIt::matchit(
@@ -156,6 +255,27 @@ demographics_control <- demographics[match_k1_w_glm$match.matrix,]
 # add pair id so its easy to identify the matched pairs
 demographics_treated$pair_id <- 1:nrow(demographics_treated)
 demographics_control$pair_id <- 1:nrow(demographics_control)
+
+## plot the matches
+demographics_treated %>% 
+  bind_rows(demographics_control) %>% 
+  dplyr::select(ID, pair_id, treatment) %>% 
+  left_join(tibble(p_score = propensity_scores, ID = demographics$ID),
+            by = 'ID') %>% 
+  mutate(year = if_else(treatment, '2009', '2007')) %>% 
+  left_join(pivot_wider(., id_cols = 'pair_id', values_from = p_score, names_from = year), 
+            by = 'pair_id', copy = TRUE) %>%
+  ggplot(aes(x = p_score, y = year, fill = year)) +
+  geom_segment(aes(x = `2009`, xend = `2007`,
+                   y = '2009', yend = '2007'),
+               alpha = 0.01, lineend = 'round', linejoin = 'mitre', color = 'grey20',
+               size = 1.2, arrow = arrow(length = unit(0.06, "npc"))) +
+  geom_point(shape = 21, color = 'grey40', size = 3, stroke = 1, alpha = 0.05) +
+  scale_x_continuous(limits = 0:1) +
+  labs(title = 'The arrows show how the treatment observations are matched to the control observations\n',
+       x = 'Propensity score',
+       y = NULL,
+       fill = NULL)
 
 
 # examine overlap for key variables ---------------------------------------
