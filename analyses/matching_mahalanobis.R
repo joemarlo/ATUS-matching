@@ -97,11 +97,14 @@ var_weights <- c(
 
 # apply weights to covariance matrix and calculate mdistance
 X <- as.matrix(demographics_treatment[, names(var_weights)])
-cov <- cov(X)
-cov_weighted <- diag(var_weights) %*% solve(cov)
+X_cov <- cov(X)
+cov_weighted <- diag(var_weights) %*% solve(X_cov)
 X <- sweep(X, 2, colMeans(X))
 mdist <- diag(X %*% cov_weighted %*% t(X))
+mdist_baseR <- rowSums(X %*% cov_weighted * X) #stats::mahalanobis
+all.equal(mdist, mdist_baseR)
 
+# TODO mdist_weighted()
 
 
 # non weighted method -----------------------------------------------------
@@ -141,6 +144,44 @@ final_matches <- select(final_matches, 'treatment', 'pair_id', 'ID', everything(
 
 
 # assess balance and overlap ----------------------------------------------
+
+# how many of the pairs do not match on blocking_vars
+match_summary <- final_matches %>% 
+  group_by(pair_id) %>% 
+  summarize(across(all_of(blocking_vars), 
+            ~ first(.x) == last(.x))) %>%
+  select(-pair_id) %>% 
+  mutate(n_matches = rowSums(.))
+match_summary %>% 
+  ggplot(aes(x = n_matches)) +
+  geom_bar(aes(y = ..prop..)) +
+  scale_x_continuous(breaks = 1:length(blocking_vars)) +
+  scale_y_continuous(labels = scales::percent_format(1),
+                     breaks = seq(0, 1, 0.1)) +
+  geom_hline(yintercept = 1, linetype = 'dashed') +
+  labs(title = 'Proportion of matches that match perfectly on: ',
+       subtitle = paste0(
+         paste0(blocking_vars, collapse = ', '),
+         '\nMethodology: mahalanobis, no blocking'
+       ),
+       x = 'Number of matches across all privileged variables',
+       y = 'Proportion of all pairs')
+# ggsave('analyses/plots/privileged_vars_all_mahalanobis.png', height = 5, width = 9)
+match_summary %>%
+  summarize(across(all_of(blocking_vars), mean)) %>% 
+  pivot_longer(everything()) %>% 
+  ggplot(aes(x = name, y = value)) +
+  geom_col() +
+  geom_hline(yintercept = 1, linetype = 'dashed', color = 'darkgreen') +
+  geom_hline(yintercept = 0.9, linetype = 'dashed', color = 'red') +
+  scale_y_continuous(labels = scales::percent_format(1),
+                     breaks = seq(0, 1, 0.1)) +
+  labs(title = 'For each of the privileged variables, how many pairs matched perfectly',
+       subtitle = paste0(blocking_vars, collapse = ', '),
+       x = NULL,
+       y = 'Proportion of all pairs')
+# ggsave('analyses/plots/privileged_vars_marginal_mahalanobis.png', height = 5, width = 9)
+
 
 # TODO: calculate balance
 

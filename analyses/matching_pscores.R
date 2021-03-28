@@ -232,97 +232,49 @@ target_pop %>%
         legend.position = 'bottom')
 # ggsave("analyses/plots/counts_matched.png", height = 12, width = 9)
 
+# how many of the pairs do not match on blocking_vars
+match_summary <- demographics_treated %>% 
+  bind_rows(demographics_control) %>% 
+  group_by(pair_id) %>% 
+  summarize(across(all_of(blocking_vars), 
+                   ~ first(.x) == last(.x))) %>%
+  select(-pair_id) %>% 
+  mutate(n_matches = rowSums(.))
+match_summary %>% 
+  ggplot(aes(x = n_matches)) +
+  geom_bar(aes(y = ..prop..)) +
+  scale_x_continuous(breaks = 1:length(blocking_vars)) +
+  scale_y_continuous(labels = scales::percent_format(1),
+                     breaks = seq(0, 1, 0.1)) +
+  geom_hline(yintercept = 1, linetype = 'dashed') +
+  labs(title = 'Proportion of matches that match perfectly on: ',
+       subtitle = paste0(
+         paste0(blocking_vars, collapse = ', '),
+         '\nMethodology: propensity scores, no blocking'
+        ),
+       x = 'Number of matches across all privileged variables',
+       y = 'Proportion of all pairs')
+# ggsave('analyses/plots/privileged_vars_all_pscores.png', height = 5, width = 9)
+match_summary %>%
+  summarize(across(all_of(blocking_vars), mean)) %>% 
+  pivot_longer(everything()) %>% 
+  ggplot(aes(x = reorder(name, -value), y = value)) +
+  geom_col() +
+  geom_hline(yintercept = 1, linetype = 'dashed', color = 'darkgreen') +
+  geom_hline(yintercept = 0.9, linetype = 'dashed', color = 'red') +
+  scale_y_continuous(labels = scales::percent_format(1),
+                     breaks = seq(0, 1, 0.1)) +
+  labs(title = 'For each of the privileged variables, how many pairs matched perfectly',
+       subtitle = paste0(
+         paste0(blocking_vars, collapse = ', '),
+         '\nMethodology: propensity scores, no blocking'
+       ),
+       x = NULL,
+       y = 'Proportion of all pairs')
+# ggsave('analyses/plots/privileged_vars_marginal_pscores.png', height = 5, width = 9)
+
 
 # write out matches -------------------------------------------------------
 
 # write_csv(demographics_treated, path = 'data/matched_treatment.csv')
 # write_csv(demographics_control, path = 'data/matched_control.csv')
-
-
-# blocked propensity scores -----------------------------------------------
-
-# remove stratify vars from propensity score model 
-propensity_formula_blocked <- reformulate(
-  termlabels = setdiff(matching_vars, blocking_vars),
-  response = 'treatment',
-  intercept = TRUE
-)
-
-# split the data into blocks
-demographics_blocked <- demographics %>% 
-  group_by_at(all_of(blocking_vars)) %>% 
-  add_tally() %>% 
-  mutate(block = cur_group_id()) %>% 
-  filter(n > 100) %>% # this throws out the smaller groups
-  select(-n) %>% 
-  group_split()
-
-# calculate propensity scores  
-match_k1_blocked <- map(demographics_blocked, function(tbl){
-  MatchIt::matchit(
-    propensity_formula_blocked,
-    data = tbl,
-    method = 'nearest', 
-    distance = "glm",
-    link = "logit",
-    replace = TRUE
-  )
-})
-
-# calculate balance for each block
-balance_stats <- map2_dfr(match_k1_blocked, demographics_blocked, function(match_model, match_data){
-  propensity_model <- glm(propensity_formula_blocked, family = binomial('logit'), data = match_data)
-  balance_stats <- calculate_balance(match_data, match_model, propensity_model)
-  balance_df <- tibble(
-    block = unique(match_data$block),
-    covs = setdiff(balance_stats$covnames, 'treat'),
-    unmatched = balance_stats$diff.means.raw[, 'diff.std'],
-    NN_with = balance_stats$diff.means.matched[, 'diff.std'],
-  )
-  return(balance_df)
-})
-
-# plot the balance
-# should really look at overlap across all groups though
-balance_stats %>% 
-  group_by(block) %>% 
-  summarize(balance = mean(abs(NN_with))) %>% 
-  ggplot(aes(x = as.character(block), y = balance)) +
-  geom_col() +
-  labs(title = 'Balance summary stat by block',
-       subtitle = 'Smaller is better',
-       x = 'Block',
-       y = 'Mean of absolute standardized difference in means')
-balance_stats %>% 
-  pivot_longer(-c('block', 'covs')) %>% 
-  ggplot(aes(x = value, y = covs, group = name, fill = name)) +
-  geom_vline(xintercept = 0, linetype = 'dashed', color = 'grey70') +
-  geom_point(alpha = 0.6, size = 4, pch = 21, color = 'grey10') +
-  facet_wrap(~block, ncol = 1) +
-  labs(title = "Standardized difference in means between treatment and control",
-       subtitle = 'Closer to zero is better',
-       x = NULL,
-       y = NULL,
-       fill = NULL) +
-  theme(legend.position = 'bottom')
-
-# final matches
-final_matches <- map2_dfr(match_k1_blocked, demographics_blocked, function(match_model, match_data){
-  
-  # create treatment and control dfs that have matching orders
-  demographics_treated <- match_data[match_data$treatment,]
-  demographics_control <- match_data[match_model$match.matrix,]
-  
-  # add pair id so its easy to identify the matched pairs
-  demographics_treated$pair_id <- paste0(demographics_treated$block, '_', 1:nrow(demographics_treated))
-  demographics_control$pair_id <- paste0(demographics_control$block, '_', 1:nrow(demographics_control))
-  
-  # combine the data
-  final_matches <- bind_rows(demographics_treated, demographics_control)
-  
-  # move id columns to first column
-  final_matches <- select(final_matches, 'treatment', 'block', 'pair_id', 'ID', all_of(blocking_vars), everything())
-  
-  return(final_matches)
-})
-# final_matches %>% arrange(desc(n), pair_id) %>% View
