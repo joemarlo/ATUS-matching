@@ -86,6 +86,12 @@ demographics <- na.omit(demographics)
 blocking_vars <- c('sex', 'race', 'metropolitan', 'married') #'essential_worker
 # demographics %>% group_by_at(all_of(blocking_vars)) %>% tally() %>% arrange(desc(n)) %>% View
 
+# create list of numeric vars
+vars_numeric <- demographics %>% 
+  select(all_of(matching_vars)) %>% 
+  select(where(is.numeric)) %>% 
+  colnames()
+
 # overlap -----------------------------------------------------------------
 
 # histograms showing overlaps

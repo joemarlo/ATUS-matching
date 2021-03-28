@@ -145,46 +145,7 @@ final_matches <- select(final_matches, 'treatment', 'pair_id', 'ID', everything(
 
 # assess balance and overlap ----------------------------------------------
 
-# how many of the pairs do not match on blocking_vars
-match_summary <- final_matches %>% 
-  group_by(pair_id) %>% 
-  summarize(across(all_of(blocking_vars), 
-            ~ first(.x) == last(.x))) %>%
-  select(-pair_id) %>% 
-  mutate(n_matches = rowSums(.))
-match_summary %>% 
-  ggplot(aes(x = n_matches)) +
-  geom_bar(aes(y = ..prop..)) +
-  scale_x_continuous(breaks = 1:length(blocking_vars)) +
-  scale_y_continuous(labels = scales::percent_format(1),
-                     breaks = seq(0, 1, 0.1)) +
-  geom_hline(yintercept = 1, linetype = 'dashed') +
-  labs(title = 'Proportion of matches that match perfectly on: ',
-       subtitle = paste0(
-         paste0(blocking_vars, collapse = ', '),
-         '\nMethodology: mahalanobis, no blocking'
-       ),
-       x = 'Number of matches across all privileged variables',
-       y = 'Proportion of all pairs')
-# ggsave('analyses/plots/privileged_vars_all_mahalanobis.png', height = 5, width = 9)
-match_summary %>%
-  summarize(across(all_of(blocking_vars), mean)) %>% 
-  pivot_longer(everything()) %>% 
-  ggplot(aes(x = name, y = value)) +
-  geom_col() +
-  geom_hline(yintercept = 1, linetype = 'dashed', color = 'darkgreen') +
-  geom_hline(yintercept = 0.9, linetype = 'dashed', color = 'red') +
-  scale_y_continuous(labels = scales::percent_format(1),
-                     breaks = seq(0, 1, 0.1)) +
-  labs(title = 'For each of the privileged variables, how many pairs matched perfectly',
-       subtitle = paste0(blocking_vars, collapse = ', '),
-       x = NULL,
-       y = 'Proportion of all pairs')
-# ggsave('analyses/plots/privileged_vars_marginal_mahalanobis.png', height = 5, width = 9)
-
-
 # TODO: calculate balance
-
 
 # plot distributions by variable
 final_matches %>% 
@@ -221,3 +182,67 @@ final_matches %>%
         legend.position = 'bottom')
 # ggsave("analyses/plots/counts_matched_mahalanobis.png", height = 12, width = 9)
 
+
+# privileged variables ----------------------------------------------------
+
+# how many of the pairs perfectly match on each variable
+match_summary <- final_matches %>% 
+  group_by(pair_id) %>% 
+  summarize(across(all_of(matching_vars), 
+                   ~ first(.x) == last(.x))) %>%
+  select(-pair_id) %>% 
+  mutate(n_matches = rowSums(.))
+match_summary %>% 
+  select(all_of(blocking_vars)) %>% 
+  mutate(n_matches = rowSums(.)) %>% 
+  ggplot(aes(x = n_matches)) +
+  geom_bar(aes(y = ..prop..)) +
+  scale_x_continuous(breaks = 1:length(blocking_vars)) +
+  scale_y_continuous(labels = scales::percent_format(1),
+                     breaks = seq(0, 1, 0.1)) +
+  geom_hline(yintercept = 1, linetype = 'dashed') +
+  labs(title = 'Proportion of matches that match perfectly on: ',
+       subtitle = paste0(
+         paste0(blocking_vars, collapse = ', '),
+         '\nMethodology: mahalanobis, no blocking'
+       ),
+       x = 'Number of matches across all privileged variables',
+       y = 'Proportion of all pairs')
+# ggsave('analyses/plots/privileged_vars_all_mahalanobis.png', height = 5, width = 9)
+match_summary %>%
+  summarize(across(all_of(matching_vars), mean)) %>% 
+  pivot_longer(everything()) %>% 
+  mutate(Privileged = name %in% blocking_vars,
+         isNumeric = name %in% vars_numeric,
+         isNumeric = if_else(isNumeric, 'Numeric variables', 'Categorical variables')) %>% 
+  ggplot(aes(x = reorder(name, -Privileged), y = value, fill = Privileged)) +
+  geom_col() +
+  geom_hline(yintercept = 1, linetype = 'dashed', color = 'darkgreen') +
+  geom_hline(yintercept = 0.9, linetype = 'dashed', color = 'red') +
+  scale_y_continuous(labels = scales::percent_format(1),
+                     breaks = seq(0, 1, 0.1)) +
+  facet_grid(~isNumeric, scales = 'free_x') +
+  labs(title = 'How many pairs matched perfectly for each variable?',
+       subtitle = "Yellow variables are not explicitly privileged but are highlighted for emphasis",
+       x = NULL,
+       y = 'Proportion of all pairs') +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = 'none')
+# ggsave('analyses/plots/perfect_matches_mahalanobis.png', height = 5, width = 9)
+
+# difference within matched pairs for numeric vars
+final_matches %>% 
+  group_by(pair_id) %>% 
+  summarize(across(all_of(vars_numeric), 
+                   ~ first(.x) - last(.x))) %>% 
+  pivot_longer(-pair_id) %>% 
+  ggplot(aes(x = value)) +
+  geom_boxplot() +
+  scale_y_continuous(labels = NULL) +
+  facet_wrap(~name, scales = 'free') +
+  labs(title = 'Difference within matched pairs for numeric variables',
+       x = NULL,
+       y = NULL)
+# ggsave('analyses/plots/numeric_differences_mahalanobis.png', height = 5, width = 9)
+
+# TODO: deeper dive into privileged vars; e.g look at % match by each race 

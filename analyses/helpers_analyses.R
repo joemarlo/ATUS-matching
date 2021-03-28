@@ -81,3 +81,7 @@ mdist_weighted <- function (data.x, data.y = NULL, vc = NULL, weights){
   else dimnames(md) <- list(rownames(data.x), rownames(data.y))
   sqrt(md)
 }
+
+
+# global vars -------------------------------------------------------------
+options(scipen = 999)

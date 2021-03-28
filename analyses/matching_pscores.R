@@ -232,15 +232,21 @@ target_pop %>%
         legend.position = 'bottom')
 # ggsave("analyses/plots/counts_matched.png", height = 12, width = 9)
 
-# how many of the pairs do not match on blocking_vars
+
+
+# privileged variables ----------------------------------------------------
+
+# how many of the pairs perfectly match on each variable
 match_summary <- demographics_treated %>% 
   bind_rows(demographics_control) %>% 
   group_by(pair_id) %>% 
-  summarize(across(all_of(blocking_vars), 
+  summarize(across(all_of(matching_vars), 
                    ~ first(.x) == last(.x))) %>%
   select(-pair_id) %>% 
   mutate(n_matches = rowSums(.))
 match_summary %>% 
+  select(all_of(blocking_vars)) %>% 
+  mutate(n_matches = rowSums(.)) %>% 
   ggplot(aes(x = n_matches)) +
   geom_bar(aes(y = ..prop..)) +
   scale_x_continuous(breaks = 1:length(blocking_vars)) +
@@ -256,22 +262,25 @@ match_summary %>%
        y = 'Proportion of all pairs')
 # ggsave('analyses/plots/privileged_vars_all_pscores.png', height = 5, width = 9)
 match_summary %>%
-  summarize(across(all_of(blocking_vars), mean)) %>% 
+  summarize(across(all_of(matching_vars), mean)) %>% 
   pivot_longer(everything()) %>% 
-  ggplot(aes(x = reorder(name, -value), y = value)) +
+  mutate(Privileged = name %in% blocking_vars,
+         isNumeric = name %in% vars_numeric,
+         isNumeric = if_else(isNumeric, 'Numeric variables', 'Categorical variables')) %>% 
+  ggplot(aes(x = reorder(name, -Privileged), y = value, fill = Privileged)) +
   geom_col() +
   geom_hline(yintercept = 1, linetype = 'dashed', color = 'darkgreen') +
   geom_hline(yintercept = 0.9, linetype = 'dashed', color = 'red') +
   scale_y_continuous(labels = scales::percent_format(1),
                      breaks = seq(0, 1, 0.1)) +
-  labs(title = 'For each of the privileged variables, how many pairs matched perfectly',
-       subtitle = paste0(
-         paste0(blocking_vars, collapse = ', '),
-         '\nMethodology: propensity scores, no blocking'
-       ),
+  facet_grid(~isNumeric, scales = 'free_x') +
+  labs(title = 'How many pairs matched perfectly for each variable?',
+       subtitle = "Yellow variables are not explicitly privileged but are highlighted for emphasis",
        x = NULL,
-       y = 'Proportion of all pairs')
-# ggsave('analyses/plots/privileged_vars_marginal_pscores.png', height = 5, width = 9)
+       y = 'Proportion of all pairs') +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = 'none')
+# ggsave('analyses/plots/perfect_matches_mahalanobis_pscores.png', height = 5, width = 9)
 
 
 # write out matches -------------------------------------------------------
