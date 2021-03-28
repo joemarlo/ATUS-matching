@@ -223,7 +223,8 @@ match_summary %>%
                      breaks = seq(0, 1, 0.1)) +
   facet_grid(~isNumeric, scales = 'free_x') +
   labs(title = 'How many pairs matched perfectly for each variable?',
-       subtitle = "Yellow variables are not explicitly privileged but are highlighted for emphasis",
+       subtitle = paste0("Yellow variables are not explicitly privileged but are highlighted for emphasis",
+                         '\nMethodology: mahalanobis, no blocking'),
        x = NULL,
        y = 'Proportion of all pairs') +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
@@ -241,6 +242,7 @@ final_matches %>%
   scale_y_continuous(labels = NULL) +
   facet_wrap(~name, scales = 'free') +
   labs(title = 'Difference within matched pairs for numeric variables',
+       subtitle = 'Methodology: mahalanobis, no blocking',
        x = NULL,
        y = NULL)
 # ggsave('analyses/plots/numeric_differences_mahalanobis.png', height = 5, width = 9)

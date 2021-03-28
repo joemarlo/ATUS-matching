@@ -275,12 +275,30 @@ match_summary %>%
                      breaks = seq(0, 1, 0.1)) +
   facet_grid(~isNumeric, scales = 'free_x') +
   labs(title = 'How many pairs matched perfectly for each variable?',
-       subtitle = "Yellow variables are not explicitly privileged but are highlighted for emphasis",
+       subtitle = paste0("Yellow variables are not explicitly privileged but are highlighted for emphasis",
+                         '\nMethodology: propensity scores, no blocking'),
        x = NULL,
        y = 'Proportion of all pairs') +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         legend.position = 'none')
-# ggsave('analyses/plots/perfect_matches_mahalanobis_pscores.png', height = 5, width = 9)
+# ggsave('analyses/plots/perfect_matches_pscores.png', height = 5, width = 9)
+
+# difference within matched pairs for numeric vars
+demographics_treated %>% 
+  bind_rows(demographics_control)  %>% 
+  group_by(pair_id) %>% 
+  summarize(across(all_of(vars_numeric), 
+                   ~ first(.x) - last(.x))) %>% 
+  pivot_longer(-pair_id) %>% 
+  ggplot(aes(x = value)) +
+  geom_boxplot() +
+  scale_y_continuous(labels = NULL) +
+  facet_wrap(~name, scales = 'free') +
+  labs(title = 'Difference within matched pairs for numeric variables',
+       subtitle = 'Methodology: propensity scores, no blocking',
+       x = NULL,
+       y = NULL)
+# ggsave('analyses/plots/numeric_differences_pscores.png', height = 5, width = 9)
 
 
 # write out matches -------------------------------------------------------
