@@ -137,7 +137,7 @@ demographics_control$pair_id <- 1:nrow(demographics_control)
 final_matches <- bind_rows(demographics_treated, demographics_control)
 
 # move id columns to first column
-final_matches <- select(final_matches, 'treatment', 'pair_id', 'ID', everything())
+final_matches <- dplyr::select(final_matches, 'treatment', 'pair_id', 'ID', everything())
 
 # final_matches %>% arrange(pair_id) %>% View
 # final_matches %>% arrange_at(c(blocking_vars, 'pair_id')) %>% View
@@ -149,7 +149,7 @@ final_matches <- select(final_matches, 'treatment', 'pair_id', 'ID', everything(
 
 # plot distributions by variable
 final_matches %>% 
-  select(-c('treatment', 'pair_id', 'ID')) %>% 
+  dplyr::select(-c('treatment', 'pair_id', 'ID')) %>% 
   distinct() %>% 
   mutate(across(everything(), as.character)) %>% 
   pivot_longer(cols = -year) %>% 
@@ -190,10 +190,10 @@ match_summary <- final_matches %>%
   group_by(pair_id) %>% 
   summarize(across(all_of(matching_vars), 
                    ~ first(.x) == last(.x))) %>%
-  select(-pair_id) %>% 
+  dplyr::select(-pair_id) %>% 
   mutate(n_matches = rowSums(.))
 match_summary %>% 
-  select(all_of(blocking_vars)) %>% 
+  dplyr::select(all_of(blocking_vars)) %>% 
   mutate(n_matches = rowSums(.)) %>% 
   ggplot(aes(x = n_matches)) +
   geom_bar(aes(y = ..prop..)) +
@@ -248,3 +248,9 @@ final_matches %>%
 # ggsave('analyses/plots/numeric_differences_mahalanobis.png', height = 5, width = 9)
 
 # TODO: deeper dive into privileged vars; e.g look at % match by each race 
+
+
+# write out matches -------------------------------------------------------
+
+# write_csv(demographics_treated, path = 'data/matched_treatment_mahalanobis.csv')
+# write_csv(demographics_control, path = 'data/matched_control_mahalanobis.csv')

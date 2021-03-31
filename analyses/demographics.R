@@ -33,9 +33,8 @@ demographics$education <- factor(
   )
 )
 
-# recode sex and married
+# recode sex
 demographics$sex <- recode(demographics$sex, `1` = 'male', `2` = 'female')
-demographics$married <- recode(demographics$married, `1` = 'married', `0` = 'not married')
 
 # add geographic region
 state_regions <- read_csv("inputs/state_regions.csv")
@@ -67,9 +66,8 @@ sum(is.na(demographics$fam_income))
 # soft match: age, income, number of children, education (+/- 1); is there  relative within X miles, is spouse working
 # covariate: is there an elder in the household; **health**, neighborhood attributes (eg crime), length of commute (or public transport?)
 # come up with list and run by Marc
-# change married to if there is a partner
 
-matching_vars <- c('age', 'sex', 'race', 'fam_income', 'married', 
+matching_vars <- c('age', 'sex', 'race', 'fam_income', 'has_partner', 
                    'education', 'child_in_HH', 'n_child', 'age_youngest', 'region', 
                    'labor_force_status', 'partner_working', 'elder_in_HH',
                    'metropolitan')
@@ -82,8 +80,8 @@ demographics <- na.omit(demographics)
 
 # set blocking variables --------------------------------------------------
 
-# blocking_vars <- c('sex', 'race', 'metropolitan', 'region', 'married', 'labor_force_status') #'essential_worker # add child_in_HH?
-blocking_vars <- c('sex', 'race', 'metropolitan', 'married') #'essential_worker
+# blocking_vars <- c('sex', 'race', 'metropolitan', 'region', 'has_partner', 'labor_force_status') #'essential_worker # add child_in_HH?
+blocking_vars <- c('sex', 'race', 'metropolitan', 'has_partner') #'essential_worker
 # demographics %>% group_by_at(all_of(blocking_vars)) %>% tally() %>% arrange(desc(n)) %>% View
 
 # create list of numeric vars
@@ -145,4 +143,3 @@ demographics %>%
   group_by(year, age, race) %>% 
   tally() %>% 
   arrange(race, age, year)
-

@@ -101,7 +101,7 @@ match_caliper_glm <- MatchIt::matchit(
   method = 'nearest', # 'optimal' 'full' 
   distance = "glm",
   link = "logit",
-  caliper = 0.15
+  caliper = 0.20
 )
 
 
@@ -233,7 +233,6 @@ target_pop %>%
 # ggsave("analyses/plots/counts_matched.png", height = 12, width = 9)
 
 
-
 # privileged variables ----------------------------------------------------
 
 # how many of the pairs perfectly match on each variable
@@ -242,10 +241,10 @@ match_summary <- demographics_treated %>%
   group_by(pair_id) %>% 
   summarize(across(all_of(matching_vars), 
                    ~ first(.x) == last(.x))) %>%
-  select(-pair_id) %>% 
+  dplyr::select(-pair_id) %>% 
   mutate(n_matches = rowSums(.))
 match_summary %>% 
-  select(all_of(blocking_vars)) %>% 
+  dplyr::select(all_of(blocking_vars)) %>% 
   mutate(n_matches = rowSums(.)) %>% 
   ggplot(aes(x = n_matches)) +
   geom_bar(aes(y = ..prop..)) +
@@ -303,5 +302,5 @@ demographics_treated %>%
 
 # write out matches -------------------------------------------------------
 
-# write_csv(demographics_treated, path = 'data/matched_treatment.csv')
-# write_csv(demographics_control, path = 'data/matched_control.csv')
+# write_csv(demographics_treated, path = 'data/matched_treatment_pscores.csv')
+# write_csv(demographics_control, path = 'data/matched_control_pscores.csv')

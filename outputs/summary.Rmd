@@ -46,11 +46,21 @@ knitr::include_graphics(normalizePath(file.path("analyses", "plots", "overlap_pr
 knitr::include_graphics(normalizePath(file.path("analyses", "plots", "balance_matched.png")))
 ```
 
-
 ## Key population
 
 ```{r echo=FALSE}
 knitr::include_graphics(normalizePath(file.path("analyses", "plots", "counts_matched.png")))
+```
+
+## Matching on key variables
+
+```{r echo=FALSE}
+knitr::include_graphics(normalizePath(file.path("analyses", "plots", "perfect_matches_mahalanobis.png")))
+knitr::include_graphics(normalizePath(file.path("analyses", "plots", "perfect_matches_pscores.png")))
+knitr::include_graphics(normalizePath(file.path("analyses", "plots", "numeric_differences_mahalanobis.png")))
+knitr::include_graphics(normalizePath(file.path("analyses", "plots", "numeric_differences_pscores.png")))
+knitr::include_graphics(normalizePath(file.path("analyses", "plots", "privileged_vars_all_mahalanobis.png")))
+knitr::include_graphics(normalizePath(file.path("analyses", "plots", "privileged_vars_all_pscores.png")))
 ```
 
 
@@ -69,8 +79,8 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 # Data dictionary
   - `age_youngest` = age of youngest household child < 18 
   - `n_child` = number of household children < 18 
-  - `fam_income` = family income: combined income of all family members during last 12 months. "Includes money from jobs, net income from business, farm or rent, pensions, dividends, interest, Social Security payments, and any other money income recevied by family members who are 15 years of age or older" 
-  - `married` = married and spouse is present
+  - `fam_income` = family income: combined income of all family members during last 12 months. "Includes money from jobs, net income from business, farm or rent, pensions, dividends, interest, Social Security payments, and any other money income received by family members who are 15 years of age or older" 
+  - `has_partner` = does the person have partner (is married with spouse present or is living with partner)
   - `race`:
     - white = white only
     - black = black only
