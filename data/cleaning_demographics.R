@@ -7,87 +7,7 @@ options(mc.cores = parallel::detectCores())
 # rm(atusrost_0318, atuswgts_0318)
 # gc()
 
-
-# cut down atus activity file ---------------------------------------------
-
-# create dataframe of start and end time for each activity for each respondent
-ATUS <- atusact_0318 %>%
-  select(TUCASEID, TUSTARTTIM, TUSTOPTIME, TRCODEP) %>% 
-  mutate(activity = paste0("t", TRCODEP)) %>% 
-  fuzzyjoin::regex_left_join(y = curated.codes, by = 'activity') %>%
-  select(TUCASEID, TUSTARTTIM, TUSTOPTIME, activity = activity.x, description)
-
-baseline_time <- function(x_minutes){
-  # function baselines time from 4am -> 12am
-  ret <- x_minutes - (4*60)
-  
-  ret <- sapply(ret, function(x) {
-    if (x < 0){
-      (24*60) + x
-    } else x
-  })
-  return(ret)
-}
-
-# convert the time to minutes where 0 = 4am
-# split the data into individual dataframes for each respondent
-split_ATUS <- ATUS %>% 
-  mutate(start_time = (hour(TUSTARTTIM)*60) + minute(TUSTARTTIM),
-         end_time = (hour(TUSTOPTIME)*60) + minute(TUSTOPTIME),
-         start_time = baseline_time(start_time),
-         end_time = baseline_time(end_time),
-         # this cuts off things at 4am
-         end_time = if_else(end_time < start_time, 1440, end_time)) %>% 
-  select(TUCASEID, start_time, end_time, description) %>% 
-  group_split(TUCASEID)
-
-# throw out 14 respondents who's responses don't capture the whole day
-whole_day <- parallel::mclapply(split_ATUS, FUN = function(tbl){
- max(tbl$end_time)
-}) %>% unlist() == 1440
-split_ATUS <- split_ATUS[whole_day]
-rm(whole_day)
-
-# for each respondent, expand the dataframe into increments of 5 minutes
-# takes about 20min on 4-core i5 desktop
-# resulting df is 200mm rows so make sure you have >30gb of memory
-ATUS_1 <- parallel::mclapply(split_ATUS, FUN = function(tbl) {
-  # pivot each table so there is a time column with each row representing
-  #   a period of 1 minute
-  stretched_tbl <-
-    pmap_dfr(
-      .l = list(tbl$TUCASEID, tbl$start_time, tbl$end_time, tbl$description),
-      .f = function(ID, start, end, desc) {
-        tibble(
-          ID = ID,
-          time = seq(from = start, to = (end - 1), by = 1),
-          description = desc
-        )
-      }
-    )
-  
-  # add NAs for missing times
-  final_tbl <- stretched_tbl %>%
-    right_join(y = tibble(time = seq(0, 1439, by = 1)), by = 'time') %>%
-    ungroup()
-  
-  return(final_tbl)
-}) %>% bind_rows()
-
-Mode <- function(x) {
-  # function calculates mode
-  unique_x <- unique(na.omit(x))
-  unique_x[which.max(tabulate(match(x, unique_x)))]
-}
-
-# now collapse down to 30min chunks by taking the mode per each chunk
-ATUS_30 <- ATUS_1 %>% 
-  group_by(ID) %>% 
-  mutate(period = floor(time / 30) + 1) %>% 
-  group_by(ID, period) %>% 
-  summarize(description = Mode(description),
-            .groups = 'drop')
-
+ATUS_30 <- read_tsv('data/atus_30min.tsv')
 
 
 # pull demographics information -------------------------------------------
@@ -109,6 +29,28 @@ has_partner <- atuscps_0318 %>%
   summarize(has_partner = any(PERRP %in% c(3, 13, 14)),
             .groups = 'drop') %>% 
   rename(ID = TUCASEID)
+
+# get occupation code and match to essential worker
+industry <- dplyr::select(atusresp_0318, ID = TUCASEID, industry = TEIO1ICD)
+industry$industry[industry$industry == -1] <- NA
+industry$industry <- case_when(
+  nchar(industry$industry) == 2 ~ paste0('00', industry$industry),
+  nchar(industry$industry) == 3 ~ paste0('0', industry$industry),
+  nchar(industry$industry) == 4 ~ as.character(industry$industry)
+)
+industry <- industry %>%
+  left_join(essential_industries, by = c('industry' = 'Census_2012')) %>%
+  replace_na(list(essential_group = '5')) %>%
+  mutate(essential_group = recode(
+      essential_group,
+      '1' = 'CDC_1',
+      '2' = 'CDC_2',
+      '3' = 'CDC_3',
+      '4' = 'No_CDC',
+      '5' = 'No_industry'
+    )
+  ) %>% 
+  rename(essential_industry = essential_group)
 
 # from CPS data, get race, marriage status, education, metropolitan status, and state 
 # TODO: figure out how to get NAICS code and match to essential_industries 
@@ -174,6 +116,7 @@ atus_vars <- atussum_0318 %>%
 demographic_vars <- atus_vars %>% 
   left_join(elder_in_HH, by = 'ID') %>%
   left_join(has_partner, by = 'ID') %>% 
+  left_join(industry, by = 'ID') %>% 
   left_join(CPS_vars, by = 'ID') %>% 
   semi_join(distinct(ATUS_30, ID), by = 'ID') %>% 
   left_join(atusresp_0318 %>% 
@@ -183,6 +126,4 @@ demographic_vars <- atus_vars %>%
 
 
 # write out the final datasets --------------------------------------------
-# write_tsv(ATUS_1, 'data/atus.tsv')
-# write_tsv(ATUS_30, 'data/atus_30min.tsv')
 # write_tsv(demographic_vars, 'data/demographic.tsv')

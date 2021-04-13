@@ -10,9 +10,7 @@
     └── README.md
 
 ### Next steps
-- Review mahalanobis matching vs. propensity scores
-- Add essential worker status
-    - Find NAICS codes in CPS data
+- Start on clustering
 
 
 ### Outstanding questions / notes

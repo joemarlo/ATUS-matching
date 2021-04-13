@@ -57,6 +57,15 @@ demographics$child_in_HH <- demographics$n_child > 0
 # TODO: should we remove these observations?
 sum(is.na(demographics$fam_income))
 
+# essential worker percentage
+ggplot(demographics, aes(x = essential_industry, group = 1)) + 
+  geom_bar(aes(y = ..prop..),) +
+  labs(title = "Proportion of workers in essential industries",
+       subtitle = '2007/2009 data',
+       x = NULL,
+       y = 'Proportion')
+# ggsave('analyses/plots/essential_workers.png', height = 6, width = 9)
+
 
 # demographic var selection -----------------------------------------------
 
