@@ -58,7 +58,7 @@ calculate_balance <- function(rawdata, .matches, .propensity_model){
 }
 
 
-# TDOOD
+# TODO
 mdist_weighted <- function (data.x, data.y = NULL, vc = NULL, weights){
   # hacked from StatMatch::mahalanobis.dist and WMDB::wmahalanobis
   

@@ -19,7 +19,6 @@ demographics_treatment <- demographics_trimmed[demographics$treatment,]
 demographics_control <- demographics_trimmed[!demographics$treatment,]
 
 # dummy code categoricals
-# TODO: remove first dummy?
 demographics_treatment <- fastDummies::dummy_cols(
   demographics_treatment, 
   remove_selected_columns = TRUE,

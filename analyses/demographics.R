@@ -86,8 +86,8 @@ blocking_vars <- c('sex', 'race', 'metropolitan', 'has_partner') #'essential_wor
 
 # create list of numeric vars
 vars_numeric <- demographics %>% 
-  select(all_of(matching_vars)) %>% 
-  select(where(is.numeric)) %>% 
+  dplyr::select(all_of(matching_vars)) %>% 
+  dplyr::select(where(is.numeric)) %>% 
   colnames()
 
 # overlap -----------------------------------------------------------------
