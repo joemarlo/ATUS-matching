@@ -56,25 +56,24 @@ demographics$child_in_HH <- demographics$n_child > 0
 
 # TODO: should we remove these observations?
 sum(is.na(demographics$fam_income))
+# do we need impute values for the top-coded income? https://www.epi.org/data/methodology/
 
 # essential worker percentage
-ggplot(demographics, aes(x = essential_industry, group = 1)) + 
-  geom_bar(aes(y = ..prop..),) +
-  labs(title = "Proportion of workers in essential industries",
-       subtitle = '2007/2009 data',
-       x = NULL,
-       y = 'Proportion')
+ggplot(demographics, aes(x = essential_industry, group = 1)) +
+  geom_histogram(color = 'white') +
+  labs(title = "Count of workers in essential industries",
+       subtitle = '2007/2009 data; 4 = No CDC classifcation; 5 = No job',
+       x = "Essential worker group",
+       y = 'n')
 # ggsave('analyses/plots/essential_workers.png', height = 6, width = 9)
 
 
 # demographic var selection -----------------------------------------------
 
-# TODO:
 # matching: follow this but try a few different (SES is primary goal)
 # hard match: gender, race, urban/rural, region, partnership, essential worker status, labor force status
 # soft match: age, income, number of children, education (+/- 1); is there  relative within X miles, is spouse working
 # covariate: is there an elder in the household; **health**, neighborhood attributes (eg crime), length of commute (or public transport?)
-# come up with list and run by Marc
 
 matching_vars <- c('age', 'sex', 'race', 'fam_income', 'has_partner', 
                    'education', 'child_in_HH', 'n_child', 'age_youngest', 'region', 
@@ -84,7 +83,6 @@ demographics <- demographics[, c('ID', 'year', matching_vars)]
 
 # remove NAs b/c income unknown for 13%
 demographics <- na.omit(demographics)
-
 
 
 # set blocking variables --------------------------------------------------

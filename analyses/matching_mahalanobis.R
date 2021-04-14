@@ -9,7 +9,7 @@ set.seed(44)
 # pre-processing ----------------------------------------------------------
 
 # convert year to boolean
-demographics$treatment <- demographics$year == 2009
+demographics$treatment <- demographics$year == 2007
 
 # remove unnecessary columns
 demographics_trimmed <- demographics[, matching_vars]
@@ -62,46 +62,46 @@ colnames(demographics_control) <- col_names
 # ) %>% View
   
 # set variable weights
-var_weights <- c(
-  'age' = 1,
-  'fam_income' = 1,
-  'child_in_HH' = 1,
-  'n_child' = 1,
-  'age_youngest' = 1,
-  'elder_in_HH' = 1,
-  'sex_male' = 1,
-  'race_black' = 1,
-  'race_other' = 1,
-  'race_white' = 1,
-  'married_not_married' = 1,
-  'education_HS' = 1,
-  'education_Some_college' = 1,
-  'education_Bachelors' = 1,
-  'education_Masters' = 1,
-  'education_Doctoral' = 1,
-  'region_Northeast' = 1,
-  'region_South' = 1,
-  'region_West' = 1,
-  'labor_force_status_employed_at_work' = 1,
-  'labor_force_status_not_in_labor_force' = 1,
-  'labor_force_status_unemployed_looking' = 1,
-  'labor_force_status_unemployed_on_layoff' = 1,
-  'partner_working_NA' = 1,
-  'partner_working_not_employed' = 1,
-  'metropolitan_non_metropolitan' = 1
-)
+# var_weights <- c(
+#   'age' = 1,
+#   'fam_income' = 1,
+#   'child_in_HH' = 1,
+#   'n_child' = 1,
+#   'age_youngest' = 1,
+#   'elder_in_HH' = 1,
+#   'sex_male' = 1,
+#   'race_black' = 1,
+#   'race_other' = 1,
+#   'race_white' = 1,
+#   'married_not_married' = 1,
+#   'education_HS' = 1,
+#   'education_Some_college' = 1,
+#   'education_Bachelors' = 1,
+#   'education_Masters' = 1,
+#   'education_Doctoral' = 1,
+#   'region_Northeast' = 1,
+#   'region_South' = 1,
+#   'region_West' = 1,
+#   'labor_force_status_employed_at_work' = 1,
+#   'labor_force_status_not_in_labor_force' = 1,
+#   'labor_force_status_unemployed_looking' = 1,
+#   'labor_force_status_unemployed_on_layoff' = 1,
+#   'partner_working_NA' = 1,
+#   'partner_working_not_employed' = 1,
+#   'metropolitan_non_metropolitan' = 1
+# )
 
 # apply weights column-wise
 # demographics_treatment <- as_tibble(t(t(demographics_treatment) * var_weights))
 
 # apply weights to covariance matrix and calculate mdistance
-X <- as.matrix(demographics_treatment[, names(var_weights)])
-X_cov <- cov(X)
-cov_weighted <- diag(var_weights) %*% solve(X_cov)
-X <- sweep(X, 2, colMeans(X))
-mdist <- diag(X %*% cov_weighted %*% t(X))
-mdist_baseR <- rowSums(X %*% cov_weighted * X) #stats::mahalanobis
-all.equal(mdist, mdist_baseR)
+# X <- as.matrix(demographics_treatment[, names(var_weights)])
+# X_cov <- cov(X)
+# cov_weighted <- diag(var_weights) %*% solve(X_cov)
+# X <- sweep(X, 2, colMeans(X))
+# mdist <- diag(X %*% cov_weighted %*% t(X))
+# mdist_baseR <- rowSums(X %*% cov_weighted * X) #stats::mahalanobis
+# all.equal(mdist, mdist_baseR)
 
 # TODO mdist_weighted()
 

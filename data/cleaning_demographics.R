@@ -40,16 +40,16 @@ industry$industry <- case_when(
 )
 industry <- industry %>%
   left_join(essential_industries, by = c('industry' = 'Census_2012')) %>%
-  replace_na(list(essential_group = '5')) %>%
-  mutate(essential_group = recode(
-      essential_group,
-      '1' = 'CDC_1',
-      '2' = 'CDC_2',
-      '3' = 'CDC_3',
-      '4' = 'No_CDC',
-      '5' = 'No_industry'
-    )
-  ) %>% 
+  replace_na(list(essential_group = 5)) %>%
+  # mutate(essential_group = recode(
+  #     essential_group,
+  #     '1' = 'CDC_1',
+  #     '2' = 'CDC_2',
+  #     '3' = 'CDC_3',
+  #     '4' = 'No_CDC',
+  #     '5' = 'No_industry'
+  #   )
+  # ) %>% 
   rename(essential_industry = essential_group)
 
 # from CPS data, get race, marriage status, education, metropolitan status, and state 

@@ -30,7 +30,7 @@ Census_2017 <- na.omit(Census_2017)
 Census_2017 <- distinct(Census_2017)
 
 ## a common issue is that the NAICS code will be "3118 exc. 311811" so we're 
-##   going to naively remove the exclusions
+##   going to naively remove all codes after "exc."
 Census_2017$NAICS_2017 <- stringr::str_remove_all(Census_2017$NAICS_2017, "[[:alpha:]].*$")
 
 ## unnest the codes. Where there are multiple codes in one row they will be converted to one per row
@@ -56,12 +56,12 @@ essential_industries %>%
   summarize(non_perfect_match = n_distinct(essential_group)) %>% 
   pull(non_perfect_match) %>% 
   {table(.) / sum(table(.))}
-# this tells us that 90% of the 2012 Census codes match to on essential worker group
-# so we're going to map each Census_2012 group to the NAICS_2017 code (consequently essential_group)
+# this tells us that 90% of the 2012 Census codes match to a single essential worker group
+# so we're going to map each Census_2012 group to the NAICS_2017 code (and consequently essential_group)
 #   by its average match. This loses a lot of information; there doesn't seem to be a better solution
 essential_industries <- essential_industries %>% 
   group_by(Census_2012) %>% 
-  summarize(essential_group = round(mean(essential_group)))
+  summarize(essential_group = mean(essential_group))
 
 # write out
 write_csv(essential_industries, 'data/essential_industries.csv')

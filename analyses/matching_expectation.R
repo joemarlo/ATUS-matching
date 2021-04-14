@@ -19,7 +19,7 @@ sims <- map_dfr(splits, function(split){
   return(sims)
 })
 
-# get expectation then apply loess to get more datapoints
+# get expectation then apply loess to smooth the curve
 (matching_expectation <- sims %>% group_by(split) %>% summarize(expectation = mean(random_match_rate)))
 # write_csv(matching_expectation, "data/matching_expectation.csv")
 # smoothing_model <- loess(mean ~ split, data = matching_expectation)
@@ -27,13 +27,13 @@ sims <- map_dfr(splits, function(split){
 # plot it
 sims %>% 
   ggplot(aes(x = split, group = split, y = random_match_rate)) +
+  geom_abline(slope = 1, intercept = 0, linetype = 'dashed', color = 'grey50') +
   geom_boxplot() +
-  geom_abline(slope = 1, intercept = 0) +
   scale_x_continuous(breaks = splits) +
   scale_y_continuous(breaks = splits) +
   labs(title = "Binary: Expected % of true matches if matching is random",
-       subtitle = "Expectation is not perfectly linear with bias",
-       x = "Bias (e.g. data consists of X% A vs. B observations)",
+       subtitle = "Expectation is not perfectly linear with balance",
+       x = "Balance (e.g. data consists of X% A vs. B observations)",
        y = "Simulated match rate") +
   theme_minimal()
 
@@ -61,7 +61,7 @@ sims %>%
   geom_boxplot() +
   scale_x_continuous(breaks = splits) +
   labs(title = "Trinary: Expected % of true matches if matching is random",
-       subtitle = "Expectation is not perfectly linear with bias",
-       x = "Bias (e.g. data consists of X% A vs. 1-(X%/2) B and C observations)",
+       subtitle = "Expectation is not perfectly linear with balance",
+       x = "Balance (e.g. data consists of X% A vs. 1-(X%/2) B and C observations)",
        y = "Simulated match rate") +
   theme_minimal()
