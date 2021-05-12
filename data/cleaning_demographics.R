@@ -53,7 +53,6 @@ industry <- industry %>%
   rename(essential_industry = essential_group)
 
 # from CPS data, get race, marriage status, education, metropolitan status, and state 
-# TODO: figure out how to get NAICS code and match to essential_industries 
 # data dictionary here: https://www2.census.gov/programs-surveys/cps/datasets/2021/basic/2021_Basic_CPS_Public_Use_Record_Layout_plus_IO_Code_list.txt
 CPS_vars <- atuscps_0318 %>%
   filter(TULINENO == 1) %>%   # filter so only person responding to ATUS is included
@@ -103,7 +102,10 @@ atus_vars <- atussum_0318 %>%
            partner_working == 2 ~ 'not employed'
          )) %>%
   left_join(distinct(atuscps_0318[, c('TUCASEID', 'HEFAMINC', 'HUFAMINC')]),
-            by = 'TUCASEID') %>%
+            by = 'TUCASEID')
+
+# recode family income and account for change in reporting code
+atus_vars <- atus_vars %>% 
   left_join(select(income.levels, HUFAMINC, HH.income.new), by = 'HUFAMINC') %>%
   left_join(select(income.levels, HEFAMINC, HH.income.new), by = 'HEFAMINC') %>% 
   mutate(HH.income = pmax(HH.income.new.x, HH.income.new.y, na.rm = TRUE)) %>% 

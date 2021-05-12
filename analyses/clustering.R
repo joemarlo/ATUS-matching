@@ -19,6 +19,10 @@ demographics_t1 <- read_csv(file = 'data/matched_treatment_mahalanobis.csv')
 demographics_t2_raw <- read_csv(file = 'data/matched_control_mahalanobis.csv')
 demographics_t2 <- distinct(demographics_t2_raw, across(-pair_id))
 
+# pull years denoting t1 and t2
+time1 <- demographics_t1$year[[1]]
+time2 <- demographics_t2$year[[1]]
+
 # create treated and control for sequences
 atus_t1 <- atus_raw[atus_raw$ID %in% demographics_t1$ID,]
 atus_t2 <- atus_raw[atus_raw$ID %in% demographics_t2$ID,]
@@ -79,43 +83,84 @@ cluster_model_t2 <- fastcluster::hclust(as.dist(dist_t2), method = "ward.D2")
 # TODO: do wards or PAM (similar to kmeans; also called agnes)
 
 # optimize k
-# TODO: do this separately between t1 and t2
-k_range <- c(2, 10)
+k_range <- c(3, 10)
+k_seq <- k_range[1]:k_range[2]
+# TODO: verify Hubert C index code via 1976 paper
+hubert_c_t1 <- sapply(k_seq, function(k) clusterSim::index.C(dist_t1, stats::cutree(cluster_model_t1, k)))
+hubert_c_t2 <- sapply(k_seq, function(k) clusterSim::index.C(dist_t2, stats::cutree(cluster_model_t2, k)))
 stats_t1 <- sequenchr::cluster_stats(dist_t1, cluster_model_t1, k_range[1], k_range[2])
 stats_t2 <- sequenchr::cluster_stats(dist_t2, cluster_model_t2, k_range[1], k_range[2])
-bind_rows(
-  stats_t1 %>% mutate(time = 't1') %>% pivot_longer(c("ch_norm", "silhouette_norm")),
-  stats_t2 %>% mutate(time = 't2') %>% pivot_longer(c("ch_norm", "silhouette_norm"))
-) %>% 
+scale_01 <- function(x) (x - min(x))/diff(range(x))
+
+# plot all the metrics
+validity_stats <- bind_rows(
+  tibble(k = k_seq, name = 'Hubert C', value = scale_01(hubert_c_t1)) %>% mutate(time = 't1'),
+  tibble(k = k_seq, name = 'Hubert C', value = scale_01(hubert_c_t2)) %>% mutate(time = 't2'),
+  stats_t1 %>% select(k, ch_norm, silhouette_norm) %>% mutate(time = 't1') %>% pivot_longer(c("ch_norm", "silhouette_norm")),
+  stats_t2 %>% select(k, ch_norm, silhouette_norm) %>% mutate(time = 't2') %>% pivot_longer(c("ch_norm", "silhouette_norm"))
+)
+validity_stats %>% 
   mutate(name = recode(name, 
                        'ch_norm' = "Calinski and Harabasz index",
                        'silhouette_norm' = 'Silhouette width')) %>%
-  ggplot(aes(x = k, y = value, color = time, linetype = name)) +
+  ggplot(aes(x = k, y = value, color = name, linetype = time)) +
   geom_line() +
   geom_point() +
   scale_x_continuous(breaks = k_range[1]:k_range[2]) +
-  labs(title = "Cluster validity statistics",
-       subtitle = 'Maximum values == optimal number of clusters',
+  labs(title = "Normalized cluster validity statistics",
+       subtitle = 'Best = max(CH), max(Silhouette), min(Hubert C)',
        x = 'n clusters',
        y = 'Normalized index',
        color = NULL,
        linetype = NULL) +
   ggplot2::theme(legend.position = 'bottom')
 
+# which is the numeric optimal?
+validity_stats %>%
+  pivot_wider() %>% 
+  group_by(time, k) %>% 
+  summarize(summed_metrics = sum(c(1-`Hubert C`, ch_norm, silhouette_norm))) %>% 
+  group_by(time) %>% 
+  summarize(optimal_k = k[which.max(summed_metrics)])
+
 # set the cluster labels
-k_t1 <- 5
-k_t2 <- 5
-sequenchr::plot_dendrogram(cluster_model_t1, k_t1, 50) + labs(subtitle = "Time 1")
-sequenchr::plot_dendrogram(cluster_model_t2, k_t2, 50) + labs(subtitle = "Time 2")
+# TODO: replace with max value determined by previous step?
+k_t1 <- 4
+k_t2 <- 4
+sequenchr::plot_dendrogram(cluster_model_t1, k_t1, 50) + labs(subtitle = paste0("Time 1: ", time1))
+sequenchr::plot_dendrogram(cluster_model_t2, k_t2, 50) + labs(subtitle = paste0("Time 2: ", time2))
 clusters_t1 <- sequenchr::label_clusters(cluster_model_t1, k_t1)
 clusters_t2 <- sequenchr::label_clusters(cluster_model_t2, k_t2)
+
+
+# cluster descriptions ----------------------------------------------------
+
+# tidy the data
+atus_tidy_t1 <- sequenchr::tidy_sequence_data(atus_seq_t1)
+atus_tidy_t2 <- sequenchr::tidy_sequence_data(atus_seq_t2)
+
+# establish color mapping
+color_mapping <- viridis::viridis_pal()(length(alphabet(atus_seq_t1)))
+names(color_mapping) <- TraMineR::alphabet(atus_seq_t1)
+
+# plot seqI
+sequenchr::plot_sequence_index(atus_tidy_t1, color_mapping, clusters_t1) + labs(subtitle = paste0("Time 1: ", time1))
+sequenchr::plot_sequence_index(atus_tidy_t2, color_mapping, clusters_t2) + labs(subtitle = paste0("Time 2: ", time2))
+
+# plot seqD
+sequenchr::plot_state(atus_tidy_t1, color_mapping, clusters_t1) + labs(subtitle = paste0("Time 1: ", time1))
+sequenchr::plot_state(atus_tidy_t2, color_mapping, clusters_t2) + labs(subtitle = paste0("Time 2: ", time2))
+
+# plot modals
+sequenchr::plot_modal(atus_tidy_t1, color_mapping, clusters_t1) + labs(subtitle = paste0("Time 1: ", time1))
+sequenchr::plot_modal(atus_tidy_t2, color_mapping, clusters_t2) + labs(subtitle = paste0("Time 2: ", time2))
 
 
 # demographics by cluster -------------------------------------------------
 
 # create dataframe denoting ID, cluster assignment, and time period
 cluster_assignments <- tibble(
-  ID = c(demographics_t1$ID, demographics_t2$ID),
+  ID = as.double(c(rownames(atus_seq_t1), rownames(atus_seq_t2))),
   cluster = c(as.character(clusters_t1), as.character(clusters_t2)),
   time = c(rep('t1', length(clusters_t1)), rep('t2', length(clusters_t2))),
 )
@@ -176,11 +221,10 @@ transition_rate %>%
   theme(axis.text.x = element_text(angle = -20, hjust = 0))
 
 # transition rate by cluster
-ggplot(transition_rate, aes(x = cluster_from, y = rate_group, fill = cluster_to)) +
+ggplot(transition_rate, aes(x = t1, y = rate_group, fill = t2)) +
   geom_col() +
-  scale_x_continuous(breaks = 1:k_t1) +
   labs(title = "Transition from cluster X to cluster Y",
-       x = "From cluster X",
-       y = "Transition rate from cluster X",
-       fill = "To cluster Y")
+       x = "\nCluster in time 1",
+       y = "Transition rate from cluster in time 1",
+       fill = "To cluster in time 2")
 

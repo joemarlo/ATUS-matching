@@ -2,8 +2,8 @@ require(tidyverse)
 require(rvest)
 
 # import 2003-2018 files ----------------------------------------------------
-# download data here: https://www.bls.gov/tus/datafiles-2018.htm
-#  and store in inputs/ATUS-2018
+# download data here: https://www.bls.gov/tus/#data
+#  and store in inputs/ATUS-2003-2018
 
 dat.files <- list.files('inputs/ATUS-2003-2018', '*.dat')
 files <- lapply(dat.files, function(file) read_csv(paste0("inputs/ATUS-2003-2018/", file)))
@@ -109,7 +109,7 @@ income.levels <- tribble(
   13, 13, mean(60000, 74999),
   14, 14, mean(75000, 99999),
   15, 15, mean(100000, 149999),
-  16, 15, 150000
+  16, 16, 150000
 )
 
 

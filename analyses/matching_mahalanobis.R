@@ -9,7 +9,7 @@ set.seed(44)
 # pre-processing ----------------------------------------------------------
 
 # convert year to boolean
-demographics$treatment <- demographics$year == 2007
+demographics$treatment <- demographics$year == time1
 
 # remove unnecessary columns
 demographics_trimmed <- demographics[, matching_vars]
@@ -40,7 +40,7 @@ colnames(demographics_control) <- col_names
 # weighting ---------------------------------------------------------------
 
 # TODO: this is all TBD; unsure how to weight mahalanobis distance
-# prescaling and pre-weighting before calcualting mdistance doesn't make sense
+# prescaling and pre-weighting before calculating mdistance doesn't make sense
 # http://isl.anthropomatik.kit.edu/pdf/Woelfel2005.pdf
 # https://rdrr.io/cran/WMDB/man/wmahalanobis.html
 # https://www.researchgate.net/publication/290037437_Application_of_weighted_Mahalanobis_distance_discriminant_analysis_method_to_classification_of_rock_mass_quality

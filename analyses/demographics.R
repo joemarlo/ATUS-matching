@@ -1,5 +1,5 @@
 library(tidyverse)
-library(patchwork) # for stiching together multiple plots
+library(patchwork) # for stitching together multiple plots
 source('analyses/plots/ggplot_settings.R')
 set.seed(44)
 
@@ -13,8 +13,12 @@ demographics <- read_delim(file = "data/demographic.tsv",
 
 # data cleaning -----------------------------------------------------------
 
+# set time periods
+time1 <- 2013
+time2 <- time1 + 2
+
 # filter to just 2007 and 2009, just weekdays and non-holidays
-boolean <- demographics$year %in% c(2007, 2009) &
+boolean <- demographics$year %in% c(time1, time2) &
   demographics$day_of_week %in% 2:6 &
   demographics$holiday == 0
 demographics <- demographics[boolean,]
@@ -132,13 +136,13 @@ overlap_continuous / overlap_categorical + plot_layout(heights = c(2, 3))
 # basic stats -------------------------------------------------------------
 
 # counts by group
-demographics %>% 
-  group_by(year) %>% 
-  tally() %>% 
-  mutate(year = as.character(year)) %>% 
-  add_row(tibble(year = 'Total',
-                 n = sum(.$n))) %>% 
-  write_csv('data/summary_stats_raw_n.csv')
+# demographics %>% 
+#   group_by(year) %>% 
+#   tally() %>% 
+#   mutate(year = as.character(year)) %>% 
+#   add_row(tibble(year = 'Total',
+#                  n = sum(.$n))) %>% 
+#   write_csv('data/summary_stats_raw_n.csv')
 
 
 # sizing up key population ------------------------------------------------
