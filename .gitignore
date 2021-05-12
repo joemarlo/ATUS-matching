@@ -1,3 +1,4 @@
+analyses/backtest/*/
 inputs/ATUS-2003-2018
 data/*.tsv
 .DS_Store

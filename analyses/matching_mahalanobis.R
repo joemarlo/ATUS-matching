@@ -180,6 +180,7 @@ final_matches %>%
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         legend.position = 'bottom')
 # ggsave("analyses/plots/counts_matched_mahalanobis.png", height = 12, width = 9)
+ggsave(file.path(time_file_path, "plots", "counts_matched_mahalanobis.png"), height = 12, width = 9)
 
 
 # privileged variables ----------------------------------------------------
@@ -208,6 +209,7 @@ match_summary %>%
        x = 'Number of matches across all privileged variables',
        y = 'Proportion of all pairs')
 # ggsave('analyses/plots/privileged_vars_all_mahalanobis.png', height = 5, width = 9)
+ggsave(file.path(time_file_path, "plots", "privileged_vars_all_mahalanobis.png"), height = 5, width = 9)
 match_summary %>%
   summarize(across(all_of(matching_vars), mean)) %>% 
   pivot_longer(everything()) %>% 
@@ -229,6 +231,7 @@ match_summary %>%
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         legend.position = 'none')
 # ggsave('analyses/plots/perfect_matches_mahalanobis.png', height = 5, width = 9)
+ggsave(file.path(time_file_path, "plots", "perfect_matches_mahalanobis.png"), height = 5, width = 9)
 
 # difference within matched pairs for numeric vars
 final_matches %>% 
@@ -245,11 +248,16 @@ final_matches %>%
        x = NULL,
        y = NULL)
 # ggsave('analyses/plots/numeric_differences_mahalanobis.png', height = 5, width = 9)
+ggsave(file.path(time_file_path, "plots", "numeric_differences_mahalanobis.png"), height = 5, width = 9)
 
 # TODO: deeper dive into privileged vars; e.g look at % match by each race 
 
 
 # write out matches -------------------------------------------------------
 
-# write_csv(demographics_treated, path = 'data/matched_treatment_mahalanobis.csv')
-# write_csv(demographics_control, path = 'data/matched_control_mahalanobis.csv')
+# write_csv(demographics_treated, path = 'data/matched_time1_mahalanobis.csv')
+# write_csv(demographics_control, path = 'data/matched_time2_mahalanobis.csv')
+
+# for batch script only
+write_csv(demographics_treated, path = file.path(time_file_path, 'data', 'matched_time1_mahalanobis.csv'))
+write_csv(demographics_control, path = file.path(time_file_path, 'data', 'matched_time2_mahalanobis.csv'))

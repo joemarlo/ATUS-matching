@@ -14,10 +14,10 @@ demographics <- read_delim(file = "data/demographic.tsv",
 # data cleaning -----------------------------------------------------------
 
 # set time periods
-time1 <- 2013
-time2 <- time1 + 2
+# time1 <- 2013
+# time2 <- time1 + 2
 
-# filter to just 2007 and 2009, just weekdays and non-holidays
+# filter to just time1 and time2, just weekdays and non-holidays
 boolean <- demographics$year %in% c(time1, time2) &
   demographics$day_of_week %in% 2:6 &
   demographics$holiday == 0
@@ -63,12 +63,12 @@ sum(is.na(demographics$fam_income))
 # do we need impute values for the top-coded income? https://www.epi.org/data/methodology/
 
 # essential worker percentage
-ggplot(demographics, aes(x = essential_industry, group = 1)) +
-  geom_histogram(color = 'white') +
-  labs(title = "Count of workers in essential industries",
-       subtitle = '2007/2009 data; 4 = No CDC classifcation; 5 = No job',
-       x = "Essential worker group",
-       y = 'n')
+# ggplot(demographics, aes(x = essential_industry, group = 1)) +
+#   geom_histogram(color = 'white') +
+#   labs(title = "Count of workers in essential industries",
+#        subtitle = paste0(time1, "/", time2, ' data; 4 = No CDC classifcation; 5 = No job'),
+#        x = "Essential worker group",
+#        y = 'n')
 # ggsave('analyses/plots/essential_workers.png', height = 6, width = 9)
 
 
@@ -104,32 +104,32 @@ vars_numeric <- demographics %>%
 # overlap -----------------------------------------------------------------
 
 # histograms showing overlaps
-overlap_continuous <- demographics %>%
-  select(-ID) %>% 
-  dplyr::select_if(is.numeric) %>%
-  pivot_longer(cols = -year) %>%
-  ggplot(aes(x = value, fill = as.factor(year))) +
-  geom_histogram(alpha = 0.7, position = 'identity') +
-  facet_wrap(~name, scales = 'free') +
-  labs(title = "Overlap of key demographic variables by year",
-       subtitle = "These data are before any matching is performed",
-       x = NULL,
-       fill = NULL) +
-  theme(plot.background = element_rect(color = NA))
-overlap_categorical <- demographics %>% 
-  dplyr::select(where(~!is.numeric(.x))) %>%
-  mutate(across(everything(), as.character)) %>% 
-  bind_cols(year = demographics$year) %>% 
-  pivot_longer(cols = -year) %>%
-  ggplot(aes(x = value, fill = as.factor(year))) +
-  geom_bar(alpha = 0.7, position = 'dodge') +
-  facet_wrap(~name, scales = 'free') +
-  labs(title = NULL,
-       x = NULL,
-       fill = NULL) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1),
-        plot.background = element_rect(color = NA))
-overlap_continuous / overlap_categorical + plot_layout(heights = c(2, 3))
+# overlap_continuous <- demographics %>%
+#   select(-ID) %>% 
+#   dplyr::select_if(is.numeric) %>%
+#   pivot_longer(cols = -year) %>%
+#   ggplot(aes(x = value, fill = as.factor(year))) +
+#   geom_histogram(alpha = 0.7, position = 'identity') +
+#   facet_wrap(~name, scales = 'free') +
+#   labs(title = "Overlap of key demographic variables by year",
+#        subtitle = "These data are before any matching is performed",
+#        x = NULL,
+#        fill = NULL) +
+#   theme(plot.background = element_rect(color = NA))
+# overlap_categorical <- demographics %>% 
+#   dplyr::select(where(~!is.numeric(.x))) %>%
+#   mutate(across(everything(), as.character)) %>% 
+#   bind_cols(year = demographics$year) %>% 
+#   pivot_longer(cols = -year) %>%
+#   ggplot(aes(x = value, fill = as.factor(year))) +
+#   geom_bar(alpha = 0.7, position = 'dodge') +
+#   facet_wrap(~name, scales = 'free') +
+#   labs(title = NULL,
+#        x = NULL,
+#        fill = NULL) +
+#   theme(axis.text.x = element_text(angle = 45, hjust = 1),
+#         plot.background = element_rect(color = NA))
+# overlap_continuous / overlap_categorical + plot_layout(heights = c(2, 3))
 # ggsave('analyses/plots/overlap_raw.png', height = 12, width = 9)
 
 
@@ -148,9 +148,9 @@ overlap_continuous / overlap_categorical + plot_layout(heights = c(2, 3))
 # sizing up key population ------------------------------------------------
 
 # how big are our groups
-demographics %>% 
-  filter(sex == 'female') %>% 
-  mutate(age = cut(age, breaks = c(0, 18, 60, 100))) %>% 
-  group_by(year, age, race) %>% 
-  tally() %>% 
-  arrange(race, age, year)
+# demographics %>% 
+#   filter(sex == 'female') %>% 
+#   mutate(age = cut(age, breaks = c(0, 18, 60, 100))) %>% 
+#   group_by(year, age, race) %>% 
+#   tally() %>% 
+#   arrange(race, age, year)

@@ -15,15 +15,21 @@ demographics <- read_delim(file = "data/demographic.tsv",
                            trim_ws = TRUE)
 
 # read in the matches
-demographics_t1 <- read_csv(file = 'data/matched_treatment_mahalanobis.csv')
-demographics_t2_raw <- read_csv(file = 'data/matched_control_mahalanobis.csv')
+demographics_t1 <- read_csv(file = 'data/matched_time1_mahalanobis.csv')
+demographics_t2_raw <- read_csv(file = 'data/matched_time2_mahalanobis.csv')
+
+# for batch script only
+# demographics_t1 <- read_csv(file = file.path(time_file_path, 'data', 'matched__mahalanobis.csv'))
+# demographics_t2_raw <- read_csv(file = file.path(time_file_path, 'data', 'matched_time2_mahalanobis.csv'))
+
+# remove duplicates for clustering
 demographics_t2 <- distinct(demographics_t2_raw, across(-pair_id))
 
 # pull years denoting t1 and t2
 time1 <- demographics_t1$year[[1]]
 time2 <- demographics_t2$year[[1]]
 
-# create treated and control for sequences
+# create time1 and time2 dataframes for sequences
 atus_t1 <- atus_raw[atus_raw$ID %in% demographics_t1$ID,]
 atus_t2 <- atus_raw[atus_raw$ID %in% demographics_t2$ID,]
 
@@ -68,12 +74,13 @@ atus_seq_t2 <- seqdef(
 
 # calculate substitution cost from time1
 TRATE_cost <- seqsubm(atus_seq_t1, method = 'TRATE') #, time.varying = TRUE
+# TODO: do levenshtein difference as well
 
 # compute distances
 dist_t1 <- seqdist(atus_seq_t1, method = "OM", indel = 1, sm = TRATE_cost)
 dist_t2 <- seqdist(atus_seq_t2, method = "OM", indel = 1, sm = TRATE_cost)
 # TODO: can/should TRATE vary by time of day???
-# TODO: do levenshtein difference to see
+
 
 # cluster the data
 cluster_model_t1 <- fastcluster::hclust(as.dist(dist_t1), method = "ward.D2")
@@ -108,27 +115,32 @@ validity_stats %>%
   geom_point() +
   scale_x_continuous(breaks = k_range[1]:k_range[2]) +
   labs(title = "Normalized cluster validity statistics",
-       subtitle = 'Best = max(CH), max(Silhouette), min(Hubert C)',
+       subtitle = paste0("Best = max(CH), max(Silhouette), min(Hubert C)\n", time1, "/", time2),
        x = 'n clusters',
        y = 'Normalized index',
        color = NULL,
        linetype = NULL) +
   ggplot2::theme(legend.position = 'bottom')
+ggsave(file.path(time_file_path, "plots", "cluster_validity.png"), height = 6, width = 9)
 
 # which is the numeric optimal?
 validity_stats %>%
   pivot_wider() %>% 
   group_by(time, k) %>% 
-  summarize(summed_metrics = sum(c(1-`Hubert C`, ch_norm, silhouette_norm))) %>% 
+  summarize(summed_metrics = sum(c(1-`Hubert C`, ch_norm, silhouette_norm)),
+            .groups = 'drop') %>% 
   group_by(time) %>% 
-  summarize(optimal_k = k[which.max(summed_metrics)])
+  summarize(optimal_k = k[which.max(summed_metrics)],
+            .groups = 'drop')
 
 # set the cluster labels
 # TODO: replace with max value determined by previous step?
 k_t1 <- 4
 k_t2 <- 4
 sequenchr::plot_dendrogram(cluster_model_t1, k_t1, 50) + labs(subtitle = paste0("Time 1: ", time1))
+ggsave(file.path(time_file_path, "plots", "dendrogram_time1.png"), height = 6, width = 9)
 sequenchr::plot_dendrogram(cluster_model_t2, k_t2, 50) + labs(subtitle = paste0("Time 2: ", time2))
+ggsave(file.path(time_file_path, "plots", "dendrogram_time2.png"), height = 6, width = 9)
 clusters_t1 <- sequenchr::label_clusters(cluster_model_t1, k_t1)
 clusters_t2 <- sequenchr::label_clusters(cluster_model_t2, k_t2)
 
@@ -145,15 +157,21 @@ names(color_mapping) <- TraMineR::alphabet(atus_seq_t1)
 
 # plot seqI
 sequenchr::plot_sequence_index(atus_tidy_t1, color_mapping, clusters_t1) + labs(subtitle = paste0("Time 1: ", time1))
+ggsave(file.path(time_file_path, "plots", "seqI_time1.png"), height = 9, width = 9)
 sequenchr::plot_sequence_index(atus_tidy_t2, color_mapping, clusters_t2) + labs(subtitle = paste0("Time 2: ", time2))
+ggsave(file.path(time_file_path, "plots", "seqI_time2.png"), height = 9, width = 9)
 
 # plot seqD
 sequenchr::plot_state(atus_tidy_t1, color_mapping, clusters_t1) + labs(subtitle = paste0("Time 1: ", time1))
+ggsave(file.path(time_file_path, "plots", "seqD_time1.png"), height = 9, width = 9)
 sequenchr::plot_state(atus_tidy_t2, color_mapping, clusters_t2) + labs(subtitle = paste0("Time 2: ", time2))
+ggsave(file.path(time_file_path, "plots", "seqD_time2.png"), height = 9, width = 9)
 
 # plot modals
 sequenchr::plot_modal(atus_tidy_t1, color_mapping, clusters_t1) + labs(subtitle = paste0("Time 1: ", time1))
+ggsave(file.path(time_file_path, "plots", "modals_time1.png"), height = 9, width = 9)
 sequenchr::plot_modal(atus_tidy_t2, color_mapping, clusters_t2) + labs(subtitle = paste0("Time 2: ", time2))
+ggsave(file.path(time_file_path, "plots", "modals_time2.png"), height = 9, width = 9)
 
 
 # demographics by cluster -------------------------------------------------
@@ -166,13 +184,13 @@ cluster_assignments <- tibble(
 )
 
 # age by cluster and time
-cluster_assignments %>% 
-  left_join(demographics[, c('ID', 'age')], by = 'ID') %>% 
-  mutate(cluster = str_extract(cluster, "Cluster \\d")) %>% 
-  ggplot(aes(x = age)) +
-  geom_bar(aes(y = ..prop..)) +
-  # geom_histogram() +
-  facet_grid(time~cluster)
+# cluster_assignments %>% 
+#   left_join(demographics[, c('ID', 'age')], by = 'ID') %>% 
+#   mutate(cluster = str_extract(cluster, "Cluster \\d")) %>% 
+#   ggplot(aes(x = age)) +
+#   geom_bar(aes(y = ..prop..)) +
+#   # geom_histogram() +
+#   facet_grid(time~cluster)
 
 
 # transitions between clusters --------------------------------------------
@@ -188,13 +206,17 @@ pair_ids <- tibble(
 )
 cluster_pairs <- left_join(pair_ids, cluster_assignments, by = 'ID')
 
-# how consistent are the clusters across treatment and control?
+# write out: batch script only
+write_csv(cluster_pairs, path = file.path(time_file_path, 'data', 'cluster_pairs.csv'))
+
+# how consistent are the clusters across time1 and time2?
 cluster_pairs_wide <- cluster_pairs %>% 
   mutate(cluster = str_extract(cluster, "Cluster \\d")) %>%
   pivot_wider(id_cols = pair_id, values_from = cluster, names_from = time)
 transition_rate <- cluster_pairs_wide %>% 
   group_by(t1) %>% 
-  summarize(cluster_transition = list(table(t2))) %>% 
+  summarize(cluster_transition = list(table(t2)),
+            .groups = 'drop') %>% 
   unnest_longer(col = cluster_transition) %>%
   select(t1, t2 = cluster_transition_id, n = cluster_transition) %>%
   mutate(n = as.numeric(n),
@@ -205,6 +227,8 @@ transition_rate <- cluster_pairs_wide %>%
 
 transition_table <- table(t1 = cluster_pairs_wide$t1, t2 = cluster_pairs_wide$t2)
 
+# write out: batch script only
+write_csv(as_tibble(transition_table), path = file.path(time_file_path, 'data', 'transition_matrix.csv'))
 
 # how often do matches stay in the same cluster?
 mean(cluster_pairs_wide$t1 == cluster_pairs_wide$t2)
@@ -215,16 +239,17 @@ transition_rate %>%
   geom_tile() +
   geom_text(color = 'grey70') +
   labs(title = "Transition matrix between clusters",
+       subtitle = paste0(time1, "/", time2),
        x = "\nCluster in time 1",
        y = "Cluster in time 2",
        fill = "Transition rate") +
   theme(axis.text.x = element_text(angle = -20, hjust = 0))
+ggsave(file.path(time_file_path, "plots", "transition_matrix.png"), height = 7, width = 9)
 
 # transition rate by cluster
-ggplot(transition_rate, aes(x = t1, y = rate_group, fill = t2)) +
-  geom_col() +
-  labs(title = "Transition from cluster X to cluster Y",
-       x = "\nCluster in time 1",
-       y = "Transition rate from cluster in time 1",
-       fill = "To cluster in time 2")
-
+# ggplot(transition_rate, aes(x = t1, y = rate_group, fill = t2)) +
+#   geom_col() +
+#   labs(title = "Transition from cluster X to cluster Y",
+#        x = "\nCluster in time 1",
+#        y = "Transition rate from cluster in time 1",
+#        fill = "To cluster in time 2")
