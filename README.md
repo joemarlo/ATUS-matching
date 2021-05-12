@@ -1,4 +1,4 @@
-# Unsupervised learning and matching within sequence analysis
+# Clustering and matching sequence data
 
 ### Folder structure
     .
@@ -26,7 +26,6 @@
 <img src="analyses/plots/perfect_matches_mahalanobis.png" width=80%>
 </p>
 
-<br>
 <br>
 
 ### Reproducibility
