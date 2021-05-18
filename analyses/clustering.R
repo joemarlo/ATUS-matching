@@ -114,17 +114,18 @@ validity_stats %>%
   geom_line() +
   geom_point() +
   scale_x_continuous(breaks = k_range[1]:k_range[2]) +
+  facet_wrap(~name) +
   labs(title = "Normalized cluster validity statistics",
        subtitle = paste0("Best = max(CH), max(Silhouette), min(Hubert C)\n", time1, "/", time2),
        x = 'n clusters',
        y = 'Normalized index',
        color = NULL,
        linetype = NULL) +
-  ggplot2::theme(legend.position = 'bottom')
+  theme(legend.position = 'bottom')
 ggsave(file.path(time_file_path, "plots", "cluster_validity.png"), height = 6, width = 9)
 
 # which is the numeric optimal?
-validity_stats %>%
+optimal_k <- validity_stats %>%
   pivot_wider() %>% 
   group_by(time, k) %>% 
   summarize(summed_metrics = sum(c(1-`Hubert C`, ch_norm, silhouette_norm)),
@@ -135,15 +136,14 @@ validity_stats %>%
 
 # set the cluster labels
 # TODO: replace with max value determined by previous step?
-k_t1 <- 4
-k_t2 <- 4
+k_t1 <- optimal_k$optimal_k[optimal_k$time == 't1'] #4
+k_t2 <- optimal_k$optimal_k[optimal_k$time == 't2'] #4
 sequenchr::plot_dendrogram(cluster_model_t1, k_t1, 50) + labs(subtitle = paste0("Time 1: ", time1))
 ggsave(file.path(time_file_path, "plots", "dendrogram_time1.png"), height = 6, width = 9)
 sequenchr::plot_dendrogram(cluster_model_t2, k_t2, 50) + labs(subtitle = paste0("Time 2: ", time2))
 ggsave(file.path(time_file_path, "plots", "dendrogram_time2.png"), height = 6, width = 9)
 clusters_t1 <- sequenchr::label_clusters(cluster_model_t1, k_t1)
 clusters_t2 <- sequenchr::label_clusters(cluster_model_t2, k_t2)
-
 
 # cluster descriptions ----------------------------------------------------
 
@@ -191,6 +191,28 @@ cluster_assignments <- tibble(
 #   geom_bar(aes(y = ..prop..)) +
 #   # geom_histogram() +
 #   facet_grid(time~cluster)
+
+
+# matching clusters across times ------------------------------------------
+
+# convert cluster lables to numeric for medoid calculation
+clusters_t1_numeric <- as.numeric(str_extract(as.character(clusters_t1), "\\d"))
+clusters_t2_numeric <- as.numeric(str_extract(as.character(clusters_t2), "\\d"))
+
+# get medoids
+medoids_t1 <- GDAtools::medoids(dist_t1, clusters_t1_numeric)
+# as_tibble(atus_seq_t1)[medoids_t1,]
+medoids_t2 <- GDAtools::medoids(dist_t2, clusters_t2_numeric)
+# as_tibble(atus_seq_t2)[medoids_t2,]
+
+# distance between medoids
+medoids_all <- rbind(atus_seq_t1[medoids_t1,], atus_seq_t2[medoids_t2,])
+medoids_dist <- seqdist(medoids_all, method = "OM", indel = 1, sm = TRATE_cost)
+medoids_matched <- apply(medoids_dist[(k_t1+1):nrow(medoids_dist), 1:k_t1], 1, which.min)
+
+
+# seqdist(atus_seq_t1[medoids_t1,], method = "OM", indel = 1, sm = TRATE_cost)
+# seqdist(atus_seq_t2[medoids_t2,], method = "OM", indel = 1, sm = TRATE_cost)
 
 
 # transitions between clusters --------------------------------------------

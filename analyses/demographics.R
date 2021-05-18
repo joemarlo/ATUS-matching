@@ -66,7 +66,7 @@ sum(is.na(demographics$fam_income))
 # ggplot(demographics, aes(x = essential_industry, group = 1)) +
 #   geom_histogram(color = 'white') +
 #   labs(title = "Count of workers in essential industries",
-#        subtitle = paste0(time1, "/", time2, ' data; 4 = No CDC classifcation; 5 = No job'),
+#        subtitle = paste0(time1, "/", time2, ' data; 4 = No CDC classification; 5 = No job'),
 #        x = "Essential worker group",
 #        y = 'n')
 # ggsave('analyses/plots/essential_workers.png', height = 6, width = 9)
@@ -81,8 +81,7 @@ sum(is.na(demographics$fam_income))
 
 matching_vars <- c('age', 'sex', 'race', 'fam_income', 'has_partner', 
                    'education', 'child_in_HH', 'n_child', 'age_youngest', 'region', 
-                   'labor_force_status', 'partner_working', 'elder_in_HH',
-                   'metropolitan')
+                   'partner_working', 'elder_in_HH', 'metropolitan') #labor_force_status
 demographics <- demographics[, c('ID', 'year', matching_vars)]
 
 # remove NAs b/c income unknown for 13%

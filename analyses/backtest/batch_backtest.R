@@ -2,7 +2,7 @@
 # set years to backtest
 years <- 2003:2016
 
-# set lag between time1 and time2yout
+# set lag between time1 and time2
 lag <- 2
 
 # run the scripts
