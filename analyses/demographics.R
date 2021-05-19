@@ -14,8 +14,8 @@ demographics <- read_delim(file = "data/demographic.tsv",
 # data cleaning -----------------------------------------------------------
 
 # set time periods
-# time1 <- 2013
-# time2 <- time1 + 2
+time1 <- 2016
+time2 <- time1 + 2
 
 # filter to just time1 and time2, just weekdays and non-holidays
 boolean <- demographics$year %in% c(time1, time2) &

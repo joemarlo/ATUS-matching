@@ -57,6 +57,143 @@ calculate_balance <- function(rawdata, .matches, .propensity_model){
   return(balance_stats)
 }
 
+#' Calculate the penalized total distance of elements in a matrix
+#' 
+#' Returns the summed value of given elements in a matrix. Penalized if the same row is used twice; useful in optimization process to minimize likelihood row_indices is chosen.
+#' 
+#' If row_indices=1:5 then it would subset mat[1,1], mat[2,2], etc.
+#' If row_indices=1,3,3,4,3 would subset mat[1,1], mat[3,2], mat[3,3], mat[4,4], mat[3,5]
+#'
+#' @param row_indices a vector of numeric indices denoting the rows. Position in vector denotes the column
+#' @param mat the matrix. Typically a distance matrix
+#' @param penalized_value replacement value in matrix once row is used in a previous step
+#'
+#' @return a numeric representing the sum of the elements
+#' @export
+#'
+#' @examples
+#' mat <- matrix(rnorm(25), ncol = 5)
+#' get_distance(c(1,3,2,5,4), mat)
+#' get_distance(c(1,3,2,5,5), mat)
+get_distance <- function(row_indices, mat, penalized_value = 1e10){
+
+  col_indices <- 1:ncol(mat)
+  if (length(row_indices) != length(col_indices)) stop('row_indices should == ncol(mat)')
+  
+  values <- c()
+  for (i in col_indices){
+    row_index <- row_indices[i]
+    values[i] <- mat[row_index, i]
+    mat[row_index, ] <- penalized_value
+  }
+  total_distance = sum(values)
+  
+  return(total_distance)
+}
+
+#' Calculate the minimum total distance
+#' 
+#' Returns the matching row for each column that greedily minimizes the total distance across all rows. Rows are only selected once -- akin to sampling without replacement.
+#'
+#' @param mat the matrix. Typically a distance matrix
+#' @param penalized_value replacement value in matrix once row is used in a previous step
+#'
+#' @return a denoting vector denoting the row indexes 
+#' @export
+#'
+#' @examples
+#' mat <- matrix(rnorm(25), ncol = 5)
+#' minimize_distance(mat)
+minimize_distance <- function(mat, penalized_value = 1e10){
+  
+  if (!is.matrix(mat)) stop('mat must be a matrix')
+  
+  n_cols <- ncol(mat)
+  n_rows <- nrow(mat)
+  
+  # grid search for optimum
+  grid_results <- NMOF::gridSearch(get_distance,
+                                   mat = mat,
+                                   penalized_value = penalized_value,
+                                   lower = rep(1, n_cols),
+                                   upper = rep(n_rows, n_cols),
+                                   n = n_rows)
+  
+  return(grid_results$minlevels)
+}
+
+
+# global vars -------------------------------------------------------------
+options(scipen = 999)
+
+
+# experimental ------------------------------------------------------------
+
+# swap labels of clusters based on matching
+clus1 <- sample(1:5, 100, replace = T)
+clus2 <- sample(1:5, 100, replace = T)
+clus1_labels <- sort(unique(clus1))
+clus2_labels <- sort(unique(clus2))
+mapping <- sample(clus2_labels, length(clus1_labels), replace = T) # defines the clusters from clus1 that match to clus2
+
+# replace duplicates with NA
+mapping[duplicated(mapping)] <- NA
+
+# merge to get the new labels
+clusters_t2_numeric_relabeled <- tibble(clus1 = clus1_labels, 
+                                        clus2 = mapping) %>% 
+  left_join(x = tibble(clus2 = clus2),
+            y = .,
+            by = 'clus2') %>% 
+  rename(clus2_original = clus2,
+         clus2_new = clus1)
+
+# replace NAs with new labels
+# NAs represent the clusters that were not matched
+clusters_t2_numeric_relabeled <- clusters_t2_numeric_relabeled %>% 
+  distinct() %>% 
+  filter(is.na(clus2_new)) %>% 
+  arrange(clus2_original) %>% 
+  mutate(clus2_new = row_number() + sum(!is.na(mapping))) %>% 
+  left_join(x = clusters_t2_numeric_relabeled,
+            y = .,
+            by = 'clus2_original') %>% 
+  mutate(clus2_new = pmax(clus2_new.x, clus2_new.y, na.rm = TRUE)) %>% 
+  pull(clus2_new)
+
+
+
+swap_labels <- function(clusters_one, clusters_two, labels_new){
+  
+  if (!(is.numeric(clusters_one) & is.numeric(clusters_two))) stop('clusters_one and clusters_two must be numeric vectors')
+  
+  cluster_1_labels <- sort(unique(clus1))
+  cluster_2_labels <- sort(unique(clus2))
+  if (length(cluster_1_labels) != length(labels_new)) stop('Length of unique(clusters_one) should match length of labels_new')
+  
+  labels_new_appended <- paste0(labels_new, "_new")
+  
+  # replace the labels with matches
+  for(i in seq_along(cluster_1_labels)){
+    label_old <- cluster_1_labels[i]
+    label_new <- labels_new_appended[i]
+    clusters_two[clusters_two == label_old] <- label_new
+  }
+  
+  # for labels without a match, set label as the largest number
+  labels_missing <- setdiff(cluster_2_labels, labels_new)
+  for(label_missing in seq_along(labels_missing)){
+    label_missing <- labels_missing[i]
+    label_new <- paste0(length(cluster_1_labels) + i, "_new")
+    clusters_two[clusters_two == label_missing] <- label_new
+  }
+  
+  return(clusters_two)
+}
+
+swap_labels(clus1, clus2, mapping)
+
+
 
 # TODO
 mdist_weighted <- function (data.x, data.y = NULL, vc = NULL, weights){
@@ -81,7 +218,3 @@ mdist_weighted <- function (data.x, data.y = NULL, vc = NULL, weights){
   else dimnames(md) <- list(rownames(data.x), rownames(data.y))
   sqrt(md)
 }
-
-
-# global vars -------------------------------------------------------------
-options(scipen = 999)

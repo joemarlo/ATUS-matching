@@ -26,8 +26,8 @@ demographics_t2_raw <- read_csv(file = 'data/matched_time2_mahalanobis.csv')
 demographics_t2 <- distinct(demographics_t2_raw, across(-pair_id))
 
 # pull years denoting t1 and t2
-time1 <- demographics_t1$year[[1]]
-time2 <- demographics_t2$year[[1]]
+# time1 <- demographics_t1$year[[1]]
+# time2 <- demographics_t2$year[[1]]
 
 # create time1 and time2 dataframes for sequences
 atus_t1 <- atus_raw[atus_raw$ID %in% demographics_t1$ID,]
@@ -124,7 +124,7 @@ validity_stats %>%
   theme(legend.position = 'bottom')
 ggsave(file.path(time_file_path, "plots", "cluster_validity.png"), height = 6, width = 9)
 
-# which is the numeric optimal?
+# which k is optimal based on the mean metrics?
 optimal_k <- validity_stats %>%
   pivot_wider() %>% 
   group_by(time, k) %>% 
@@ -135,7 +135,6 @@ optimal_k <- validity_stats %>%
             .groups = 'drop')
 
 # set the cluster labels
-# TODO: replace with max value determined by previous step?
 k_t1 <- optimal_k$optimal_k[optimal_k$time == 't1'] #4
 k_t2 <- optimal_k$optimal_k[optimal_k$time == 't2'] #4
 sequenchr::plot_dendrogram(cluster_model_t1, k_t1, 50) + labs(subtitle = paste0("Time 1: ", time1))
@@ -144,6 +143,7 @@ sequenchr::plot_dendrogram(cluster_model_t2, k_t2, 50) + labs(subtitle = paste0(
 ggsave(file.path(time_file_path, "plots", "dendrogram_time2.png"), height = 6, width = 9)
 clusters_t1 <- sequenchr::label_clusters(cluster_model_t1, k_t1)
 clusters_t2 <- sequenchr::label_clusters(cluster_model_t2, k_t2)
+
 
 # cluster descriptions ----------------------------------------------------
 
@@ -174,6 +174,79 @@ sequenchr::plot_modal(atus_tidy_t2, color_mapping, clusters_t2) + labs(subtitle 
 ggsave(file.path(time_file_path, "plots", "modals_time2.png"), height = 9, width = 9)
 
 
+# matching clusters across times ------------------------------------------
+
+# convert cluster labels to numeric for medoid calculation
+clusters_t1_numeric <- as.numeric(str_extract(as.character(clusters_t1), "\\d"))
+clusters_t2_numeric <- as.numeric(str_extract(as.character(clusters_t2), "\\d"))
+
+# get medoids
+medoids_t1 <- GDAtools::medoids(dist_t1, clusters_t1_numeric)
+# as_tibble(atus_seq_t1)[medoids_t1,]
+medoids_t2 <- GDAtools::medoids(dist_t2, clusters_t2_numeric)
+# as_tibble(atus_seq_t2)[medoids_t2,]
+
+# distance between medoids
+medoids_all <- rbind(atus_seq_t1[medoids_t1,], atus_seq_t2[medoids_t2,])
+medoids_dist <- seqdist(medoids_all, method = "OM", indel = 1, sm = TRATE_cost)
+medoids_dist <- medoids_dist[(k_t1+1):nrow(medoids_dist), 1:k_t1]
+
+# optimal matches -- with replacement
+# medoids_matched <- apply(medoids_dist, 2, which.min)
+
+# optimal matches -- without replacement
+medoids_matched <- minimize_distance(medoids_dist)
+
+
+
+
+# plot and save distance matrix
+medoids_dist %>% 
+  as.data.frame() %>% 
+  setNames(paste0('Cluster ', 1:k_t1)) %>%
+  mutate(label = paste0("Cluster ", 1:k_t2)) %>% 
+  pivot_longer(cols = -label) %>% 
+  ggplot(aes(x = label, y = name, fill = value, label = round(value, 2))) +
+  geom_tile() +
+  shadowtext::geom_shadowtext(colour = 'grey90', bg.colour = 'grey35') +
+  # geom_text(color = 'grey70', family = 'Impact') +
+  labs(title = 'Distance between medoids in time 1 and time 2',
+       subtitle = paste0('Clusters in time 1 are matched to clusters ', paste0(medoids_matched, collapse = ', '), ' respectively'),
+       x = '\nCluster in time 2',
+       y = 'Cluster in time 1',
+       fill = 'TRATE distance')
+ggsave(file.path(time_file_path, "plots", "medoids_distance.png"), height = 7, width = 9)
+
+## relabel time2 clusters to with the matched label
+# first, merge to get the new labels
+clusters_t2_numeric_relabeled <- tibble(clus1 = sort(unique(clusters_t1_numeric)), 
+                                        clus2 = medoids_matched) %>% 
+  left_join(x = tibble(clus2 = clusters_t2_numeric),
+            y = .,
+            by = 'clus2') %>% 
+  rename(clus2_original = clus2,
+         clus2_new = clus1)
+
+# second, replace NAs with new labels
+# NAs represent the clusters that were not matched
+# new labels will 
+clusters_t2_numeric_relabeled <- clusters_t2_numeric_relabeled %>% 
+  distinct() %>% 
+  filter(is.na(clus2_new)) %>% 
+  arrange(clus2_original) %>% 
+  mutate(clus2_new = row_number() + length(mapping)) %>% 
+  left_join(x = clusters_t2_numeric_relabeled,
+            y = .,
+            by = 'clus2_original') %>% 
+  mutate(clus2_new = pmax(clus2_new.x, clus2_new.y, na.rm = TRUE)) %>% 
+  pull(clus2_new)
+
+# verify it worked
+# table(clusters_t2_numeric_relabeled, clusters_t2_numeric)
+
+# Q: if more than one t1 cluster matches to the same t2 cluster, how should we handle? 
+
+
 # demographics by cluster -------------------------------------------------
 
 # create dataframe denoting ID, cluster assignment, and time period
@@ -191,28 +264,6 @@ cluster_assignments <- tibble(
 #   geom_bar(aes(y = ..prop..)) +
 #   # geom_histogram() +
 #   facet_grid(time~cluster)
-
-
-# matching clusters across times ------------------------------------------
-
-# convert cluster lables to numeric for medoid calculation
-clusters_t1_numeric <- as.numeric(str_extract(as.character(clusters_t1), "\\d"))
-clusters_t2_numeric <- as.numeric(str_extract(as.character(clusters_t2), "\\d"))
-
-# get medoids
-medoids_t1 <- GDAtools::medoids(dist_t1, clusters_t1_numeric)
-# as_tibble(atus_seq_t1)[medoids_t1,]
-medoids_t2 <- GDAtools::medoids(dist_t2, clusters_t2_numeric)
-# as_tibble(atus_seq_t2)[medoids_t2,]
-
-# distance between medoids
-medoids_all <- rbind(atus_seq_t1[medoids_t1,], atus_seq_t2[medoids_t2,])
-medoids_dist <- seqdist(medoids_all, method = "OM", indel = 1, sm = TRATE_cost)
-medoids_matched <- apply(medoids_dist[(k_t1+1):nrow(medoids_dist), 1:k_t1], 1, which.min)
-
-
-# seqdist(atus_seq_t1[medoids_t1,], method = "OM", indel = 1, sm = TRATE_cost)
-# seqdist(atus_seq_t2[medoids_t2,], method = "OM", indel = 1, sm = TRATE_cost)
 
 
 # transitions between clusters --------------------------------------------
@@ -257,13 +308,14 @@ mean(cluster_pairs_wide$t1 == cluster_pairs_wide$t2)
 
 # transition matrix
 transition_rate %>% 
-  ggplot(aes(x = t1, y = t2, fill = rate_group, label = round(rate_group, 2))) +
+  ggplot(aes(x = t2, y = t1, fill = rate_group, label = round(rate_group, 2))) +
   geom_tile() +
-  geom_text(color = 'grey70') +
-  labs(title = "Transition matrix between clusters",
+  shadowtext::geom_shadowtext(colour = 'grey90', bg.colour = 'grey35') +
+  # geom_text(color = 'grey70') +
+  labs(title = "Transition matrix between matched clusters",
        subtitle = paste0(time1, "/", time2),
-       x = "\nCluster in time 1",
-       y = "Cluster in time 2",
+       x = "\nCluster in time 2",
+       y = "Cluster in time 1",
        fill = "Transition rate") +
   theme(axis.text.x = element_text(angle = -20, hjust = 0))
 ggsave(file.path(time_file_path, "plots", "transition_matrix.png"), height = 7, width = 9)

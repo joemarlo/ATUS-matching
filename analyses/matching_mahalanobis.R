@@ -5,6 +5,8 @@ source('analyses/demographics.R')
 source('analyses/helpers_analyses.R')
 set.seed(44)
 
+# if (!isTRUE(get0('in_batch_mode'))) time_file_path <- "analyses"
+
 
 # pre-processing ----------------------------------------------------------
 
