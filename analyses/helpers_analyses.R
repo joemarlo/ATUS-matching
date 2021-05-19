@@ -80,18 +80,21 @@ get_distance <- function(row_indices, mat, penalized_value = 1e10){
   col_indices <- 1:ncol(mat)
   if (length(row_indices) != length(col_indices)) stop('row_indices should == ncol(mat)')
   
+  # save the elements in the given row_indices and replace those rows with penalized_value
   values <- c()
   for (i in col_indices){
     row_index <- row_indices[i]
     values[i] <- mat[row_index, i]
-    mat[row_index, ] <- penalized_value
+    mat[row_index,] <- penalized_value
   }
-  total_distance = sum(values)
+  
+  # sum to get the total distance
+  total_distance <- sum(values)
   
   return(total_distance)
 }
 
-#' Calculate the minimum total distance
+#' Calculate the minimum possible total distance
 #' 
 #' Returns the matching row for each column that greedily minimizes the total distance across all rows. Rows are only selected once -- akin to sampling without replacement.
 #'
@@ -110,16 +113,30 @@ minimize_distance <- function(mat, penalized_value = 1e10){
   
   n_cols <- ncol(mat)
   n_rows <- nrow(mat)
-  
+
   # grid search for optimum
   grid_results <- NMOF::gridSearch(get_distance,
                                    mat = mat,
                                    penalized_value = penalized_value,
                                    lower = rep(1, n_cols),
                                    upper = rep(n_rows, n_cols),
-                                   n = n_rows)
+                                   n = n_rows)$minlevels
   
-  return(grid_results$minlevels)
+  # if there are more columns then rows (e.g. k_t2 > k_t1) then replace 
+  # the duplicates with the furthest distance with NAs
+  if ((n_cols - 1) == n_rows){
+    warning("ncol(mat) > nrow(mat); replacing duplicate optimum row index with NA")
+    tab <- table(grid_results)
+    dup_values <- as.numeric(names(tab[tab > 1]))
+    min_value <- which.min(mat[dup_values, which(grid_results == dup_values)])
+
+    grid_results[grid_results == dup_values][-min_value] <- NA
+  } else if ((n_cols - 1) > n_rows) {
+    #TODO: remove this restriction?
+    stop('(ncol(mat)-1) > nrow(mat); cannot currently handle matrices where there are two or more columns than the number of rows')
+  }
+
+  return(grid_results)
 }
 
 
@@ -134,10 +151,7 @@ clus1 <- sample(1:5, 100, replace = T)
 clus2 <- sample(1:5, 100, replace = T)
 clus1_labels <- sort(unique(clus1))
 clus2_labels <- sort(unique(clus2))
-mapping <- sample(clus2_labels, length(clus1_labels), replace = T) # defines the clusters from clus1 that match to clus2
-
-# replace duplicates with NA
-mapping[duplicated(mapping)] <- NA
+mapping <- sample(clus2_labels, length(clus1_labels), replace = FALSE) # defines the clusters from clus1 that match to clus2
 
 # merge to get the new labels
 clusters_t2_numeric_relabeled <- tibble(clus1 = clus1_labels, 

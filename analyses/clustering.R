@@ -180,7 +180,7 @@ ggsave(file.path(time_file_path, "plots", "modals_time2.png"), height = 9, width
 clusters_t1_numeric <- as.numeric(str_extract(as.character(clusters_t1), "\\d"))
 clusters_t2_numeric <- as.numeric(str_extract(as.character(clusters_t2), "\\d"))
 
-# get medoids
+# get medoids (note: medoid is in the dataset)
 medoids_t1 <- GDAtools::medoids(dist_t1, clusters_t1_numeric)
 # as_tibble(atus_seq_t1)[medoids_t1,]
 medoids_t2 <- GDAtools::medoids(dist_t2, clusters_t2_numeric)
@@ -197,8 +197,7 @@ medoids_dist <- medoids_dist[(k_t1+1):nrow(medoids_dist), 1:k_t1]
 # optimal matches -- without replacement
 medoids_matched <- minimize_distance(medoids_dist)
 
-
-
+#TODO: what about when k_t2 < k_t1? currently returns NAs for duplicates
 
 # plot and save distance matrix
 medoids_dist %>% 
