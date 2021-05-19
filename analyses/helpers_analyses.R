@@ -139,6 +139,78 @@ minimize_distance <- function(mat, penalized_value = 1e10){
   return(grid_results)
 }
 
+#' Swap cluster labels given a mapping 
+#'
+#' @param clusters_one a numeric vector of denoting cluster labels
+#' @param clusters_two a numeric vector of denoting cluster labels
+#' @param label_mapping a vector of length unique(clusters_one) that denotes which labels should be swapped based on index
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' clus1 <- sample(1:5, 100, replace = T)
+#' clus2 <- sample(1:5, 100, replace = T)
+#' clus1_labels <- sort(unique(clus1))
+#' clus2_labels <- sort(unique(clus2))
+#' mapping <- sample(clus2_labels, length(clus1_labels), replace = FALSE) # defines the clusters from clus1 that match to clus2
+#' swap_labels(clus1, clus2, mapping)
+swap_labels <- function(clusters_one, clusters_two, label_mapping){
+  
+  if (!(is.numeric(clusters_one) & is.numeric(clusters_two))) stop('clusters_one and clusters_two must be numeric vectors')
+  
+  # TODO: check for overlap?
+  
+  cluster_1_labels <- sort(unique(clusters_one))
+  cluster_2_labels <- sort(unique(clusters_two))
+  if (length(cluster_1_labels) != length(label_mapping)) stop('Length of unique(clusters_one) should match length of label_mapping')
+  
+  # merge to get the new labels
+  clusters_two_relabeled <- tibble(clus1 = cluster_1_labels, 
+                                   clus2 = label_mapping) %>% 
+    left_join(x = tibble(clus2 = clusters_two),
+              y = .,
+              by = 'clus2') %>% 
+    rename(clus2_original = clus2,
+           clus2_new = clus1)
+  
+  # replace NAs with new labels
+  # NAs represent the clusters that were not matched
+  clusters_two_relabeled <- clusters_two_relabeled %>% 
+    distinct() %>% 
+    filter(is.na(clus2_new)) %>% 
+    arrange(clus2_original) %>% 
+    mutate(clus2_new = row_number() + sum(!is.na(label_mapping))) %>% 
+    left_join(x = clusters_two_relabeled,
+              y = .,
+              by = 'clus2_original') %>% 
+    mutate(clus2_new = pmax(clus2_new.x, clus2_new.y, na.rm = TRUE)) %>% 
+    pull(clus2_new)
+  
+  return(clusters_two_relabeled)
+  
+  ## old explicit method
+  # label_mapping_appended <- paste0(label_mapping, "_new")
+  # 
+  # # replace the labels with matches
+  # for(i in seq_along(cluster_1_labels)){
+  #   label_old <- cluster_1_labels[i]
+  #   label_new <- label_mapping_appended[i]
+  #   clusters_two[clusters_two == label_old] <- label_new
+  # }
+  # 
+  # # for labels without a match, set label as the largest number
+  # labels_missing <- setdiff(cluster_2_labels, label_mapping)
+  # for(label_missing in seq_along(labels_missing)){
+  #   label_missing <- labels_missing[i]
+  #   label_new <- paste0(length(cluster_1_labels) + i, "_new")
+  #   clusters_two[clusters_two == label_missing] <- label_new
+  # }
+  # 
+  # return(clusters_two)
+}
+
+
 
 # global vars -------------------------------------------------------------
 options(scipen = 999)
@@ -175,37 +247,9 @@ clusters_t2_numeric_relabeled <- clusters_t2_numeric_relabeled %>%
   mutate(clus2_new = pmax(clus2_new.x, clus2_new.y, na.rm = TRUE)) %>% 
   pull(clus2_new)
 
-
-
-swap_labels <- function(clusters_one, clusters_two, labels_new){
-  
-  if (!(is.numeric(clusters_one) & is.numeric(clusters_two))) stop('clusters_one and clusters_two must be numeric vectors')
-  
-  cluster_1_labels <- sort(unique(clus1))
-  cluster_2_labels <- sort(unique(clus2))
-  if (length(cluster_1_labels) != length(labels_new)) stop('Length of unique(clusters_one) should match length of labels_new')
-  
-  labels_new_appended <- paste0(labels_new, "_new")
-  
-  # replace the labels with matches
-  for(i in seq_along(cluster_1_labels)){
-    label_old <- cluster_1_labels[i]
-    label_new <- labels_new_appended[i]
-    clusters_two[clusters_two == label_old] <- label_new
-  }
-  
-  # for labels without a match, set label as the largest number
-  labels_missing <- setdiff(cluster_2_labels, labels_new)
-  for(label_missing in seq_along(labels_missing)){
-    label_missing <- labels_missing[i]
-    label_new <- paste0(length(cluster_1_labels) + i, "_new")
-    clusters_two[clusters_two == label_missing] <- label_new
-  }
-  
-  return(clusters_two)
-}
-
-swap_labels(clus1, clus2, mapping)
+# test
+sum(table(clus2, clusters_t2_numeric_relabeled) > 0) == n_distinct(clus2)
+sum(table(clus2, clusters_t2_numeric_relabeled)) == length(clus2)
 
 
 

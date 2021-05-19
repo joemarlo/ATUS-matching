@@ -16,3 +16,20 @@ test_that("minimize_distance() output is correct", {
   expect_equal(0, sum(is.na(optimal_indices)))
   expect_equal(0, sum(duplicated(optimal_indices)))
 })
+
+# define clusters
+clus1 <- sample(1:5, 100, replace = T)
+clus2 <- sample(1:5, 100, replace = T)
+clus1_labels <- sort(unique(clus1))
+clus2_labels <- sort(unique(clus2))
+mapping <- sample(clus2_labels, length(clus1_labels), replace = FALSE) # defines the clusters from clus1 that match to clus2
+cluster_two_relabeled <- swap_labels(clus1, clus2, mapping)
+
+# TODO: double check everything
+test_that("swap_labels() output is correct", {
+  expect_vector(cluster_two_relabeled)
+  expect_type(cluster_two_relabeled, 'integer')
+  expect_true(sum(table(clus2, cluster_two_relabeled) > 0) == n_distinct(clus2))
+  expect_true(sum(table(clus2, cluster_two_relabeled)) == length(clus2))
+})
+

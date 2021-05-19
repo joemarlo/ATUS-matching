@@ -26,8 +26,8 @@ demographics_t2_raw <- read_csv(file = 'data/matched_time2_mahalanobis.csv')
 demographics_t2 <- distinct(demographics_t2_raw, across(-pair_id))
 
 # pull years denoting t1 and t2
-# time1 <- demographics_t1$year[[1]]
-# time2 <- demographics_t2$year[[1]]
+time1 <- demographics_t1$year[[1]]
+time2 <- demographics_t2$year[[1]]
 
 # create time1 and time2 dataframes for sequences
 atus_t1 <- atus_raw[atus_raw$ID %in% demographics_t1$ID,]
@@ -217,33 +217,21 @@ medoids_dist %>%
 ggsave(file.path(time_file_path, "plots", "medoids_distance.png"), height = 7, width = 9)
 
 ## relabel time2 clusters to with the matched label
-# first, merge to get the new labels
-clusters_t2_numeric_relabeled <- tibble(clus1 = sort(unique(clusters_t1_numeric)), 
-                                        clus2 = medoids_matched) %>% 
-  left_join(x = tibble(clus2 = clusters_t2_numeric),
-            y = .,
-            by = 'clus2') %>% 
-  rename(clus2_original = clus2,
-         clus2_new = clus1)
-
-# second, replace NAs with new labels
-# NAs represent the clusters that were not matched
-# new labels will 
-clusters_t2_numeric_relabeled <- clusters_t2_numeric_relabeled %>% 
-  distinct() %>% 
-  filter(is.na(clus2_new)) %>% 
-  arrange(clus2_original) %>% 
-  mutate(clus2_new = row_number() + length(mapping)) %>% 
-  left_join(x = clusters_t2_numeric_relabeled,
-            y = .,
-            by = 'clus2_original') %>% 
-  mutate(clus2_new = pmax(clus2_new.x, clus2_new.y, na.rm = TRUE)) %>% 
-  pull(clus2_new)
+clusters_t2_numeric_relabeled <- swap_labels(clusters_t1_numeric, clusters_t2_numeric, medoids_matched)
 
 # verify it worked
 # table(clusters_t2_numeric_relabeled, clusters_t2_numeric)
 
-# Q: if more than one t1 cluster matches to the same t2 cluster, how should we handle? 
+# TODO: if more than one t1 cluster matches to the same t2 cluster, how should we handle? 
+
+# turn labels back into a factor
+clusters_t2_relabeled <- tibble(old = clusters_t2_numeric_relabeled) %>% 
+  group_by(old) %>% 
+  add_tally() %>% 
+  ungroup() %>% 
+  mutate(new = paste0("Cluster ", old, "  |  n = ", n)) %>% 
+  pull(new)
+clusters_t2_relabeled <- factor(clusters_t2_relabeled, levels = sort(unique(clusters_t2_relabeled)))
 
 
 # demographics by cluster -------------------------------------------------
@@ -251,14 +239,14 @@ clusters_t2_numeric_relabeled <- clusters_t2_numeric_relabeled %>%
 # create dataframe denoting ID, cluster assignment, and time period
 cluster_assignments <- tibble(
   ID = as.double(c(rownames(atus_seq_t1), rownames(atus_seq_t2))),
-  cluster = c(as.character(clusters_t1), as.character(clusters_t2)),
-  time = c(rep('t1', length(clusters_t1)), rep('t2', length(clusters_t2))),
+  cluster = c(as.character(clusters_t1), as.character(clusters_t2_relabeled)),
+  time = c(rep('t1', length(clusters_t1)), rep('t2', length(clusters_t2_relabeled))),
 )
 
 # age by cluster and time
-# cluster_assignments %>% 
-#   left_join(demographics[, c('ID', 'age')], by = 'ID') %>% 
-#   mutate(cluster = str_extract(cluster, "Cluster \\d")) %>% 
+# cluster_assignments %>%
+#   left_join(demographics[, c('ID', 'age')], by = 'ID') %>%
+#   mutate(cluster = str_extract(cluster, "Cluster \\d")) %>%
 #   ggplot(aes(x = age)) +
 #   geom_bar(aes(y = ..prop..)) +
 #   # geom_histogram() +
