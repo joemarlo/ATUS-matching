@@ -22,7 +22,7 @@ for (time1 in years){
     dir.create(file.path(time_file_path, "data"))
   
     # run the scripts
-    source(file.path('analyses', 'matching_mahalanobis.R')) #TODO: this calls demographics.R; should separate
+    source(file.path('analyses', 'matching', 'matching_mahalanobis.R')) #TODO: this calls demographics.R; should separate
     source(file.path('analyses', 'clustering.R'))
   })
 }

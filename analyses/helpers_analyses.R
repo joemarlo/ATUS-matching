@@ -1,3 +1,4 @@
+library(tidyverse)
 
 #' Plot the standardized difference in means
 #' 
@@ -99,6 +100,7 @@ get_distance <- function(row_indices, mat, penalized_value = 1e10){
 #' Returns the matching row for each column that greedily minimizes the total distance across all rows. Rows are only selected once -- akin to sampling without replacement.
 #'
 #' @param mat the matrix. Typically a distance matrix
+#' @param with_replacement logical. Can a row index be matched to multiple columns?
 #' @param penalized_value replacement value in matrix once row is used in a previous step
 #'
 #' @return a denoting vector denoting the row indexes 
@@ -106,13 +108,19 @@ get_distance <- function(row_indices, mat, penalized_value = 1e10){
 #'
 #' @examples
 #' mat <- matrix(rnorm(25), ncol = 5)
-#' minimize_distance(mat)
-minimize_distance <- function(mat, penalized_value = 1e10){
+#' minimal_distance(mat)
+minimal_distance <- function(mat, with_replacement = FALSE, penalized_value = 1e10){
   
   if (!is.matrix(mat)) stop('mat must be a matrix')
   
   n_cols <- ncol(mat)
   n_rows <- nrow(mat)
+  
+  # return the row indices that denote the minimal value per column
+  if (isTRUE(with_replacement)){
+    best_matches <- apply(mat, 2, which.min)
+    return(best_matches)
+  }
 
   # grid search for optimum
   grid_results <- NMOF::gridSearch(get_distance,
@@ -122,14 +130,22 @@ minimize_distance <- function(mat, penalized_value = 1e10){
                                    upper = rep(n_rows, n_cols),
                                    n = n_rows)$minlevels
   
+  # TODO: could replace with input vector of row_indices w/o duplicates
+  # only works n_rows >= n_cols
+  # full_grid <- expand.grid(rep(list(1:n_rows), n_cols))
+  # indices <- apply(full_grid, 1, function(row) sum(1:n_rows %in% row) == n_cols)
+  # no_dups <- full_grid[indices,]
+  # distances <- apply(no_dups, 1, function(row) get_distance(row, mat))
+  # grid_results <- as.numeric(no_dups[which.min(distances),])
+  # nrow(no_dups) == (factorial(n_rows) / factorial(n_rows-n_cols))
+  
   # if there are more columns then rows (e.g. k_t2 > k_t1) then replace 
   # the duplicates with the furthest distance with NAs
   if ((n_cols - 1) == n_rows){
-    warning("ncol(mat) > nrow(mat); replacing duplicate optimum row index with NA")
+    warning("ncol(mat) > nrow(mat); replacing duplicate row index with NA")
     tab <- table(grid_results)
     dup_values <- as.numeric(names(tab[tab > 1]))
     min_value <- which.min(mat[dup_values, which(grid_results == dup_values)])
-
     grid_results[grid_results == dup_values][-min_value] <- NA
   } else if ((n_cols - 1) > n_rows) {
     #TODO: remove this restriction?
@@ -141,9 +157,11 @@ minimize_distance <- function(mat, penalized_value = 1e10){
 
 #' Swap cluster labels given a mapping 
 #'
+#' Given two vectors denoting cluster labels, change the labels in the second vector to match the mapping provided label_mapping. Maintains the same order of the cluster vector.
+#'
 #' @param clusters_one a numeric vector of denoting cluster labels
 #' @param clusters_two a numeric vector of denoting cluster labels
-#' @param label_mapping a vector of length unique(clusters_one) that denotes which labels should be swapped based on index
+#' @param label_mapping a vector of length unique(clusters_one) that denotes which labels should be swapped based on index. Should be the output from minimal_distance().
 #'
 #' @return
 #' @export
@@ -164,6 +182,8 @@ swap_labels <- function(clusters_one, clusters_two, label_mapping){
   cluster_1_labels <- sort(unique(clusters_one))
   cluster_2_labels <- sort(unique(clusters_two))
   if (length(cluster_1_labels) != length(label_mapping)) stop('Length of unique(clusters_one) should match length of label_mapping')
+  
+  # TODO: what if there are NAs in label_mapping?
   
   # merge to get the new labels
   clusters_two_relabeled <- tibble(clus1 = cluster_1_labels, 

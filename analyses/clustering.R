@@ -191,11 +191,8 @@ medoids_all <- rbind(atus_seq_t1[medoids_t1,], atus_seq_t2[medoids_t2,])
 medoids_dist <- seqdist(medoids_all, method = "OM", indel = 1, sm = TRATE_cost)
 medoids_dist <- medoids_dist[(k_t1+1):nrow(medoids_dist), 1:k_t1]
 
-# optimal matches -- with replacement
-# medoids_matched <- apply(medoids_dist, 2, which.min)
-
 # optimal matches -- without replacement
-medoids_matched <- minimize_distance(medoids_dist)
+medoids_matched <- minimal_distance(medoids_dist, with_replacement = FALSE)
 
 #TODO: what about when k_t2 < k_t1? currently returns NAs for duplicates
 
@@ -217,7 +214,8 @@ medoids_dist %>%
 ggsave(file.path(time_file_path, "plots", "medoids_distance.png"), height = 7, width = 9)
 
 ## relabel time2 clusters to with the matched label
-clusters_t2_numeric_relabeled <- swap_labels(clusters_t1_numeric, clusters_t2_numeric, medoids_matched)
+clusters_t2_numeric_relabeled <- swap_labels(clusters_t1_numeric, clusters_t2_numeric, 
+                                             label_mapping = medoids_matched)
 
 # verify it worked
 # table(clusters_t2_numeric_relabeled, clusters_t2_numeric)
@@ -294,12 +292,12 @@ write_csv(as_tibble(transition_table), path = file.path(time_file_path, 'data', 
 mean(cluster_pairs_wide$t1 == cluster_pairs_wide$t2)
 
 # transition matrix
-transition_rate %>% 
+transition_rate %>%
   ggplot(aes(x = t2, y = t1, fill = rate_group, label = round(rate_group, 2))) +
   geom_tile() +
   shadowtext::geom_shadowtext(colour = 'grey90', bg.colour = 'grey35') +
   # geom_text(color = 'grey70') +
-  labs(title = "Transition matrix between matched clusters",
+  labs(title = "Transition matrix between matched clusters. Rows sum to 1.",
        subtitle = paste0(time1, "/", time2),
        x = "\nCluster in time 2",
        y = "Cluster in time 1",
