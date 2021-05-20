@@ -5,8 +5,8 @@ require(rvest)
 # download data here: https://www.bls.gov/tus/#data
 #  and store in inputs/ATUS-2003-2018
 
-dat.files <- list.files('inputs/ATUS-2003-2018', '*.dat')
-files <- lapply(dat.files, function(file) read_csv(paste0("inputs/ATUS-2003-2018/", file)))
+dat.files <- list.files(file.path('inputs', 'ATUS-2003-2018', '*.dat'))
+files <- lapply(dat.files, function(file) read_csv(file.path("inputs", "ATUS-2003-2018", file)))
 names(files) <- str_remove(dat.files, ".dat")
 list2env(files, envir = .GlobalEnv)
 rm(files, dat.files)
@@ -22,7 +22,6 @@ simple.codes <- read_delim("inputs/simple_codes.csv",
                            "+", escape_double = FALSE, trim_ws = TRUE)
 
 # custom mapping for activities
-# TODO: review this
 curated.codes <- tribble(
   ~activity, ~description,
   't0101.*',  'Sleep',
@@ -61,7 +60,7 @@ curated.codes <- tribble(
   't1816.*',  'Other',
   't1818.*',  'Other',
   't1819.*',  'Other',
-  't189.*',  'Other',
+  't189.*',   'Other',
   't50.*',    'Other'
 )
 
