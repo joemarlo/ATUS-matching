@@ -241,61 +241,61 @@ options(scipen = 999)
 
 # experimental ------------------------------------------------------------
 
-# swap labels of clusters based on matching
-clus1 <- sample(1:5, 100, replace = T)
-clus2 <- sample(1:5, 100, replace = T)
-clus1_labels <- sort(unique(clus1))
-clus2_labels <- sort(unique(clus2))
-mapping <- sample(clus2_labels, length(clus1_labels), replace = FALSE) # defines the clusters from clus1 that match to clus2
-
-# merge to get the new labels
-clusters_t2_numeric_relabeled <- tibble(clus1 = clus1_labels, 
-                                        clus2 = mapping) %>% 
-  left_join(x = tibble(clus2 = clus2),
-            y = .,
-            by = 'clus2') %>% 
-  rename(clus2_original = clus2,
-         clus2_new = clus1)
-
-# replace NAs with new labels
-# NAs represent the clusters that were not matched
-clusters_t2_numeric_relabeled <- clusters_t2_numeric_relabeled %>% 
-  distinct() %>% 
-  filter(is.na(clus2_new)) %>% 
-  arrange(clus2_original) %>% 
-  mutate(clus2_new = row_number() + sum(!is.na(mapping))) %>% 
-  left_join(x = clusters_t2_numeric_relabeled,
-            y = .,
-            by = 'clus2_original') %>% 
-  mutate(clus2_new = pmax(clus2_new.x, clus2_new.y, na.rm = TRUE)) %>% 
-  pull(clus2_new)
-
-# test
-sum(table(clus2, clusters_t2_numeric_relabeled) > 0) == n_distinct(clus2)
-sum(table(clus2, clusters_t2_numeric_relabeled)) == length(clus2)
-
-
-
-# TODO
-mdist_weighted <- function (data.x, data.y = NULL, vc = NULL, weights){
-  # hacked from StatMatch::mahalanobis.dist and WMDB::wmahalanobis
-  
-  xx <- as.matrix(data.x)
-  if (is.null(data.y)) 
-    yy <- as.matrix(data.x)
-  else yy <- as.matrix(data.y)
-  if (is.null(vc)) {
-    if (is.null(data.y)) 
-      vc <- var(xx)
-    else vc <- var(rbind(xx, yy))
-  }
-  ny <- nrow(yy)
-  md <- matrix(0, nrow(xx), ny)
-  for (i in 1:ny) {
-    md[, i] <- mahalanobis(xx, yy[i, ], cov = vc)
-  }
-  if (is.null(data.y)) 
-    dimnames(md) <- list(rownames(data.x), rownames(data.x))
-  else dimnames(md) <- list(rownames(data.x), rownames(data.y))
-  sqrt(md)
-}
+# # swap labels of clusters based on matching
+# clus1 <- sample(1:5, 100, replace = T)
+# clus2 <- sample(1:5, 100, replace = T)
+# clus1_labels <- sort(unique(clus1))
+# clus2_labels <- sort(unique(clus2))
+# mapping <- sample(clus2_labels, length(clus1_labels), replace = FALSE) # defines the clusters from clus1 that match to clus2
+# 
+# # merge to get the new labels
+# clusters_t2_numeric_relabeled <- tibble(clus1 = clus1_labels, 
+#                                         clus2 = mapping) %>% 
+#   left_join(x = tibble(clus2 = clus2),
+#             y = .,
+#             by = 'clus2') %>% 
+#   rename(clus2_original = clus2,
+#          clus2_new = clus1)
+# 
+# # replace NAs with new labels
+# # NAs represent the clusters that were not matched
+# clusters_t2_numeric_relabeled <- clusters_t2_numeric_relabeled %>% 
+#   distinct() %>% 
+#   filter(is.na(clus2_new)) %>% 
+#   arrange(clus2_original) %>% 
+#   mutate(clus2_new = row_number() + sum(!is.na(mapping))) %>% 
+#   left_join(x = clusters_t2_numeric_relabeled,
+#             y = .,
+#             by = 'clus2_original') %>% 
+#   mutate(clus2_new = pmax(clus2_new.x, clus2_new.y, na.rm = TRUE)) %>% 
+#   pull(clus2_new)
+# 
+# # test
+# sum(table(clus2, clusters_t2_numeric_relabeled) > 0) == n_distinct(clus2)
+# sum(table(clus2, clusters_t2_numeric_relabeled)) == length(clus2)
+# 
+# 
+# 
+# # TODO
+# mdist_weighted <- function (data.x, data.y = NULL, vc = NULL, weights){
+#   # hacked from StatMatch::mahalanobis.dist and WMDB::wmahalanobis
+#   
+#   xx <- as.matrix(data.x)
+#   if (is.null(data.y)) 
+#     yy <- as.matrix(data.x)
+#   else yy <- as.matrix(data.y)
+#   if (is.null(vc)) {
+#     if (is.null(data.y)) 
+#       vc <- var(xx)
+#     else vc <- var(rbind(xx, yy))
+#   }
+#   ny <- nrow(yy)
+#   md <- matrix(0, nrow(xx), ny)
+#   for (i in 1:ny) {
+#     md[, i] <- mahalanobis(xx, yy[i, ], cov = vc)
+#   }
+#   if (is.null(data.y)) 
+#     dimnames(md) <- list(rownames(data.x), rownames(data.x))
+#   else dimnames(md) <- list(rownames(data.x), rownames(data.y))
+#   sqrt(md)
+# }

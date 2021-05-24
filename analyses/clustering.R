@@ -201,8 +201,6 @@ medoids_dist <- medoids_dist[(k_t1+1):nrow(medoids_dist), 1:k_t1]
 # optimal matches -- without replacement
 medoids_matched <- minimal_distance(medoids_dist, with_replacement = FALSE)
 
-#TODO: what about when k_t2 < k_t1? currently returns NAs for duplicates
-
 # plot and save distance matrix
 medoids_dist %>% 
   as.data.frame() %>% 
@@ -255,7 +253,7 @@ cluster_assignments %>%
   ggplot(aes(x = age)) +
   geom_bar() +
   facet_grid(time~cluster, scales = 'free_y') +
-  labs(title = 'Histogra of age by cluster and time',
+  labs(title = 'Histogram of age by cluster and time',
        subtitle = 'Cluster labels in t2 have been relabeled based on medoid matching',
        x = NULL,
        y = 'n')

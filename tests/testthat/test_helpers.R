@@ -53,10 +53,20 @@ clus2_labels <- sort(unique(clus2))
 mapping <- sample(clus2_labels, length(clus1_labels), replace = FALSE) # defines the clusters from clus1 that match to clus2
 cluster_two_relabeled <- swap_labels(clus1, clus2, mapping)
 
+# simulating duplicates
+clus2_2 <- sample(1:4, 100, replace = T)
+mapping[4] <- NA
+cluster_two_relabeled_2 <- swap_labels(clus1, clus2_2, mapping)
+
+# ISSUE here where swap_labels() is not correctly assigning cluster ids when there are duplicates
+
 test_that("swap_labels() output is correct", {
   expect_vector(cluster_two_relabeled)
   expect_type(cluster_two_relabeled, 'integer')
   expect_true(sum(table(clus2, cluster_two_relabeled) > 0) == n_distinct(clus2))
   expect_true(sum(table(clus2, cluster_two_relabeled)) == length(clus2))
+  
+  expect_equal(n_distinct(clus2_2), n_distinct(cluster_two_relabeled_2))
+  expect_equal(sum(!is.na(clus2_2)), sum(!is.na(cluster_two_relabeled_2)))
 })
 

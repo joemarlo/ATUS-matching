@@ -1,9 +1,9 @@
 
 # set years to backtest
-years <- 2003:2016
+years <- 2004:2017
 
 # set lag between time1 and time2
-lag <- 2
+lag <- 1
 
 # run the scripts
 for (time1 in years){
