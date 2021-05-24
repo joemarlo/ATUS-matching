@@ -58,6 +58,7 @@ calculate_balance <- function(rawdata, .matches, .propensity_model){
   return(balance_stats)
 }
 
+
 #' Calculate the penalized total distance of elements in a matrix
 #' 
 #' Returns the summed value of given elements in a matrix. Penalized if the same row is used twice; useful in optimization process to minimize likelihood row_indices is chosen.
@@ -97,13 +98,13 @@ get_distance <- function(row_indices, mat, penalized_value = 1e10){
 
 #' Calculate the minimum possible total distance
 #' 
-#' Returns the matching row for each column that greedily minimizes the total distance across all rows. Rows are only selected once -- akin to sampling without replacement.
+#' Returns the matching row for each column that greedily minimizes the total distance across all rows.
 #'
 #' @param mat the matrix. Typically a distance matrix
 #' @param with_replacement logical. Can a row index be matched to multiple columns?
 #' @param penalized_value replacement value in matrix once row is used in a previous step
 #'
-#' @return a denoting vector denoting the row indexes 
+#' @return a vector denoting the row indexes 
 #' @export
 #'
 #' @examples
@@ -111,7 +112,7 @@ get_distance <- function(row_indices, mat, penalized_value = 1e10){
 #' minimal_distance(mat)
 minimal_distance <- function(mat, with_replacement = FALSE, penalized_value = 1e10){
   
-  if (!is.matrix(mat)) stop('mat must be a matrix')
+  if (!isTRUE(is.matrix(mat))) stop('mat must be a matrix')
   
   n_cols <- ncol(mat)
   n_rows <- nrow(mat)
@@ -130,26 +131,28 @@ minimal_distance <- function(mat, with_replacement = FALSE, penalized_value = 1e
                                    upper = rep(n_rows, n_cols),
                                    n = n_rows)$minlevels
   
-  # TODO: could replace with input vector of row_indices w/o duplicates
-  # only works n_rows >= n_cols
+  # grid search
+  # faster but only works n_rows >= n_cols
+  # create grid of possible values with no duplicates
   # full_grid <- expand.grid(rep(list(1:n_rows), n_cols))
   # indices <- apply(full_grid, 1, function(row) sum(1:n_rows %in% row) == n_cols)
   # no_dups <- full_grid[indices,]
+  # check <- nrow(no_dups) == (factorial(n_rows) / factorial(n_rows-n_cols))
+  # if (!isTRUE(check)) stop('Internal error: nrow of grid search grid does not match expected nrow')
   # distances <- apply(no_dups, 1, function(row) get_distance(row, mat))
   # grid_results <- as.numeric(no_dups[which.min(distances),])
-  # nrow(no_dups) == (factorial(n_rows) / factorial(n_rows-n_cols))
   
   # if there are more columns then rows (e.g. k_t2 > k_t1) then replace 
-  # the duplicates with the furthest distance with NAs
-  if ((n_cols - 1) == n_rows){
-    warning("ncol(mat) > nrow(mat); replacing duplicate row index with NA")
+    # the duplicates with the furthest distance with NAs
+  # this means the medoids that are duplicate matches -- but are not the best match -- will not be matched
+  if (n_cols > n_rows){
+    warning("ncol(mat) > nrow(mat); replacing duplicate row index with furthest distance with NA")
     tab <- table(grid_results)
     dup_values <- as.numeric(names(tab[tab > 1]))
-    min_value <- which.min(mat[dup_values, which(grid_results == dup_values)])
-    grid_results[grid_results == dup_values][-min_value] <- NA
-  } else if ((n_cols - 1) > n_rows) {
-    #TODO: remove this restriction?
-    stop('(ncol(mat)-1) > nrow(mat); cannot currently handle matrices where there are two or more columns than the number of rows')
+    for (dup_value in dup_values) {
+      min_value <- which.min(mat[dup_value, which(grid_results == dup_value)])
+      grid_results[grid_results == dup_value][-min_value] <- NA
+    }
   }
 
   return(grid_results)

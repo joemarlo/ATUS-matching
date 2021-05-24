@@ -3,6 +3,7 @@ library(TraMineR)
 library(fastcluster)
 library(sequenchr)
 source('analyses/plots/ggplot_settings.R')
+source('analyses/helpers_analyses.R')
 set.seed(44)
 
 # read in ATUS data
@@ -12,7 +13,8 @@ atus_raw <- read_tsv("data/atus_30min.tsv")
 demographics <- read_delim(file = "data/demographic.tsv",
                            delim = "\t",
                            escape_double = FALSE,
-                           trim_ws = TRUE)
+                           trim_ws = TRUE,
+                           col_types = cols(metropolitan = col_character()))
 
 # read in the matches
 demographics_t1 <- read_csv(file = 'data/matched_time1_mahalanobis.csv')
@@ -144,6 +146,12 @@ ggsave(file.path(time_file_path, "plots", "dendrogram_time2.png"), height = 6, w
 clusters_t1 <- sequenchr::label_clusters(cluster_model_t1, k_t1)
 clusters_t2 <- sequenchr::label_clusters(cluster_model_t2, k_t2)
 
+# calculate n and proportion per cluster
+n_t1 <- as.numeric(table(clusters_t1))
+n_t2 <- as.numeric(table(clusters_t2))
+p_t1 <- n_t1 / sum(n_t1)
+p_t2 <- n_t2 / sum(n_t2)
+
 
 # cluster descriptions ----------------------------------------------------
 
@@ -184,7 +192,6 @@ clusters_t2_numeric <- as.numeric(str_extract(as.character(clusters_t2), "\\d"))
 medoids_t1 <- GDAtools::medoids(dist_t1, clusters_t1_numeric)
 # as_tibble(atus_seq_t1)[medoids_t1,]
 medoids_t2 <- GDAtools::medoids(dist_t2, clusters_t2_numeric)
-# as_tibble(atus_seq_t2)[medoids_t2,]
 
 # distance between medoids
 medoids_all <- rbind(atus_seq_t1[medoids_t1,], atus_seq_t2[medoids_t2,])
@@ -199,8 +206,8 @@ medoids_matched <- minimal_distance(medoids_dist, with_replacement = FALSE)
 # plot and save distance matrix
 medoids_dist %>% 
   as.data.frame() %>% 
-  setNames(paste0('Cluster ', 1:k_t1)) %>%
-  mutate(label = paste0("Cluster ", 1:k_t2)) %>% 
+  setNames(paste0('Cluster ', 1:k_t1, '\n p=', round(p_t1, 2))) %>%
+  mutate(label = paste0("Cluster ", 1:k_t2, '\n p=', round(p_t2, 2))) %>% 
   pivot_longer(cols = -label) %>% 
   ggplot(aes(x = label, y = name, fill = value, label = round(value, 2))) +
   geom_tile() +
@@ -208,19 +215,19 @@ medoids_dist %>%
   # geom_text(color = 'grey70', family = 'Impact') +
   labs(title = 'Distance between medoids in time 1 and time 2',
        subtitle = paste0('Clusters in time 1 are matched to clusters ', paste0(medoids_matched, collapse = ', '), ' respectively'),
+       caption = 'p = proportion of observations',
        x = '\nCluster in time 2',
        y = 'Cluster in time 1',
        fill = 'TRATE distance')
 ggsave(file.path(time_file_path, "plots", "medoids_distance.png"), height = 7, width = 9)
 
 ## relabel time2 clusters to with the matched label
-clusters_t2_numeric_relabeled <- swap_labels(clusters_t1_numeric, clusters_t2_numeric, 
+clusters_t2_numeric_relabeled <- swap_labels(clusters_t1_numeric, 
+                                             clusters_t2_numeric, 
                                              label_mapping = medoids_matched)
 
 # verify it worked
 # table(clusters_t2_numeric_relabeled, clusters_t2_numeric)
-
-# TODO: if more than one t1 cluster matches to the same t2 cluster, how should we handle? 
 
 # turn labels back into a factor
 clusters_t2_relabeled <- tibble(old = clusters_t2_numeric_relabeled) %>% 
@@ -242,20 +249,84 @@ cluster_assignments <- tibble(
 )
 
 # age by cluster and time
-# cluster_assignments %>%
-#   left_join(demographics[, c('ID', 'age')], by = 'ID') %>%
-#   mutate(cluster = str_extract(cluster, "Cluster \\d")) %>%
-#   ggplot(aes(x = age)) +
-#   geom_bar(aes(y = ..prop..)) +
-#   # geom_histogram() +
-#   facet_grid(time~cluster)
+cluster_assignments %>%
+  left_join(demographics[, c('ID', 'age')], by = 'ID') %>%
+  mutate(cluster = str_extract(cluster, "Cluster \\d")) %>%
+  ggplot(aes(x = age)) +
+  geom_bar() +
+  facet_grid(time~cluster, scales = 'free_y') +
+  labs(title = 'Histogra of age by cluster and time',
+       subtitle = 'Cluster labels in t2 have been relabeled based on medoid matching',
+       x = NULL,
+       y = 'n')
+ggsave(file.path(time_file_path, "plots", "medoid_matching_age.png"), height = 7, width = 9)
+
+c('sex', 'race', 'metropolitan', 'has_partner')
+# sex
+cluster_assignments %>%
+  left_join(demographics[, c('ID', 'sex')], by = 'ID') %>%
+  mutate(cluster = str_extract(cluster, "Cluster \\d"),
+         sex = recode(sex, '1' = 'Male', '2' = 'Female')) %>% 
+  ggplot(aes(x = sex)) +
+  geom_bar() +
+  facet_grid(time~cluster, scales = 'free_y') +
+  labs(title = 'Count of sex by cluster and time',
+       subtitle = paste0(time1, "/", time2),
+       caption = 'Cluster labels in t2 have been relabeled based on medoid matching',
+       x = NULL,
+       y = 'n')
+ggsave(file.path(time_file_path, "plots", "medoid_matching_sex.png"), height = 7, width = 9)
+
+# race
+cluster_assignments %>%
+  left_join(demographics[, c('ID', 'race')], by = 'ID') %>%
+  mutate(cluster = str_extract(cluster, "Cluster \\d")) %>% 
+  ggplot(aes(x = race)) +
+  geom_bar() +
+  facet_grid(time~cluster, scales = 'free_y') +
+  labs(title = 'Count of race by cluster and time',
+       subtitle = paste0(time1, "/", time2),
+       caption = 'Cluster labels in t2 have been relabeled based on medoid matching',
+       x = NULL,
+       y = 'n') +
+  theme(axis.text.x = element_text(angle = -40, hjust = 0))
+ggsave(file.path(time_file_path, "plots", "medoid_matching_race.png"), height = 7, width = 9)
+
+# metropolitan
+cluster_assignments %>%
+  left_join(demographics[, c('ID', 'metropolitan')], by = 'ID') %>%
+  mutate(cluster = str_extract(cluster, "Cluster \\d")) %>% 
+  ggplot(aes(x = metropolitan)) +
+  geom_bar() +
+  facet_grid(time~cluster, scales = 'free_y') +
+  labs(title = 'Count of metropolitan status by cluster and time',
+       subtitle = paste0(time1, "/", time2),
+       caption = 'Cluster labels in t2 have been relabeled based on medoid matching',
+       x = NULL,
+       y = 'n') +
+  theme(axis.text.x = element_text(angle = -40, hjust = 0))
+ggsave(file.path(time_file_path, "plots", "medoid_matching_metropolitan.png"), height = 7, width = 9)
+
+# has_partner
+cluster_assignments %>%
+  left_join(demographics[, c('ID', 'has_partner')], by = 'ID') %>%
+  mutate(cluster = str_extract(cluster, "Cluster \\d")) %>% 
+  ggplot(aes(x = has_partner)) +
+  geom_bar() +
+  facet_grid(time~cluster, scales = 'free_y') +
+  labs(title = 'Count of has_partner status by cluster and time',
+       subtitle = paste0(time1, "/", time2),
+       caption = 'Cluster labels in t2 have been relabeled based on medoid matching',
+       x = NULL,
+       y = 'n')
+ggsave(file.path(time_file_path, "plots", "medoid_matching_has_partner.png"), height = 7, width = 9)
 
 
 # transitions between clusters --------------------------------------------
 
 # relative cluster sizes
 table(clusters_t1) / sum(table(clusters_t1))
-table(clusters_t2) / sum(table(clusters_t2))
+table(clusters_t2_relabeled) / sum(table(clusters_t2_relabeled))
 
 # create dataframe indicating the cluster assignment and pair_id
 pair_ids <- tibble(
@@ -299,6 +370,7 @@ transition_rate %>%
   # geom_text(color = 'grey70') +
   labs(title = "Transition matrix between matched clusters. Rows sum to 1.",
        subtitle = paste0(time1, "/", time2),
+       caption = 'Cluster labels in t2 have been relabeled based on medoid matching',
        x = "\nCluster in time 2",
        y = "Cluster in time 1",
        fill = "Transition rate") +
