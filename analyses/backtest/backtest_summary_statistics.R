@@ -1,7 +1,9 @@
 library(tidyverse)
+source('analyses/plots/ggplot_settings.R')
 
 # list all the backtests previously run
 path_years <- list.dirs(file.path('analyses', 'backtest'), recursive = FALSE)
+path_years <- path_years[str_detect(path_years, "\\d$")]
 years_run <- str_extract(path_years, "[0-9]*_[0-9]*$")
 
 
@@ -19,21 +21,12 @@ transition_dfs <- map_dfr(path_years, function(path){
 
 # calculate mean rates
 stationary_rate <- transition_dfs %>%
-  mutate(year = paste0(year1, "_", year2)) %>% 
-  group_by(year) %>% 
-  group_split() %>% 
-  map(function(df){
-    t_mat <- df %>% 
-      pivot_wider(values_from = n, names_from = t2) %>% 
-      select(-t1, -year1, -year2, -year) %>% 
-      as.matrix()
-    mean_stationary <- sum(diag(t_mat)) / sum(t_mat)
-    return(mean_stationary)
-  })
+  group_by(year1) %>% 
+  summarize(rate = sum((t1 == t2) * n) / sum(n))
 
 # plot rate
-tibble(rate = unlist(stationary_rate)) %>% 
-  mutate(year = as.numeric(str_extract(years_run, "[0-9]{4}"))) %>% 
+stationary_rate %>% 
+  mutate(year = as.numeric(year1)) %>% 
   ggplot(aes(x = year, y = rate)) +
   geom_line() +
   geom_point() +
