@@ -1,4 +1,3 @@
-analyses/backtest/*/
 inputs/ATUS-2003-2018
 data/*.tsv
 analyses/supporting/fred_api_key.R

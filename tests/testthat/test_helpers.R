@@ -53,12 +53,17 @@ clus2_labels <- sort(unique(clus2))
 mapping <- sample(clus2_labels, length(clus1_labels), replace = FALSE) # defines the clusters from clus1 that match to clus2
 cluster_two_relabeled <- swap_labels(clus1, clus2, mapping)
 
-# simulating duplicates
+# simulating k_t1 > k_t2
 clus2_2 <- sample(1:4, 100, replace = T)
-mapping[4] <- NA
-cluster_two_relabeled_2 <- swap_labels(clus1, clus2_2, mapping)
+mapping_2 <- mapping
+mapping_2[4] <- NA
+cluster_two_relabeled_2 <- swap_labels(clus1, clus2_2, mapping_2)
 
-# ISSUE here where swap_labels() is not correctly assigning cluster ids when there are duplicates
+# simulating k_t1 < k_t2
+clus1_2 <- sample(1:4, 100, replace = T)
+clus1_2_labels <- sort(unique(clus1_2))
+mapping_3 <- sample(clus2_labels, length(clus1_2_labels), replace = FALSE) 
+cluster_two_relabeled_3 <- swap_labels(clus1_2, clus2, mapping_3)
 
 test_that("swap_labels() output is correct", {
   expect_vector(cluster_two_relabeled)
@@ -67,6 +72,12 @@ test_that("swap_labels() output is correct", {
   expect_true(sum(table(clus2, cluster_two_relabeled)) == length(clus2))
   
   expect_equal(n_distinct(clus2_2), n_distinct(cluster_two_relabeled_2))
+  c22_counts <- as.numeric(sort(table(cluster_two_relabeled_2)))
+  c22_counts <- c22_counts[c22_counts > 0]
+  expect_equal(as.numeric(sort(table(clus2_2))), c22_counts)
   expect_equal(sum(!is.na(clus2_2)), sum(!is.na(cluster_two_relabeled_2)))
+  
+  expect_equal(n_distinct(clus2), n_distinct(cluster_two_relabeled_3))
+  c23_counts <- as.numeric(sort(table(cluster_two_relabeled_3)))
+  expect_equal(as.numeric(sort(table(clus2))), c23_counts)
 })
-

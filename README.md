@@ -10,7 +10,12 @@
     └── README.md
 
 
-### Current matching results
+### Status results
+
+<br>
+<p align="center">
+<img src="analyses/analyses/backtest/plots/mean_transition_rate.png" width=80%>
+</p>
 
 <br>
 <p align="center">

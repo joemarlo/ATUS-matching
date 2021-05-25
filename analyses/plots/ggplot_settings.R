@@ -20,7 +20,7 @@ theme_custom <- function() {
       strip.background = element_rect(fill = "gray95"),
       strip.text = element_text(
         color = "gray30",
-        size = 11,
+        size = 10,
         face = "bold"
       ),
       plot.title = element_text(face = "bold"),

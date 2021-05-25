@@ -1,5 +1,7 @@
 library(tidyverse)
 
+`%notin%` <- negate(`%in%`)
+
 #' Plot the standardized difference in means
 #' 
 #' Plot the standardized difference in means from the output of arm::balance()
@@ -166,7 +168,7 @@ minimal_distance <- function(mat, with_replacement = FALSE, penalized_value = 1e
 #' @param clusters_two a numeric vector of denoting cluster labels
 #' @param label_mapping a vector of length unique(clusters_one) that denotes which labels should be swapped based on index. Should be the output from minimal_distance().
 #'
-#' @return
+#' @return a factor representing `clusters_two` with swapped labels and levels that match `clusters_one`
 #' @export
 #'
 #' @examples
@@ -179,60 +181,51 @@ minimal_distance <- function(mat, with_replacement = FALSE, penalized_value = 1e
 swap_labels <- function(clusters_one, clusters_two, label_mapping){
   
   if (!(is.numeric(clusters_one) & is.numeric(clusters_two))) stop('clusters_one and clusters_two must be numeric vectors')
-  
-  # TODO: check for overlap?
-  
+  if (any(c(is.na(clusters_one), is.na(clusters_two)))) stop('clusters_one and/or clusters_two contain NAs')
+
   cluster_1_labels <- sort(unique(clusters_one))
   cluster_2_labels <- sort(unique(clusters_two))
-  if (length(cluster_1_labels) != length(label_mapping)) stop('Length of unique(clusters_one) should match length of label_mapping')
+  if (length(cluster_1_labels) != length(label_mapping)){
+    stop('Length of unique(clusters_one) should match length of label_mapping')
+  }
   
-  # TODO: what if there are NAs in label_mapping?
+  # the mapping explicitly states how t1 -> t2 but directionality doesn't matter 
+  label_mapping_df <- data.frame(t1 = seq_along(label_mapping),
+                                 t2 = label_mapping)
   
-  # merge to get the new labels
-  clusters_two_relabeled <- tibble(clus1 = cluster_1_labels, 
-                                   clus2 = label_mapping) %>% 
-    left_join(x = tibble(clus2 = clusters_two),
-              y = .,
-              by = 'clus2') %>% 
-    rename(clus2_original = clus2,
-           clus2_new = clus1)
+  # join to get the new labels (this keeps the order unlike base::merge)
+  clusters_two_new <- left_join(x = data.frame(t2 = clusters_two), 
+                                y = label_mapping_df,
+                                by = 't2')
+  colnames(clusters_two_new) <- c('t2_old', 't2_new')
   
-  # replace NAs with new labels
-  # NAs represent the clusters that were not matched
-  clusters_two_relabeled <- clusters_two_relabeled %>% 
-    distinct() %>% 
-    filter(is.na(clus2_new)) %>% 
-    arrange(clus2_original) %>% 
-    mutate(clus2_new = row_number() + sum(!is.na(label_mapping))) %>% 
-    left_join(x = clusters_two_relabeled,
-              y = .,
-              by = 'clus2_original') %>% 
-    mutate(clus2_new = pmax(clus2_new.x, clus2_new.y, na.rm = TRUE)) %>% 
-    pull(clus2_new)
-  
-  return(clusters_two_relabeled)
-  
-  ## old explicit method
-  # label_mapping_appended <- paste0(label_mapping, "_new")
-  # 
-  # # replace the labels with matches
-  # for(i in seq_along(cluster_1_labels)){
-  #   label_old <- cluster_1_labels[i]
-  #   label_new <- label_mapping_appended[i]
-  #   clusters_two[clusters_two == label_old] <- label_new
-  # }
-  # 
-  # # for labels without a match, set label as the largest number
-  # labels_missing <- setdiff(cluster_2_labels, label_mapping)
-  # for(label_missing in seq_along(labels_missing)){
-  #   label_missing <- labels_missing[i]
-  #   label_new <- paste0(length(cluster_1_labels) + i, "_new")
-  #   clusters_two[clusters_two == label_missing] <- label_new
-  # }
-  # 
-  # return(clusters_two)
-}
+  # the NAs represent clusters in t2 that are not matched to clusters in t1
+  # we'll make that explicit by changing the label
+  if (any(is.na(clusters_two_new$t2_new))){
+    distinct_NA_pairs <- distinct(clusters_two_new) %>% filter(is.na(t2_new))
+    distinct_NA_pairs$t2_new_NA <- paste0("unmatched ", seq_along(distinct_NA_pairs$t2_new))
+    clusters_two_new <- left_join(x = clusters_two_new,
+                                  y = distinct_NA_pairs,
+                                  by = c('t2_old', 't2_new'))
+    clusters_two_new <- ifelse(is.na(clusters_two_new$t2_new),
+                               clusters_two_new$t2_new_NA,
+                               clusters_two_new$t2_new)
+  } else {
+    clusters_two_new <- clusters_two_new$t2_new
+  }
 
+  # convert to a factor so ordering matches clusters_one
+  # this is important later when viewing the transition matrix
+  clusters_two_new_f <- factor(clusters_two_new,
+                               levels = union(cluster_1_labels, sort(unique(clusters_two_new))))
+  
+  # final checks
+  if (!isTRUE(length(clusters_two) == length(clusters_two_new_f))){
+    stop("Internal error: length of new cluster vector does not match original")
+  }
+  
+  return(clusters_two_new_f)
+}
 
 
 # global vars -------------------------------------------------------------

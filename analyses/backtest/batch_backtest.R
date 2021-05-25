@@ -19,6 +19,9 @@ for (time1 in years){
     time_file_path <- file.path('analyses', 'backtest', paste0(time1, '_', time2))
     dir.create(time_file_path)
     dir.create(file.path(time_file_path, "plots"))
+    dir.create(file.path(time_file_path, "plots", "matching"))
+    dir.create(file.path(time_file_path, "plots", "clustering"))
+    dir.create(file.path(time_file_path, "plots", "cluster_comparison"))
     dir.create(file.path(time_file_path, "data"))
   
     # run the scripts
