@@ -40,9 +40,66 @@ stationary_rate %>%
 ggsave(file.path('analyses', 'backtest', 'plots', 'mean_transition_rate.png'),
        width = 9, height = 6)
 
-# TODO: how does this compare to baseline noise? 
+# how does this compare to baseline noise? 
 # e.g. if it was totally random, what would be the transition rate
 # needs to account for k clusters and n per cluster
+
+# unique pairs of ks
+k_pairs <- transition_dfs %>%
+  group_by(year = year1) %>% 
+  summarize(t1 = n_distinct(t1),
+            t2 = n_distinct(t2))
+
+# find n per cluster per time per year
+n_t1 <- transition_dfs %>%
+  group_by(year = year1, t1) %>% 
+  summarize(n_t1 = sum(n)) %>%
+  group_by(year) %>% 
+  nest() %>% 
+  ungroup()
+n_t2 <- transition_dfs %>%
+  group_by(year = year1, t2) %>% 
+  summarize(n_t2 = sum(n)) %>%
+  group_by(year) %>% 
+  nest() %>% 
+  ungroup()
+
+k_pairs <- k_pairs %>% 
+  full_join(n_t1, by = 'year') %>% 
+  full_join(n_t2, by = 'year') %>% 
+  rename(k_t1 = t1, k_t2 = t2, data_t1 = data.x, data_t2 = data.y)
+
+# simulate the match rate if outcomes were completely random
+simulated_rates <- apply(k_pairs, 1, function(row){
+  prop_t1 <- row$data_t1$n_t1 / row$k_t1
+  prop_t2 <- row$data_t2$n_t2 / row$k_t2
+  
+  baseline_rate <- mean(
+    sample(1:row$k_t1, size = 100000, replace = TRUE, prob = prop_t1)
+    ==
+    sample(1:row$k_t2, size = 100000, replace = TRUE, prob = prop_t2)
+  )
+})
+
+# plot rate
+stationary_rate %>% 
+  mutate(year = as.numeric(year1),
+         simulated_rate = simulated_rates) %>% 
+  ggplot(aes(x = year, y = rate)) +
+  geom_line() +
+  geom_point() +
+  geom_point(aes(y = simulated_rate), 
+             shape = 4) +
+  scale_x_continuous(breaks = 2004:2017,
+                     labels = paste0(2004:2017, '\n-\n', 2005:2018)) +
+  scale_y_continuous(limits = c(0, 1)) +
+  labs(title = 'Mean rate that observations transition to like cluster',
+       subtitle = 'x point represents simulated rate if matches were random',
+       caption = 'Simulated points calculated from random samples with same k and proportion by year',
+       x = NULL,
+       y = 'Mean transition rate')
+ggsave(file.path('analyses', 'backtest', 'plots', 'mean_transition_rate_simulated.png'),
+       width = 9, height = 6)
 
 
 # how many years have the same number of clusters -------------------------
