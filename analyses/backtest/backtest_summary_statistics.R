@@ -46,3 +46,27 @@ tibble(rate = unlist(stationary_rate)) %>%
        y = 'Mean transition rate')
 ggsave(file.path('analyses', 'backtest', 'plots', 'mean_transition_rate.png'),
        width = 9, height = 6)
+
+# TODO: how does this compare to baseline noise? 
+# e.g. if it was totally random, what would be the transition rate
+# needs to account for k clusters and n per cluster
+
+
+# how many years have the same number of clusters -------------------------
+
+transition_dfs %>% 
+  group_by(year1) %>% 
+  summarize(t1 = n_distinct(t1),
+            t2 = n_distinct(t2)) %>%
+  pivot_longer(-year1) %>% 
+  ggplot(aes(x = year1, y = value, fill = name)) +
+  geom_col(position = 'dodge', width = 0.7) +
+  scale_x_discrete(labels = paste0(2004:2017, '\n-\n', 2005:2018)) +
+  scale_y_continuous(breaks = 0:8) +
+  labs(title = 'k clusters by year',
+       x = NULL,
+       y = 'k clusters',
+       fill = NULL) +
+  theme(legend.position = 'bottom')
+ggsave(file.path('analyses', 'backtest', 'plots', 'k_clusters.png'),
+       width = 9, height = 6)
