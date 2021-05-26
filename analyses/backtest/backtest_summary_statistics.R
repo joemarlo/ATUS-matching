@@ -70,14 +70,22 @@ k_pairs <- k_pairs %>%
   rename(k_t1 = t1, k_t2 = t2, data_t1 = data.x, data_t2 = data.y)
 
 # simulate the match rate if outcomes were completely random
-simulated_rates <- apply(k_pairs, 1, function(row){
+simulated_rates <- apply(X = k_pairs, MARGIN = 1, FUN = function(row){
+  
+  # proportion of observations in each cluster at t1 and t2
   prop_t1 <- row$data_t1$n_t1 / row$k_t1
   prop_t2 <- row$data_t2$n_t2 / row$k_t2
+  # prop_t2 <- rep(1/row$k_t2, row$k_t2)
   
+  # cluster labels from t1 and t2
+  labels_t1 <- row$data_t1$t1
+  labels_t2 <- row$data_t2$t2
+  
+  # sim
   baseline_rate <- mean(
-    sample(1:row$k_t1, size = 100000, replace = TRUE, prob = prop_t1)
+    sample(labels_t1, size = 100000, replace = TRUE, prob = prop_t1)
     ==
-    sample(1:row$k_t2, size = 100000, replace = TRUE, prob = prop_t2)
+    sample(labels_t2, size = 100000, replace = TRUE, prob = prop_t2)
   )
 })
 
@@ -94,7 +102,7 @@ stationary_rate %>%
                      labels = paste0(2004:2017, '\n-\n', 2005:2018)) +
   scale_y_continuous(limits = c(0, 1)) +
   labs(title = 'Mean rate that observations transition to like cluster',
-       subtitle = 'x point represents simulated rate if matches were random',
+       subtitle = 'x point represents simulated rate if t1/t2 transitions were random',
        caption = 'Simulated points calculated from random samples with same k and proportion by year',
        x = NULL,
        y = 'Mean transition rate')
