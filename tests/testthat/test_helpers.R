@@ -1,5 +1,5 @@
-# testthat::test_dir("tests/testthat")
 # source("analyses/helpers_analyses.R")
+# testthat::test_dir("tests/testthat")
 set.seed(44)
 
 mat <- matrix(rnorm(25), ncol = 5)

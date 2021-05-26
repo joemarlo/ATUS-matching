@@ -32,7 +32,7 @@ stationary_rate %>%
   geom_point() +
   scale_x_continuous(breaks = 2004:2017,
                      labels = paste0(2004:2017, '\n-\n', 2005:2018)) +
-  scale_y_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.1)) +
   labs(title = 'Mean rate that observations transition to like cluster',
        subtitle = 'One year lag',
        x = NULL,
@@ -74,8 +74,9 @@ simulated_rates <- apply(X = k_pairs, MARGIN = 1, FUN = function(row){
   
   # proportion of observations in each cluster at t1 and t2
   prop_t1 <- row$data_t1$n_t1 / row$k_t1
-  prop_t2 <- row$data_t2$n_t2 / row$k_t2
-  # prop_t2 <- rep(1/row$k_t2, row$k_t2)
+  # prop_t2 <- row$data_t2$n_t2 / row$k_t2
+  prop_t2 <- rep(1/row$k_t2, row$k_t2)
+  #TODO: should the t2 proportions be derived or random?
   
   # cluster labels from t1 and t2
   labels_t1 <- row$data_t1$t1
@@ -100,7 +101,7 @@ stationary_rate %>%
              shape = 4) +
   scale_x_continuous(breaks = 2004:2017,
                      labels = paste0(2004:2017, '\n-\n', 2005:2018)) +
-  scale_y_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.1)) +
   labs(title = 'Mean rate that observations transition to like cluster',
        subtitle = 'x point represents simulated rate if t1/t2 transitions were random',
        caption = 'Simulated points calculated from random samples with same k and proportion by year',

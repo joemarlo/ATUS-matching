@@ -99,7 +99,6 @@ hubert_c_t1 <- sapply(k_seq, function(k) clusterSim::index.C(dist_t1, stats::cut
 hubert_c_t2 <- sapply(k_seq, function(k) clusterSim::index.C(dist_t2, stats::cutree(cluster_model_t2, k)))
 stats_t1 <- sequenchr::cluster_stats(dist_t1, cluster_model_t1, k_range[1], k_range[2])
 stats_t2 <- sequenchr::cluster_stats(dist_t2, cluster_model_t2, k_range[1], k_range[2])
-scale_01 <- function(x) (x - min(x))/diff(range(x))
 
 # plot all the metrics
 validity_stats <- bind_rows(
@@ -144,8 +143,8 @@ optimal_k <- mean_metric %>%
             .groups = 'drop')
 
 # set the cluster labels
-k_t1 <- optimal_k$optimal_k[optimal_k$time == 't1'] #4
-k_t2 <- optimal_k$optimal_k[optimal_k$time == 't2'] #4
+k_t1 <- optimal_k$optimal_k[optimal_k$time == 't1']
+k_t2 <- optimal_k$optimal_k[optimal_k$time == 't2']
 sequenchr::plot_dendrogram(cluster_model_t1, k_t1, 50) + labs(subtitle = paste0("Time 1: ", time1))
 ggsave(file.path(time_file_path, "plots", 'clustering', "dendrogram_time1.png"), height = 6, width = 9)
 sequenchr::plot_dendrogram(cluster_model_t2, k_t2, 50) + labs(subtitle = paste0("Time 2: ", time2))
@@ -350,6 +349,7 @@ cluster_pairs <- left_join(pair_ids, cluster_assignments, by = 'ID')
 
 # write out: batch script only
 write_csv(cluster_pairs, path = file.path(time_file_path, 'data', 'cluster_pairs.csv'))
+# write_csv(cluster_pairs, path = file.path('data', 'cluster_pairs.csv'))
 
 # how consistent are the clusters across time1 and time2?
 cluster_pairs_wide <- cluster_pairs %>% 
@@ -370,7 +370,8 @@ transition_rate <- cluster_pairs_wide %>%
 transition_table <- table(t1 = cluster_pairs_wide$t1, t2 = cluster_pairs_wide$t2)
 
 # write out: batch script only
-write_csv(as_tibble(transition_table), path = file.path(time_file_path, 'data', 'transition_matrix.csv'))
+write_csv(as_tibble(transition_table), 
+          path = file.path(time_file_path, 'data', 'transition_matrix.csv'))
 
 # how often do matches stay in the same cluster?
 mean(cluster_pairs_wide$t1 == cluster_pairs_wide$t2)

@@ -19,6 +19,11 @@
 
 <br>
 <p align="center">
+<img src="analyses/plots/match_rate_at_k.png" width=80%>
+</p>
+
+<br>
+<p align="center">
 <img src="analyses/plots/perfect_matches_mahalanobis.png" width=80%>
 </p>
 

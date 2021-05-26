@@ -1,22 +1,30 @@
 
+# set batch mode to TRUE as this tells the child scripts where to save files
+in_batch_mode <- TRUE
+
 # set years to backtest
 years <- 2004:2017
 
 # set lag between time1 and time2
-lag <- 1
+lag_years <- 1
 
-# run the scripts
+# create subfolder
+date_time <- paste0("batch_", gsub(" ", "_", gsub("-|:", "", Sys.time())))
+path_to_batch <- file.path('analyses', 'backtest', date_time)
+dir.create(path_to_batch)
+
+# run the child scripts
 for (time1 in years){
   
   # remove global variables created in previous loop
-  rm(list = setdiff(ls(), c("years", "lag", "time1")))
+  rm(list = setdiff(ls(), c("years", "lag_years", "time1", 'path_to_batch', 'in_batch_mode', 'date_time')))
   
   try({
     # set time2 based on lag
-    time2 <- time1 + lag
+    time2 <- time1 + lag_years
   
     # create subfolders
-    time_file_path <- file.path('analyses', 'backtest', paste0(time1, '_', time2))
+    time_file_path <- file.path(path_to_batch, paste0(time1, '_', time2))
     dir.create(time_file_path)
     dir.create(file.path(time_file_path, "plots"))
     dir.create(file.path(time_file_path, "plots", "matching"))
@@ -29,3 +37,17 @@ for (time1 in years){
     source(file.path('analyses', 'clustering.R'))
   })
 }
+
+# create readme with any relevant notes
+notes <- paste0('This batch was run with the following specifications:',
+                '\n\nYears: ', paste0(years, collapse = ', '),
+                '\nLag: ', lag_years,
+                '\nk values: float across t1 and t2',
+                '\nk search range: ', paste0(k_seq, collapse = ', '),
+                '\nDistance method: TRATE', #levenshtein
+                '\nClustering algorithm: hclust, ward.D2', #agnes, PAM
+                '\nMatching method: Mahalanobis distance on ', paste0(matching_vars, collapse = ', '))
+file_connection <- file(file.path(path_to_batch, "README.md"))
+writeLines(notes, file_connection)
+close(file_connection)
+

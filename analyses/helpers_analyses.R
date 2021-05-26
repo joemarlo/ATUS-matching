@@ -1,6 +1,7 @@
 library(tidyverse)
 
 `%notin%` <- negate(`%in%`)
+scale_01 <- function(x) (x - min(x))/diff(range(x))
 
 #' Plot the standardized difference in means
 #' 
@@ -168,7 +169,7 @@ minimal_distance <- function(mat, with_replacement = FALSE, penalized_value = 1e
 #' @param clusters_two a numeric vector of denoting cluster labels
 #' @param label_mapping a vector of length unique(clusters_one) that denotes which labels should be swapped based on index. Should be the output from minimal_distance().
 #'
-#' @return a factor representing `clusters_two` with swapped labels and levels that match `clusters_one`
+#' @return a factor representing `clusters_two` with swapped labels and levels that match union(`clusters_one`, `clusters_two`)
 #' @export
 #'
 #' @examples

@@ -123,6 +123,12 @@ demographics_mdistance <- StatMatch::mahalanobis.dist(
 match_indices <- apply(demographics_mdistance, 1, which.min)
 # length(match_indices) == nrow(demographics_treatment)
 
+# write out distances 
+pair_distance <- apply(demographics_mdistance, 1, min)
+tibble(pair_id = seq_along(pair_distance),
+       distance = pair_distance) %>% 
+  write_csv(path = file.path('data', 'pair_distance.csv'))
+
 
 # create dataframe of the matches -----------------------------------------
 
@@ -145,8 +151,6 @@ final_matches <- dplyr::select(final_matches, 'treatment', 'pair_id', 'ID', ever
 
 
 # assess balance and overlap ----------------------------------------------
-
-# TODO: calculate balance
 
 # plot distributions by variable
 final_matches %>% 
