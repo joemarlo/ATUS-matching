@@ -5,7 +5,7 @@ require(rvest)
 # download data here: https://www.bls.gov/tus/#data
 #  and store in inputs/ATUS-2003-2018
 
-dat.files <- list.files(file.path('inputs', 'ATUS-2003-2018', '*.dat'))
+dat.files <- list.files(file.path('inputs', 'ATUS-2003-2018'), pattern = '*.dat')
 files <- lapply(dat.files, function(file) read_csv(file.path("inputs", "ATUS-2003-2018", file)))
 names(files) <- str_remove(dat.files, ".dat")
 list2env(files, envir = .GlobalEnv)

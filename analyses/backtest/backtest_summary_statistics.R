@@ -19,24 +19,34 @@ transition_dfs <- map_dfr(path_years, function(path){
   return(transition_df)
 })
 
-# calculate mean rates
+# calculate mean rates by year
 stationary_rate <- transition_dfs %>%
-  group_by(year1) %>% 
-  summarize(rate = sum((t1 == t2) * n) / sum(n))
+  group_by(year = year1) %>% 
+  summarize(rate = sum((t1 == t2) * n) / sum(n),
+            .groups = 'drop')
+
+# calculate rate by cluster by year
+stationary_rate_cluster <- transition_dfs %>% 
+  group_by(year = year1, t1) %>% 
+  summarize(rate = sum((t1 == t2) * n) / sum(n),
+            .groups = 'drop')
 
 # plot rate
 stationary_rate %>% 
-  mutate(year = as.numeric(year1)) %>% 
+  mutate(year = as.numeric(year)) %>% 
   ggplot(aes(x = year, y = rate)) +
   geom_line() +
   geom_point() +
+  geom_point(data = stationary_rate_cluster,
+             aes(x = as.numeric(year), y = rate, group = t1),
+             shape = 5) +
   scale_x_continuous(breaks = 2004:2017,
                      labels = paste0(2004:2017, '\n-\n', 2005:2018)) +
   scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.1)) +
-  labs(title = 'Mean rate that observations transition to like cluster',
-       subtitle = 'One year lag',
+  labs(title = 'Rate that observations transition to like cluster inter-year',
+       subtitle = 'Line represents mean rate. ⋄ represent individual cluster rates',
        x = NULL,
-       y = 'Mean transition rate')
+       y = 'Rate')
 ggsave(file.path('analyses', 'backtest', 'plots', 'mean_transition_rate.png'),
        width = 9, height = 6)
 
@@ -63,7 +73,6 @@ n_t2 <- transition_dfs %>%
   group_by(year) %>% 
   nest() %>% 
   ungroup()
-
 k_pairs <- k_pairs %>% 
   full_join(n_t1, by = 'year') %>% 
   full_join(n_t2, by = 'year') %>% 
@@ -92,7 +101,7 @@ simulated_rates <- apply(X = k_pairs, MARGIN = 1, FUN = function(row){
 
 # plot rate
 stationary_rate %>% 
-  mutate(year = as.numeric(year1),
+  mutate(year = as.numeric(year),
          simulated_rate = simulated_rates) %>% 
   ggplot(aes(x = year, y = rate)) +
   geom_line() +
@@ -102,11 +111,11 @@ stationary_rate %>%
   scale_x_continuous(breaks = 2004:2017,
                      labels = paste0(2004:2017, '\n-\n', 2005:2018)) +
   scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.1)) +
-  labs(title = 'Mean rate that observations transition to like cluster',
+  labs(title = 'Mean rate that observations transition to like cluster inter-year',
        subtitle = 'x point represents simulated rate if t1/t2 transitions were random',
        caption = 'Simulated points calculated from random samples with same k and proportion by year',
        x = NULL,
-       y = 'Mean transition rate')
+       y = 'Rate')
 ggsave(file.path('analyses', 'backtest', 'plots', 'mean_transition_rate_simulated.png'),
        width = 9, height = 6)
 

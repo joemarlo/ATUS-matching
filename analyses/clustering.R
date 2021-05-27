@@ -17,8 +17,8 @@ demographics <- read_delim(file = "data/demographic.tsv",
                            col_types = cols(metropolitan = col_character()))
 
 # read in the matches
-# demographics_t1 <- read_csv(file = 'data/matched_time1_mahalanobis.csv')
-# demographics_t2_raw <- read_csv(file = 'data/matched_time2_mahalanobis.csv')
+demographics_t1 <- read_csv(file = 'data/matched_time1_mahalanobis.csv')
+demographics_t2_raw <- read_csv(file = 'data/matched_time2_mahalanobis.csv')
 
 # for batch script only
 demographics_t1 <- read_csv(file = file.path(time_file_path, 'data', 'matched_time1_mahalanobis.csv'))
@@ -82,7 +82,6 @@ TRATE_cost <- seqsubm(atus_seq_t1, method = 'TRATE') #, time.varying = TRUE
 dist_t1 <- seqdist(atus_seq_t1, method = "OM", indel = 1, sm = TRATE_cost)
 dist_t2 <- seqdist(atus_seq_t2, method = "OM", indel = 1, sm = TRATE_cost)
 # TODO: can/should TRATE vary by time of day???
-
 
 # cluster the data
 cluster_model_t1 <- fastcluster::hclust(as.dist(dist_t1), method = "ward.D2")

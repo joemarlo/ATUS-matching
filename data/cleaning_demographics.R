@@ -122,7 +122,7 @@ demographic_vars <- atus_vars %>%
   left_join(CPS_vars, by = 'ID') %>% 
   semi_join(distinct(ATUS_30, ID), by = 'ID') %>% 
   left_join(atusresp_0318 %>% 
-              select(ID = TUCASEID, day_of_week = TUDIARYDAY, holiday = TRHOLIDAY,
+              select(ID = TUCASEID, date = TUDIARYDATE, day_of_week = TUDIARYDAY, holiday = TRHOLIDAY,
                      year = TUYEAR, TRTALONE, TRTALONE_WK, TESCHFT),
             by = 'ID')
 
