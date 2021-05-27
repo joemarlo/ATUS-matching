@@ -11,6 +11,8 @@ set.seed(44)
 # pre-processing ----------------------------------------------------------
 
 # convert year to boolean
+# tmp <- sample(c(T,F), nrow(demographics), replace = T)
+# demographics <- filter(demographics, year == 2006)
 demographics$treatment <- demographics$year == time1
 
 # remove unnecessary columns

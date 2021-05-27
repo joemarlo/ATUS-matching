@@ -37,7 +37,8 @@ pairs %>%
   geom_line() +
   scale_x_continuous(breaks = seq(0, 7000, by = 1000),
                      labels = scales::comma_format()) +
-  scale_y_continuous(breaks = seq(0, 1, by = 0.05)) +
+  scale_y_continuous(breaks = seq(0, 1, by = 0.1),
+                     limits = c(0, 1)) +
   labs(title = 'Proportion of matched pairs that transition to like cluster inter-year',
        subtitle = paste0(time1, "/", time2),
        x = 'Matched pairs ranked by Mahalanobis distance',

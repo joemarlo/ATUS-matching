@@ -21,8 +21,8 @@ demographics_t1 <- read_csv(file = 'data/matched_time1_mahalanobis.csv')
 demographics_t2_raw <- read_csv(file = 'data/matched_time2_mahalanobis.csv')
 
 # for batch script only
-demographics_t1 <- read_csv(file = file.path(time_file_path, 'data', 'matched_time1_mahalanobis.csv'))
-demographics_t2_raw <- read_csv(file = file.path(time_file_path, 'data', 'matched_time2_mahalanobis.csv'))
+# demographics_t1 <- read_csv(file = file.path(time_file_path, 'data', 'matched_time1_mahalanobis.csv'))
+# demographics_t2_raw <- read_csv(file = file.path(time_file_path, 'data', 'matched_time2_mahalanobis.csv'))
 
 # remove duplicates for clustering
 demographics_t2 <- distinct(demographics_t2_raw, across(-pair_id))
@@ -133,6 +133,7 @@ mean_metric %>%
        color = NULL,
        linetype = NULL) +
   theme(legend.position = 'bottom')
+# ggsave(file.path("analyses", "plots", "cluster_validity.png"), height = 6, width = 9)
 ggsave(file.path(time_file_path, "plots", 'clustering', "cluster_validity.png"), height = 6, width = 9)
 
 # which k is optimal based on the mean metrics?
