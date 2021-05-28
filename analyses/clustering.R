@@ -28,8 +28,8 @@ demographics_t2_raw <- read_csv(file = 'data/matched_time2_mahalanobis.csv')
 demographics_t2 <- distinct(demographics_t2_raw, across(-pair_id))
 
 # pull years denoting t1 and t2
-# time1 <- demographics_t1$year[[1]]
-# time2 <- demographics_t2$year[[1]]
+time1 <- demographics_t1$year[[1]]
+time2 <- demographics_t2$year[[1]]
 
 # create time1 and time2 dataframes for sequences
 atus_t1 <- atus_raw[atus_raw$ID %in% demographics_t1$ID,]

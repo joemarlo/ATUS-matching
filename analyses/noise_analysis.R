@@ -46,6 +46,44 @@ pairs %>%
 ggsave(file.path('analyses', 'plots', 'match_rate_at_k.png'),
        width = 9, height = 6)
 
+# calculate match rate by binned score
+pairs %>% 
+  mutate(distance_binned = cut(distance, seq(-1, 10, by = 1))) %>% 
+  group_by(distance_binned) %>% 
+  summarize(match_rate = mean(t1 == t2)) %>% 
+  ggplot(aes(x = distance_binned, y = match_rate)) +
+  geom_col() +
+  scale_y_continuous(breaks = seq(0, 1, by = 0.1),
+                     limits = c(0, 1)) +
+  labs(title = 'Proportion of matched pairs that transition to like cluster inter-year',
+       subtitle = paste0(time1, "/", time2),
+       x = 'Binned Mahalanobis distance',
+       y = 'Proportion')
+ggsave(file.path('analyses', 'plots', 'match_rate_binned.png'),
+       width = 9, height = 6)
+
+# match rate at k per cluster
+pairs %>%
+  replace_na(list(t2 = 'None')) %>% 
+  arrange(distance) %>% 
+  group_by(t1) %>% 
+  mutate(rank = row_number(),
+         match_rate = cumsum(t1 == t2) / rank) %>%  
+  ggplot(aes(x = rank, y = match_rate, color = t1)) +
+  geom_line() +
+  scale_x_continuous(breaks = seq(0, 7000, by = 1000),
+                     labels = scales::comma_format()) +
+  scale_y_continuous(breaks = seq(0, 1, by = 0.1),
+                     limits = c(0, 1)) +
+  labs(title = 'Proportion of matched pairs that transition to like cluster inter-year',
+       subtitle = paste0(time1, "/", time2),
+       x = 'Matched pairs ranked by Mahalanobis distance',
+       y = 'Proportion at k',
+       color = NULL) +
+  theme(legend.position = 'bottom')
+ggsave(file.path('analyses', 'plots', 'match_rate_at_k_per_cluster.png'),
+       width = 9, height = 6)
+
 
 # match rate conditioned on day of week and month -------------------------
 
@@ -73,8 +111,7 @@ pairs <- pairs %>%
 # clean up
 pairs <- pairs %>% 
   mutate(month_t1 = str_sub(date_t1, 5, 6),
-         month_t2 = str_sub(date_t2, 5, 6)) %>% 
-  select(pair_id, t1, t2, month_t1, month_t2, dow_t1, dow_t2)
+         month_t2 = str_sub(date_t2, 5, 6))
 
 # function returns a logical indicating if the rolling season of month1 and month2 
 # are the same
@@ -106,3 +143,66 @@ pairs %>%
   mutate(dow_match = dow_t1 == dow_t2) %>% 
   group_by(dow_match) %>% 
   summarize(rate = mean(t1 == t2))
+
+
+# match quality -----------------------------------------------------------
+
+# examine the matches by quality
+demographics_t1 %>% 
+  bind_rows(demographics_t2) %>% 
+  left_join(pair_distance, by = 'pair_id') %>% 
+  arrange(distance, pair_id) %>% 
+  View
+
+# distribution of match distance
+pair_distance %>% 
+  ggplot(aes(x = distance)) +
+  geom_histogram(color = 'white')
+
+
+# age ---------------------------------------------------------------------
+
+# mean stationary rate and distance by age
+pairs %>% 
+  select(pair_id, t1, t2, ID_t1, ID_t2) %>% 
+  left_join(select(demographics, ID, age),
+            by = c('ID_t1' = 'ID')) %>% 
+  left_join(pair_distance, by = 'pair_id') %>% 
+  mutate(age_bin = cut(age, seq(0, 100, 5))) %>% 
+  group_by(age_bin) %>% 
+  summarize(Proportion = mean(t1 == t2),
+            `Mean distance` = mean(distance)) %>% 
+  pivot_longer(-age_bin) %>% 
+  ggplot(aes(x = age_bin, y = value)) +
+  geom_point() +
+  facet_wrap(~name, ncol = 1, scales = 'free_y') +
+  labs(title = 'Distance b/t matched pair and proportion that transition to like cluster inter-year',
+       subtitle = paste0(time1, "/", time2),
+       x = '\nBinned age of individual in time 1',
+       y = NULL) +
+  theme(axis.text.x = element_text(angle = -30, hjust = 0))
+ggsave(file.path('analyses', 'plots', 'match_rate_by_age.png'),
+       width = 9, height = 6)
+
+demographics %>% 
+  select(ID, age, labor_force_status, education) %>% 
+  right_join(pair_clusters, by = 'ID') %>% 
+  filter(str_detect(cluster, 'Cluster 2')) %>%
+  ggplot(aes(x = age)) +
+  geom_histogram(breaks = 1:100, color='white') + 
+  facet_wrap(~time)
+
+pairs %>% 
+  left_join(select(demographics_t1, ID_t1 = ID, age),
+            by = 'ID_t1') %>% 
+  mutate(age_binned = cut(age, seq(0, 100, by = 1))) %>% 
+  group_by(distance_binned) %>% 
+  summarize(match_rate = mean(t1 == t2)) %>% 
+  ggplot(aes(x = distance_binned, y = match_rate)) +
+  geom_col() +
+  scale_y_continuous(breaks = seq(0, 1, by = 0.1),
+                     limits = c(0, 1)) +
+  labs(title = 'Proportion of matched pairs that transition to like cluster inter-year',
+       subtitle = paste0(time1, "/", time2),
+       x = 'Binned Mahalanobis distance',
+       y = 'Proportion')
