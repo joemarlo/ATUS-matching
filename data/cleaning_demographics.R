@@ -24,11 +24,11 @@ elder_in_HH <- atusrost_0318 %>%
   rename(ID = TUCASEID)
 
 # from CPS, check if person has partner (is married or is living with partner)
-has_partner <- atuscps_0318 %>%
-  group_by(TUCASEID) %>% 
-  summarize(has_partner = any(PERRP %in% c(3, 13, 14)),
-            .groups = 'drop') %>% 
-  rename(ID = TUCASEID)
+# has_partner <- atuscps_0318 %>%
+#   group_by(TUCASEID) %>% 
+#   summarize(has_partner = any(PERRP %in% c(3, 13, 14)),
+#             .groups = 'drop') %>% 
+#   rename(ID = TUCASEID)
 
 # get occupation code and match to essential worker
 industry <- dplyr::select(atusresp_0318, ID = TUCASEID, industry = TEIO1ICD)
@@ -41,15 +41,6 @@ industry$industry <- case_when(
 industry <- industry %>%
   left_join(essential_industries, by = c('industry' = 'Census_2012')) %>%
   replace_na(list(essential_group = 5)) %>%
-  # mutate(essential_group = recode(
-  #     essential_group,
-  #     '1' = 'CDC_1',
-  #     '2' = 'CDC_2',
-  #     '3' = 'CDC_3',
-  #     '4' = 'No_CDC',
-  #     '5' = 'No_industry'
-  #   )
-  # ) %>% 
   rename(essential_industry = essential_group)
 
 # from CPS data, get race, marriage status, education, metropolitan status, and state 
@@ -86,7 +77,8 @@ CPS_vars <- atuscps_0318 %>%
 atus_vars <- atussum_0318 %>% 
   select(TUCASEID, survey_weight = TUFNWGTP, age = TEAGE,
          sex = TESEX, age_youngest = TRYHHCHILD, n_child = TRCHILDNUM,
-         labor_force_status = TELFS, partner_working = TESPEMPNOT) %>%
+         labor_force_status = TELFS, partner_working = TESPEMPNOT, 
+         has_partner = TRSPPRES %in% c(1, 2)) %>%
   mutate(age_youngest = ifelse(age_youngest == -1, NA, age_youngest),
          labor_force_status = case_when(
            labor_force_status == 1 ~ 'employed - at work',
