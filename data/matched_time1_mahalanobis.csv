@@ -266,7 +266,6 @@ ID,year,age,sex,race,fam_income,has_partner,education,child_in_HH,n_child,age_yo
 20060112050795,2006,75,female,black,7500,FALSE,HS,FALSE,0,0,West,"NA",FALSE,metropolitan,TRUE,265
 20060112050797,2006,20,male,white,20000,FALSE,Did not graduate from HS,TRUE,2,11,West,"NA",TRUE,metropolitan,TRUE,266
 20060112050798,2006,58,female,white,7500,TRUE,Did not graduate from HS,TRUE,2,4,West,"NA",FALSE,metropolitan,TRUE,267
-20060112050802,2006,62,male,asian,100000,TRUE,Bachelors,FALSE,0,0,West,not employed,FALSE,metropolitan,TRUE,268
 20060112050805,2006,31,female,white,40000,FALSE,Masters,FALSE,0,0,West,"NA",FALSE,metropolitan,TRUE,269
 20060112050814,2006,36,male,white,150000,TRUE,Masters,TRUE,2,4,West,employed,FALSE,metropolitan,TRUE,270
 20060112050816,2006,28,female,white,150000,TRUE,HS,TRUE,3,4,West,employed,FALSE,metropolitan,TRUE,271
@@ -589,7 +588,6 @@ ID,year,age,sex,race,fam_income,has_partner,education,child_in_HH,n_child,age_yo
 20060201060703,2006,65,female,white,10000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan,TRUE,588
 20060201060718,2006,54,male,white,25000,TRUE,HS,TRUE,2,2,West,not employed,FALSE,metropolitan,TRUE,589
 20060201060719,2006,55,male,asian,75000,TRUE,Some college,TRUE,1,0,West,not employed,FALSE,metropolitan,TRUE,590
-20060201060720,2006,77,male,asian,10000,TRUE,HS,FALSE,0,0,West,not employed,FALSE,metropolitan,TRUE,591
 20060201060721,2006,46,female,white,60000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan,TRUE,592
 20060201060723,2006,24,male,white,50000,TRUE,Did not graduate from HS,FALSE,0,0,West,employed,FALSE,metropolitan,TRUE,593
 20060201060725,2006,56,male,white,75000,TRUE,Masters,TRUE,1,16,West,employed,FALSE,metropolitan,TRUE,594
@@ -995,7 +993,6 @@ ID,year,age,sex,race,fam_income,has_partner,education,child_in_HH,n_child,age_yo
 20060301061843,2006,48,male,white,75000,TRUE,Bachelors,FALSE,0,0,Midwest,employed,FALSE,metropolitan,TRUE,994
 20060301061897,2006,25,female,white,7500,TRUE,HS,TRUE,1,1,South,employed,FALSE,metropolitan,TRUE,995
 20060301061901,2006,68,male,white,50000,TRUE,Some college,FALSE,0,0,South,not employed,FALSE,metropolitan,TRUE,996
-20060301061916,2006,68,male,asian,40000,TRUE,Some college,FALSE,0,0,West,not employed,FALSE,metropolitan,TRUE,997
 20060301061925,2006,38,female,white,100000,TRUE,Bachelors,TRUE,3,5,West,employed,FALSE,metropolitan,TRUE,998
 20060301061947,2006,26,male,white,75000,TRUE,HS,TRUE,1,9,Northeast,"NA",TRUE,metropolitan,TRUE,999
 20060301062050,2006,72,male,white,15000,TRUE,HS,FALSE,0,0,South,employed,FALSE,metropolitan,TRUE,1000
@@ -1316,7 +1313,6 @@ ID,year,age,sex,race,fam_income,has_partner,education,child_in_HH,n_child,age_yo
 20060302062309,2006,28,female,white,150000,TRUE,Some college,TRUE,1,7,West,employed,FALSE,non-metropolitan,TRUE,1315
 20060302062310,2006,27,male,white,20000,FALSE,HS,FALSE,0,0,West,"NA",FALSE,metropolitan,TRUE,1316
 20060302062313,2006,37,female,black,100000,TRUE,Masters,FALSE,0,0,West,employed,FALSE,metropolitan,TRUE,1317
-20060302062318,2006,61,male,asian,40000,FALSE,Bachelors,FALSE,0,0,West,"NA",FALSE,metropolitan,TRUE,1318
 20060302062329,2006,55,male,black,30000,FALSE,HS,FALSE,0,0,West,"NA",FALSE,metropolitan,TRUE,1319
 20060302062338,2006,36,female,white,30000,FALSE,Bachelors,TRUE,2,8,West,"NA",FALSE,metropolitan,TRUE,1320
 20060302062350,2006,76,female,white,50000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,non-metropolitan,TRUE,1321
@@ -2435,7 +2431,6 @@ ID,year,age,sex,race,fam_income,has_partner,education,child_in_HH,n_child,age_yo
 20060604062113,2006,48,male,white,40000,TRUE,Some college,TRUE,2,7,South,employed,FALSE,metropolitan,TRUE,2434
 20060604062129,2006,61,male,white,100000,TRUE,Masters,FALSE,0,0,South,not employed,FALSE,metropolitan,TRUE,2435
 20060604062154,2006,58,male,white,25000,TRUE,HS,TRUE,1,17,South,employed,FALSE,metropolitan,TRUE,2436
-20060604062188,2006,80,male,other,30000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan,TRUE,2437
 20060604062210,2006,51,male,white,100000,TRUE,Some college,TRUE,2,5,West,employed,FALSE,metropolitan,TRUE,2438
 20060604062211,2006,58,female,white,50000,TRUE,Some college,FALSE,0,0,West,employed,FALSE,metropolitan,TRUE,2439
 20060604062257,2006,37,male,black,60000,TRUE,Bachelors,TRUE,2,9,South,employed,FALSE,metropolitan,TRUE,2440
@@ -3250,7 +3245,6 @@ ID,year,age,sex,race,fam_income,has_partner,education,child_in_HH,n_child,age_yo
 20060807060642,2006,29,female,white,60000,TRUE,Did not graduate from HS,TRUE,3,4,West,"NA",TRUE,metropolitan,TRUE,3249
 20060807060645,2006,26,male,other,12500,FALSE,Some college,FALSE,0,0,West,"NA",TRUE,metropolitan,TRUE,3250
 20060807060646,2006,33,female,white,150000,TRUE,Some college,TRUE,1,1,West,employed,FALSE,metropolitan,TRUE,3251
-20060807060652,2006,65,male,asian,75000,TRUE,Did not graduate from HS,TRUE,2,0,West,not employed,FALSE,metropolitan,TRUE,3252
 20060807060655,2006,31,female,white,100000,TRUE,Masters,TRUE,1,1,West,employed,FALSE,metropolitan,TRUE,3253
 20060807060680,2006,26,male,white,150000,TRUE,Bachelors,FALSE,0,0,West,not employed,FALSE,metropolitan,TRUE,3254
 20060807060682,2006,68,female,white,25000,FALSE,HS,FALSE,0,0,West,"NA",FALSE,metropolitan,TRUE,3255
@@ -3295,7 +3289,6 @@ ID,year,age,sex,race,fam_income,has_partner,education,child_in_HH,n_child,age_yo
 20060807061051,2006,35,female,white,7500,FALSE,HS,TRUE,2,9,Midwest,"NA",FALSE,metropolitan,TRUE,3294
 20060807061060,2006,34,male,black,50000,TRUE,HS,TRUE,6,1,Midwest,"NA",FALSE,metropolitan,TRUE,3295
 20060807061065,2006,40,male,white,150000,TRUE,Bachelors,TRUE,3,1,Midwest,not employed,FALSE,metropolitan,TRUE,3296
-20060807061071,2006,63,male,asian,100000,TRUE,Masters,FALSE,0,0,Midwest,not employed,FALSE,metropolitan,TRUE,3297
 20060807061076,2006,44,female,black,25000,FALSE,HS,TRUE,3,6,Midwest,"NA",TRUE,metropolitan,TRUE,3298
 20060807061103,2006,15,female,black,20000,FALSE,Did not graduate from HS,TRUE,2,12,Midwest,"NA",TRUE,metropolitan,TRUE,3299
 20060807061112,2006,85,female,white,25000,FALSE,Did not graduate from HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan,TRUE,3300

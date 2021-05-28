@@ -129,9 +129,9 @@ match_indices <- apply(demographics_mdistance, 1, which.min)
 
 # write out distances 
 pair_distance <- apply(demographics_mdistance, 1, min)
-tibble(pair_id = seq_along(pair_distance),
-       distance = pair_distance) %>% 
-  write_csv(path = file.path('data', 'pair_distance.csv'))
+# tibble(pair_id = seq_along(pair_distance),
+#        distance = pair_distance) %>% 
+#   write_csv(path = file.path('data', 'pair_distance.csv'))
 
 
 
@@ -149,34 +149,70 @@ age_matches <- sapply(demographics_treatment$age, function(age){
   return(t2_in_age_range)
 })
 
+# strata: sex
+sex_matches <- sapply(demographics_treatment$sex_male, function(sex){
+  is_match <- demographics_control$sex_male == sex
+  return(is_match)
+})
+
+# strata: race
+race_matches <- sapply(demographics[demographics$treatment,]$race, 
+                       USE.NAMES = FALSE, function(race){
+  is_match <- demographics[!demographics$treatment,]$race == race
+  return(is_match)
+})
+
 # get the index of the best match within the age range
 index_of_best_match <- c()
 distance_of_best_match <- c()
+potential_match_pop <- c()
 for (i in 1:nrow(demographics_mdistance)){
   
   # create vector of distances for this t1 observations
   t1 <- demographics_mdistance[i,]
   
-  # for observations where the age is not the in range, replace distance with
+  # for observations where observations do not match strata, replace distance with
     # unrealistically high number so it is not chosen but the index is kept
-  t2_matches <- age_matches[,i]
-  t1[!t2_matches] <- 1e10
+  t2_matches_age <- age_matches[,i]
+  t2_matches_sex <- sex_matches[,i]
+  t2_matches_race <- race_matches[,i]
+  t2_matches_all <- t2_matches_age & t2_matches_sex & t2_matches_race
+  t1[!t2_matches_all] <- 1e10
+  potential_match_pop[i] <- sum(t2_matches_all)
   
   # store the best match
   index_of_best_match[i] <- which.min(t1)
   distance_of_best_match[i] <- min(t1)
 }
-rm(t1, t2_matches, i)
+rm(t1, t2_matches_age, t2_matches_sex, t2_matches_race, t2_matches_all, i)
+
+# how often is there no potential matchs
+sum(potential_match_pop == 0)
+
+# replace these non matches with NAs
+# TODO: does this affect the pair_id ?
+# index_of_best_match[potential_match_pop == 0] <- NA
 
 # how often does the stratifying have the same result as not stratifying?
-mean(match_indices == index_of_best_match)
+# mean(match_indices == index_of_best_match, na.rm = TRUE)
 
 # check the stratifying worked
-max_age_diff <- range(demographics_treatment$age - demographics_control[index_of_best_match, 'age'])
-(diff(max_age_diff)+1) <= age_window
+# max_age_diff <- range(demographics_treatment$age - demographics_control[index_of_best_match,]$age, na.rm = TRUE)
+# (diff(max_age_diff)+1) <= age_window
+
+# identify bad matches
+bad_matches <- which(potential_match_pop == 0)
+tibble(ID = demographics[demographics$treatment,]$ID[bad_matches]) %>% 
+  write_csv(file.path('data', 'thrown_out_observations.csv'))
+
+# write out distances 
+tibble(pair_id = seq_along(pair_distance),
+       distance = pair_distance) %>%
+  filter(pair_id %notin% bad_matches) %>%
+  write_csv(path = file.path('data', 'pair_distance.csv'))
 
 # overwrite match_indices if using stratifying
-# match_indices <- index_of_best_match
+match_indices <- index_of_best_match
 
 
 # create dataframe of the matches -----------------------------------------
@@ -188,6 +224,10 @@ demographics_control <- demographics[!demographics$treatment,][match_indices,]
 # add pair id so its easy to identify the matched pairs
 demographics_treated$pair_id <- 1:nrow(demographics_treated)
 demographics_control$pair_id <- 1:nrow(demographics_control)
+
+# remove the bad matches caused by too small stratum
+demographics_treated <- demographics_treated[demographics_treated$pair_id %notin% bad_matches,]
+demographics_control <- demographics_control[demographics_control$pair_id %notin% bad_matches,]
 
 # combine the data
 final_matches <- bind_rows(demographics_treated, demographics_control)
@@ -227,7 +267,7 @@ final_matches %>%
   scale_y_continuous(labels = scales::percent_format(1)) +
   facet_wrap(~name, scales = 'free', ncol = 3) +
   labs(title = 'Counts of key groups within matched data',
-       subtitle = "Matching via Mahalanobis distance",
+       subtitle = '\nMethodology: mahalanobis, blocking on sex, race, age +/- 2 years',
        caption = 'Only includes distinct observations (i.e. removes duplicates due to matching with replacement)',
        x = NULL,
        y = NULL,
@@ -259,7 +299,7 @@ match_summary %>%
   labs(title = 'Proportion of matches that match perfectly on: ',
        subtitle = paste0(
          paste0(blocking_vars, collapse = ', '),
-         '\nMethodology: mahalanobis, no blocking'
+         '\nMethodology: mahalanobis, blocking on sex, race, age +/- 2 years'
        ),
        x = 'Number of matches across all privileged variables',
        y = 'Proportion of all pairs')
@@ -280,7 +320,7 @@ match_summary %>%
   facet_grid(~isNumeric, scales = 'free_x') +
   labs(title = 'How many pairs matched perfectly for each variable?',
        subtitle = paste0("Yellow variables are not explicitly privileged but are highlighted for emphasis",
-                         '\nMethodology: mahalanobis, no blocking'),
+                         '\nMethodology: mahalanobis, blocking on sex, race, age +/- 2 years'),
        x = NULL,
        y = 'Proportion of all pairs') +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
@@ -299,7 +339,7 @@ final_matches %>%
   scale_y_continuous(labels = NULL) +
   facet_wrap(~name, scales = 'free') +
   labs(title = 'Difference within matched pairs for numeric variables',
-       subtitle = 'Methodology: mahalanobis, no blocking',
+       subtitle = 'Methodology: mahalanobis, blocking on sex, race, age +/- 2 years',
        x = NULL,
        y = NULL)
 # ggsave('analyses/plots/numeric_differences_mahalanobis.png', height = 5, width = 9)

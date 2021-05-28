@@ -206,3 +206,26 @@ pairs %>%
        subtitle = paste0(time1, "/", time2),
        x = 'Binned Mahalanobis distance',
        y = 'Proportion')
+
+
+# gender ------------------------------------------------------------------
+
+pairs %>% 
+  select(pair_id, t1, t2, ID_t1, ID_t2) %>% 
+  left_join(select(demographics, ID, sex),
+            by = c('ID_t1' = 'ID')) %>% 
+  left_join(pair_distance, by = 'pair_id') %>% 
+  mutate(sex = recode(sex, '1' = 'Male', '2' = 'Female')) %>% 
+  group_by(t1, sex) %>% 
+  summarize(Proportion = mean(t1 == t2),
+            `Mean distance` = mean(distance)) %>% 
+  pivot_longer(c('Proportion', 'Mean distance')) %>%
+  ggplot(aes(x = sex, y = value, fill = t1)) +
+  geom_col(position = 'dodge') +
+  facet_wrap(~name, ncol = 1, scales = 'free_y') +
+  labs(title = 'Distance b/t matched pair and proportion that transition to like cluster inter-year',
+       subtitle = paste0(time1, "/", time2),
+       x = NULL,
+       y = NULL,
+       fill = NULL) +
+  theme(legend.position = 'bottom')
