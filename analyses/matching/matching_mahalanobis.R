@@ -110,6 +110,8 @@ colnames(demographics_control) <- col_names
 # TODO mdist_weighted()
 
 
+
+
 # non weighted method -----------------------------------------------------
 
 # calculate mahalanobis distance
@@ -130,6 +132,51 @@ pair_distance <- apply(demographics_mdistance, 1, min)
 tibble(pair_id = seq_along(pair_distance),
        distance = pair_distance) %>% 
   write_csv(path = file.path('data', 'pair_distance.csv'))
+
+
+
+# stratified matching -----------------------------------------------------
+
+# strata: age
+ages <- sort(unique(demographics_treatment$age))
+age_window <- 5
+age_window_half <- (age_window - 1) / 2
+
+# get logical indicating if column (t2) is in the age range of the row (t1)
+age_matches <- sapply(demographics_treatment$age, function(age){
+  age_range <- seq(age - age_window_half, age + age_window_half, by = 1)
+  t2_in_age_range <- demographics_control$age %in% age_range
+  return(t2_in_age_range)
+})
+
+# get the index of the best match within the age range
+index_of_best_match <- c()
+distance_of_best_match <- c()
+for (i in 1:nrow(demographics_mdistance)){
+  
+  # create vector of distances for this t1 observations
+  t1 <- demographics_mdistance[i,]
+  
+  # for observations where the age is not the in range, replace distance with
+    # unrealistically high number so it is not chosen but the index is kept
+  t2_matches <- age_matches[,i]
+  t1[!t2_matches] <- 1e10
+  
+  # store the best match
+  index_of_best_match[i] <- which.min(t1)
+  distance_of_best_match[i] <- min(t1)
+}
+rm(t1, t2_matches, i)
+
+# how often does the stratifying have the same result as not stratifying?
+mean(match_indices == index_of_best_match)
+
+# check the stratifying worked
+max_age_diff <- range(demographics_treatment$age - demographics_control[index_of_best_match, 'age'])
+(diff(max_age_diff)+1) <= age_window
+
+# overwrite match_indices if using stratifying
+# match_indices <- index_of_best_match
 
 
 # create dataframe of the matches -----------------------------------------
