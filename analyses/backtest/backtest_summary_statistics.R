@@ -59,7 +59,8 @@ ggsave(file.path(this_batch, 'plots', 'mean_transition_rate.png'),
 k_pairs <- transition_dfs %>%
   group_by(year = year1) %>% 
   summarize(t1 = n_distinct(t1),
-            t2 = n_distinct(t2))
+            t2 = n_distinct(t2),
+            .groups = 'drop')
 
 # find n per cluster per time per year
 n_t1 <- transition_dfs %>%
@@ -138,4 +139,32 @@ transition_dfs %>%
        fill = NULL) +
   theme(legend.position = 'bottom')
 ggsave(file.path(this_batch, 'plots', 'k_clusters.png'),
+       width = 9, height = 6)
+
+
+# bad matching ------------------------------------------------------------
+
+# how many observations were thrown out due to stratified matching
+
+# read in the data
+obs_with_no_match <- map_dfr(path_years, function(path){
+  df <- read_csv(file.path(path, "data", "IDs_with_no_match.csv"),
+           col_types = cols(ID = col_character()))
+  df$year <-   years <- str_extract(path, "[0-9]*_[0-9]*$")
+  return(df)
+})
+
+# plot it
+obs_with_no_match %>% 
+  group_by(year) %>% 
+  tally() %>% 
+  full_join(tibble(year = years_run)) %>% 
+  ggplot(aes(x = year, y = n)) +
+  geom_col() +
+  scale_x_discrete(labels = paste0(2004:2017, '\n-\n', 2005:2018)) +
+  scale_y_continuous(breaks = 0:15) +
+  labs(title = 'Number of observations thrown out due to lack of match',
+       x = NULL,
+       y = 'n observations without a match')
+ggsave(file.path(this_batch, 'plots', 'no_matches.png'),
        width = 9, height = 6)

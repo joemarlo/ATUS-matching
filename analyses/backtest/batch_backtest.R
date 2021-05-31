@@ -38,6 +38,10 @@ for (time1 in years){
   })
 }
 
+# are any years missing?
+created_dirs <- list.dirs(path_to_batch, recursive = FALSE, full.names = FALSE)
+if (length(years) != length(created_dirs)) warning("At least one year did not successfully run")
+
 # create the summary stats
 dir.create(file.path(path_to_batch, 'plots'))
 source(file.path('analyses', 'backtest', 'backtest_summary_statistics.R'))
