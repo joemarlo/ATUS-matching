@@ -1,0 +1,10 @@
+t1,t2,n
+Cluster 1,Cluster 1,1653
+Cluster 2,Cluster 1,47
+Cluster 3,Cluster 1,778
+Cluster 1,Cluster 2,48
+Cluster 2,Cluster 2,121
+Cluster 3,Cluster 2,91
+Cluster 1,Cluster 3,873
+Cluster 2,Cluster 3,86
+Cluster 3,Cluster 3,1296

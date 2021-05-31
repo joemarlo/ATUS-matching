@@ -2,7 +2,8 @@ library(tidyverse)
 source('analyses/plots/ggplot_settings.R')
 
 # list all the backtests previously run
-path_years <- list.dirs(file.path('analyses', 'backtest'), recursive = FALSE)
+# path_to_batch <- list.dirs(file.path('analyses', 'backtest'), recursive = FALSE)[1]
+path_years <- list.dirs(path_to_batch, recursive = FALSE)
 path_years <- path_years[str_detect(path_years, "\\d$")]
 years_run <- str_extract(path_years, "[0-9]*_[0-9]*$")
 
@@ -47,7 +48,7 @@ stationary_rate %>%
        subtitle = 'Line represents mean rate. ⋄ represent individual cluster rates',
        x = NULL,
        y = 'Rate')
-ggsave(file.path('analyses', 'backtest', 'plots', 'mean_transition_rate.png'),
+ggsave(file.path(this_batch, 'plots', 'mean_transition_rate.png'),
        width = 9, height = 6)
 
 # how does this compare to baseline noise? 
@@ -116,7 +117,7 @@ stationary_rate %>%
        caption = 'Simulated points calculated from random samples with same k and proportion by year',
        x = NULL,
        y = 'Rate')
-ggsave(file.path('analyses', 'backtest', 'plots', 'mean_transition_rate_simulated.png'),
+ggsave(file.path(this_batch, 'plots', 'mean_transition_rate_simulated.png'),
        width = 9, height = 6)
 
 
@@ -136,5 +137,5 @@ transition_dfs %>%
        y = 'k clusters',
        fill = NULL) +
   theme(legend.position = 'bottom')
-ggsave(file.path('analyses', 'backtest', 'plots', 'k_clusters.png'),
+ggsave(file.path(this_batch, 'plots', 'k_clusters.png'),
        width = 9, height = 6)

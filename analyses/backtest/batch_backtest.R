@@ -24,30 +24,33 @@ for (time1 in years){
     time2 <- time1 + lag_years
   
     # create subfolders
-    time_file_path <- file.path(path_to_batch, paste0(time1, '_', time2))
-    dir.create(time_file_path)
-    dir.create(file.path(time_file_path, "plots"))
-    dir.create(file.path(time_file_path, "plots", "matching"))
-    dir.create(file.path(time_file_path, "plots", "clustering"))
-    dir.create(file.path(time_file_path, "plots", "cluster_comparison"))
-    dir.create(file.path(time_file_path, "data"))
+    file_path <- file.path(path_to_batch, paste0(time1, '_', time2))
+    dir.create(file_path)
+    dir.create(file.path(file_path, "plots"))
+    dir.create(file.path(file_path, "plots", "matching"))
+    dir.create(file.path(file_path, "plots", "clustering"))
+    dir.create(file.path(file_path, "plots", "cluster_comparison"))
+    dir.create(file.path(file_path, "data"))
   
     # run the scripts
-    source(file.path('analyses', 'matching', 'matching_mahalanobis.R')) #TODO: this calls demographics.R; should separate
+    source(file.path('analyses', 'matching', 'matching_mahalanobis.R')) # note: this calls demographics.R
     source(file.path('analyses', 'clustering.R'))
   })
 }
 
+# create the summary stats
+dir.create(file.path(path_to_batch, 'plots'))
+source(file.path('analyses', 'backtest', 'backtest_summary_statistics.R'))
+
 # create readme with any relevant notes
-notes <- paste0('This batch was run with the following specifications:',
+notes <- paste0('This batch was run at ', Sys.time(), ' with the following specifications:',
                 '\n\nYears: ', paste0(years, collapse = ', '),
                 '\nLag: ', lag_years,
                 '\nk values: float across t1 and t2',
                 '\nk search range: ', paste0(k_seq, collapse = ', '),
                 '\nDistance method: TRATE', #levenshtein
                 '\nClustering algorithm: hclust, ward.D2', #agnes, PAM
-                '\nMatching method: Mahalanobis distance on ', paste0(matching_vars, collapse = ', '))
+                '\nMatching method: \n\t-Mahalanobis distance on ', paste0(matching_vars, collapse = ', '), '; \n\t-Stratified on sex, race, +/- 2 age')
 file_connection <- file(file.path(path_to_batch, "README.md"))
 writeLines(notes, file_connection)
 close(file_connection)
-

@@ -5,7 +5,9 @@ source('analyses/demographics.R')
 source('analyses/helpers_analyses.R')
 set.seed(44)
 
-# if (!isTRUE(get0('in_batch_mode'))) time_file_path <- "analyses"
+# if not running in batch mode, then create a file path to the analyses subfolder
+# for use when saving plots and dataframes
+if (!isTRUE(get0('in_batch_mode'))) file_path <- "analyses"
 
 
 # pre-processing ----------------------------------------------------------
@@ -110,8 +112,6 @@ colnames(demographics_control) <- col_names
 # TODO mdist_weighted()
 
 
-
-
 # non weighted method -----------------------------------------------------
 
 # calculate mahalanobis distance
@@ -128,11 +128,10 @@ match_indices <- apply(demographics_mdistance, 1, which.min)
 # length(match_indices) == nrow(demographics_treatment)
 
 # write out distances 
-pair_distance <- apply(demographics_mdistance, 1, min)
+# pair_distance <- apply(demographics_mdistance, 1, min)
 # tibble(pair_id = seq_along(pair_distance),
 #        distance = pair_distance) %>% 
 #   write_csv(path = file.path('data', 'pair_distance.csv'))
-
 
 
 # stratified matching -----------------------------------------------------
@@ -184,13 +183,14 @@ for (i in 1:nrow(demographics_mdistance)){
   index_of_best_match[i] <- which.min(t1)
   distance_of_best_match[i] <- min(t1)
 }
-rm(t1, t2_matches_age, t2_matches_sex, t2_matches_race, t2_matches_all, i)
+rm(t1, t2_matches_age, t2_matches_sex, t2_matches_race, t2_matches_all, 
+   i, age_matches, sex_matches, race_matches)
 
 # how often is there no potential matchs
-sum(potential_match_pop == 0)
+# sum(potential_match_pop == 0)
 
 # replace these non matches with NAs
-# TODO: does this affect the pair_id ?
+# do not replace with NA and then create final dataframes because pair_ids will be wrong
 # index_of_best_match[potential_match_pop == 0] <- NA
 
 # how often does the stratifying have the same result as not stratifying?
@@ -203,13 +203,14 @@ sum(potential_match_pop == 0)
 # identify bad matches
 bad_matches <- which(potential_match_pop == 0)
 tibble(ID = demographics[demographics$treatment,]$ID[bad_matches]) %>% 
-  write_csv(file.path('data', 'thrown_out_observations.csv'))
+  # write_csv(file.path('data', 'thrown_out_observations.csv'))
+  write_csv(file.path(file_path, 'data', 'IDs_with_no_match.csv'))
 
 # write out distances 
-tibble(pair_id = seq_along(pair_distance),
-       distance = pair_distance) %>%
+tibble(pair_id = seq_along(distance_of_best_match),
+       distance = distance_of_best_match) %>%
   filter(pair_id %notin% bad_matches) %>%
-  write_csv(path = file.path('data', 'pair_distance.csv'))
+  write_csv(path = file.path(file_path, 'data', 'pair_distance.csv'))
 
 # overwrite match_indices if using stratifying
 match_indices <- index_of_best_match
@@ -228,6 +229,7 @@ demographics_control$pair_id <- 1:nrow(demographics_control)
 # remove the bad matches caused by too small stratum
 demographics_treated <- demographics_treated[demographics_treated$pair_id %notin% bad_matches,]
 demographics_control <- demographics_control[demographics_control$pair_id %notin% bad_matches,]
+rm(bad_matches)
 
 # combine the data
 final_matches <- bind_rows(demographics_treated, demographics_control)
@@ -274,8 +276,7 @@ final_matches %>%
        fill = NULL) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         legend.position = 'bottom')
-# ggsave("analyses/plots/counts_matched_mahalanobis.png", height = 12, width = 9)
-ggsave(file.path(time_file_path, "plots", 'matching', "counts_matched_mahalanobis.png"), height = 12, width = 9)
+ggsave(file.path(file_path, "plots", 'matching', "counts_matched_mahalanobis.png"), height = 12, width = 9)
 
 
 # privileged variables ----------------------------------------------------
@@ -303,8 +304,7 @@ match_summary %>%
        ),
        x = 'Number of matches across all privileged variables',
        y = 'Proportion of all pairs')
-# ggsave('analyses/plots/privileged_vars_all_mahalanobis.png', height = 5, width = 9)
-ggsave(file.path(time_file_path, "plots", 'matching', "privileged_vars_all_mahalanobis.png"), height = 5, width = 9)
+ggsave(file.path(file_path, "plots", 'matching', "privileged_vars_all_mahalanobis.png"), height = 5, width = 9)
 match_summary %>%
   summarize(across(all_of(matching_vars), mean)) %>% 
   pivot_longer(everything()) %>% 
@@ -325,8 +325,7 @@ match_summary %>%
        y = 'Proportion of all pairs') +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         legend.position = 'none')
-# ggsave('analyses/plots/perfect_matches_mahalanobis.png', height = 5, width = 9)
-ggsave(file.path(time_file_path, "plots", 'matching', "perfect_matches_mahalanobis.png"), height = 5, width = 9)
+ggsave(file.path(file_path, "plots", 'matching', "perfect_matches_mahalanobis.png"), height = 5, width = 9)
 
 # difference within matched pairs for numeric vars
 final_matches %>% 
@@ -342,17 +341,10 @@ final_matches %>%
        subtitle = 'Methodology: mahalanobis, blocking on sex, race, age +/- 2 years',
        x = NULL,
        y = NULL)
-# ggsave('analyses/plots/numeric_differences_mahalanobis.png', height = 5, width = 9)
-ggsave(file.path(time_file_path, "plots", 'matching', "numeric_differences_mahalanobis.png"), height = 5, width = 9)
-
-# TODO: deeper dive into privileged vars; e.g look at % match by each race 
+ggsave(file.path(file_path, "plots", 'matching', "numeric_differences_mahalanobis.png"), height = 5, width = 9)
 
 
 # write out matches -------------------------------------------------------
 
-# write_csv(demographics_treated, path = 'data/matched_time1_mahalanobis.csv')
-# write_csv(demographics_control, path = 'data/matched_time2_mahalanobis.csv')
-
-# for batch script only
-write_csv(demographics_treated, path = file.path(time_file_path, 'data', 'matched_time1_mahalanobis.csv'))
-write_csv(demographics_control, path = file.path(time_file_path, 'data', 'matched_time2_mahalanobis.csv'))
+write_csv(demographics_treated, path = file.path(file_path, 'data', 'matched_time1_mahalanobis.csv'))
+write_csv(demographics_control, path = file.path(file_path, 'data', 'matched_time2_mahalanobis.csv'))

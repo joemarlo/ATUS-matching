@@ -4,7 +4,7 @@ source('analyses/plots/ggplot_settings.R')
 set.seed(44)
 
 # read in the demographics data
-demographics <- read_delim(file = "data/demographic.tsv",
+demographics <- read_delim(file = file.path("data", "demographic.tsv"),
                            delim = "\t",
                            escape_double = FALSE,
                            trim_ws = TRUE,
@@ -14,8 +14,10 @@ demographics <- read_delim(file = "data/demographic.tsv",
 # data cleaning -----------------------------------------------------------
 
 # set time periods
-time1 <- 2006
-time2 <- time1 + 1
+if (!isTRUE(get0('in_batch_mode'))){
+  time1 <- 2006
+  time2 <- time1 + 1
+}
 
 # filter to just time1 and time2, just weekdays and non-holidays
 boolean <- demographics$year %in% c(time1, time2) &

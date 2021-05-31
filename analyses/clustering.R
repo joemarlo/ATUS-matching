@@ -6,23 +6,23 @@ source('analyses/plots/ggplot_settings.R')
 source('analyses/helpers_analyses.R')
 set.seed(44)
 
+# if not running in batch mode, then create a file path to the analyses subfolder
+# for use when saving plots and dataframes
+if (!isTRUE(get0('in_batch_mode'))) file_path <- "analyses"
+
 # read in ATUS data
-atus_raw <- read_tsv("data/atus_30min.tsv")
+atus_raw <- read_tsv(file.path("data", "atus_30min.tsv"))
 
 # read in the demographics data
-demographics <- read_delim(file = "data/demographic.tsv",
+demographics <- read_delim(file = file.path("data", "/demographic.tsv"),
                            delim = "\t",
                            escape_double = FALSE,
                            trim_ws = TRUE,
                            col_types = cols(metropolitan = col_character()))
 
 # read in the matches
-demographics_t1 <- read_csv(file = 'data/matched_time1_mahalanobis.csv')
-demographics_t2_raw <- read_csv(file = 'data/matched_time2_mahalanobis.csv')
-
-# for batch script only
-# demographics_t1 <- read_csv(file = file.path(time_file_path, 'data', 'matched_time1_mahalanobis.csv'))
-# demographics_t2_raw <- read_csv(file = file.path(time_file_path, 'data', 'matched_time2_mahalanobis.csv'))
+demographics_t1 <- read_csv(file = file.path(file_path, 'data', 'matched_time1_mahalanobis.csv'))
+demographics_t2_raw <- read_csv(file = file.path(file_path, 'data', 'matched_time2_mahalanobis.csv'))
 
 # remove duplicates for clustering
 demographics_t2 <- distinct(demographics_t2_raw, across(-pair_id))
@@ -79,8 +79,8 @@ TRATE_cost <- seqsubm(atus_seq_t1, method = 'TRATE') #, time.varying = TRUE
 # TODO: do levenshtein difference as well
 
 # compute distances
-dist_t1 <- seqdist(atus_seq_t1, method = "OM", indel = 1, sm = TRATE_cost)
-dist_t2 <- seqdist(atus_seq_t2, method = "OM", indel = 1, sm = TRATE_cost)
+dist_t1 <- seqdist(atus_seq_t1, method = "OM", sm = TRATE_cost)
+dist_t2 <- seqdist(atus_seq_t2, method = "OM", sm = TRATE_cost)
 # TODO: can/should TRATE vary by time of day???
 
 # cluster the data
@@ -133,8 +133,7 @@ mean_metric %>%
        color = NULL,
        linetype = NULL) +
   theme(legend.position = 'bottom')
-# ggsave(file.path("analyses", "plots", "cluster_validity.png"), height = 6, width = 9)
-ggsave(file.path(time_file_path, "plots", 'clustering', "cluster_validity.png"), height = 6, width = 9)
+ggsave(file.path(file_path, "plots", 'clustering', "cluster_validity.png"), height = 6, width = 9)
 
 # which k is optimal based on the mean metrics?
 optimal_k <- mean_metric %>%  
@@ -146,9 +145,9 @@ optimal_k <- mean_metric %>%
 k_t1 <- optimal_k$optimal_k[optimal_k$time == 't1']
 k_t2 <- optimal_k$optimal_k[optimal_k$time == 't2']
 sequenchr::plot_dendrogram(cluster_model_t1, k_t1, 50) + labs(subtitle = paste0("Time 1: ", time1))
-ggsave(file.path(time_file_path, "plots", 'clustering', "dendrogram_time1.png"), height = 6, width = 9)
+ggsave(file.path(file_path, "plots", 'clustering', "dendrogram_time1.png"), height = 6, width = 9)
 sequenchr::plot_dendrogram(cluster_model_t2, k_t2, 50) + labs(subtitle = paste0("Time 2: ", time2))
-ggsave(file.path(time_file_path, "plots", 'clustering', "dendrogram_time2.png"), height = 6, width = 9)
+ggsave(file.path(file_path, "plots", 'clustering', "dendrogram_time2.png"), height = 6, width = 9)
 clusters_t1 <- sequenchr::label_clusters(cluster_model_t1, k_t1)
 clusters_t2 <- sequenchr::label_clusters(cluster_model_t2, k_t2)
 
@@ -171,21 +170,21 @@ names(color_mapping) <- TraMineR::alphabet(atus_seq_t1)
 
 # plot seqI
 sequenchr::plot_sequence_index(atus_tidy_t1, color_mapping, clusters_t1) + labs(subtitle = paste0("Time 1: ", time1))
-ggsave(file.path(time_file_path, "plots", 'clustering', "seqI_time1.png"), height = 9, width = 9)
+ggsave(file.path(file_path, "plots", 'clustering', "seqI_time1.png"), height = 9, width = 9)
 sequenchr::plot_sequence_index(atus_tidy_t2, color_mapping, clusters_t2) + labs(subtitle = paste0("Time 2: ", time2))
-ggsave(file.path(time_file_path, "plots", 'clustering', "seqI_time2.png"), height = 9, width = 9)
+ggsave(file.path(file_path, "plots", 'clustering', "seqI_time2.png"), height = 9, width = 9)
 
 # plot seqD
 sequenchr::plot_state(atus_tidy_t1, color_mapping, clusters_t1) + labs(subtitle = paste0("Time 1: ", time1))
-ggsave(file.path(time_file_path, "plots", 'clustering', "seqD_time1.png"), height = 9, width = 9)
+ggsave(file.path(file_path, "plots", 'clustering', "seqD_time1.png"), height = 9, width = 9)
 sequenchr::plot_state(atus_tidy_t2, color_mapping, clusters_t2) + labs(subtitle = paste0("Time 2: ", time2))
-ggsave(file.path(time_file_path, "plots", 'clustering', "seqD_time2.png"), height = 9, width = 9)
+ggsave(file.path(file_path, "plots", 'clustering', "seqD_time2.png"), height = 9, width = 9)
 
 # plot modals
 sequenchr::plot_modal(atus_tidy_t1, color_mapping, clusters_t1) + labs(subtitle = paste0("Time 1: ", time1))
-ggsave(file.path(time_file_path, "plots", 'clustering', "modals_time1.png"), height = 9, width = 9)
+ggsave(file.path(file_path, "plots", 'clustering', "modals_time1.png"), height = 9, width = 9)
 sequenchr::plot_modal(atus_tidy_t2, color_mapping, clusters_t2) + labs(subtitle = paste0("Time 2: ", time2))
-ggsave(file.path(time_file_path, "plots", 'clustering', "modals_time2.png"), height = 9, width = 9)
+ggsave(file.path(file_path, "plots", 'clustering', "modals_time2.png"), height = 9, width = 9)
 
 
 # matching clusters across times ------------------------------------------
@@ -210,7 +209,7 @@ medoids_matched <- minimal_distance(medoids_dist, with_replacement = FALSE)
 # write out medoid matching
 tibble(t1 = seq_along(medoids_matched),
        t2 = medoids_matched) %>% 
-  write_csv(path = file.path(time_file_path, 'data', 'medoid_matching.csv'))
+  write_csv(path = file.path(file_path, 'data', 'medoid_matching.csv'))
 
 # plot and save distance matrix
 medoids_dist %>% 
@@ -229,7 +228,7 @@ medoids_dist %>%
        x = '\nCluster in time 2',
        y = 'Cluster in time 1',
        fill = 'TRATE distance')
-ggsave(file.path(time_file_path, "plots", "cluster_comparison", "medoids_distance.png"), height = 7, width = 9)
+ggsave(file.path(file_path, "plots", "cluster_comparison", "medoids_distance.png"), height = 7, width = 9)
 
 ## relabel time2 clusters to with the matched label
 clusters_t2_relabeled <- swap_labels(clusters_t1_numeric, 
@@ -272,7 +271,7 @@ cluster_assignments %>%
        subtitle = 'Cluster labels in t2 have been relabeled based on medoid matching',
        x = NULL,
        y = 'n')
-ggsave(file.path(time_file_path, "plots", "cluster_comparison", "medoid_matching_age.png"), height = 7, width = 9)
+ggsave(file.path(file_path, "plots", "cluster_comparison", "medoid_matching_age.png"), height = 7, width = 9)
 
 # sex
 cluster_assignments %>%
@@ -287,7 +286,7 @@ cluster_assignments %>%
        caption = 'Cluster labels in t2 have been relabeled based on medoid matching',
        x = NULL,
        y = 'n')
-ggsave(file.path(time_file_path, "plots", "cluster_comparison", "medoid_matching_sex.png"), height = 7, width = 9)
+ggsave(file.path(file_path, "plots", "cluster_comparison", "medoid_matching_sex.png"), height = 7, width = 9)
 
 # race
 cluster_assignments %>%
@@ -302,7 +301,7 @@ cluster_assignments %>%
        x = NULL,
        y = 'n') +
   theme(axis.text.x = element_text(angle = -40, hjust = 0))
-ggsave(file.path(time_file_path, "plots", "cluster_comparison", "medoid_matching_race.png"), height = 7, width = 9)
+ggsave(file.path(file_path, "plots", "cluster_comparison", "medoid_matching_race.png"), height = 7, width = 9)
 
 # metropolitan
 cluster_assignments %>%
@@ -317,7 +316,7 @@ cluster_assignments %>%
        x = NULL,
        y = 'n') +
   theme(axis.text.x = element_text(angle = -40, hjust = 0))
-ggsave(file.path(time_file_path, "plots", 'cluster_comparison', "medoid_matching_metropolitan.png"), height = 7, width = 9)
+ggsave(file.path(file_path, "plots", 'cluster_comparison', "medoid_matching_metropolitan.png"), height = 7, width = 9)
 
 # has_partner
 cluster_assignments %>%
@@ -331,7 +330,7 @@ cluster_assignments %>%
        caption = 'Cluster labels in t2 have been relabeled based on medoid matching',
        x = NULL,
        y = 'n')
-ggsave(file.path(time_file_path, "plots", "cluster_comparison", "medoid_matching_has_partner.png"), height = 7, width = 9)
+ggsave(file.path(file_path, "plots", "cluster_comparison", "medoid_matching_has_partner.png"), height = 7, width = 9)
 
 
 # transitions between clusters --------------------------------------------
@@ -347,9 +346,8 @@ pair_ids <- tibble(
 )
 cluster_pairs <- left_join(pair_ids, cluster_assignments, by = 'ID')
 
-# write out: batch script only
-write_csv(cluster_pairs, path = file.path(time_file_path, 'data', 'cluster_pairs.csv'))
-# write_csv(cluster_pairs, path = file.path('data', 'cluster_pairs.csv'))
+# write out
+write_csv(cluster_pairs, path = file.path(file_path, 'data', 'cluster_pairs.csv'))
 
 # how consistent are the clusters across time1 and time2?
 cluster_pairs_wide <- cluster_pairs %>% 
@@ -369,9 +367,9 @@ transition_rate <- cluster_pairs_wide %>%
 
 transition_table <- table(t1 = cluster_pairs_wide$t1, t2 = cluster_pairs_wide$t2)
 
-# write out: batch script only
+# write out
 write_csv(as_tibble(transition_table), 
-          path = file.path(time_file_path, 'data', 'transition_matrix.csv'))
+          path = file.path(file_path, 'data', 'transition_matrix.csv'))
 
 # how often do matches stay in the same cluster?
 mean(cluster_pairs_wide$t1 == cluster_pairs_wide$t2)
@@ -394,7 +392,7 @@ transition_rate %>%
        y = "Cluster in time 1",
        fill = "Transition rate") +
   theme(axis.text.x = element_text(angle = -20, hjust = 0))
-ggsave(file.path(time_file_path, "plots", "cluster_comparison", "transition_matrix.png"), height = 7, width = 9)
+ggsave(file.path(file_path, "plots", "cluster_comparison", "transition_matrix.png"), height = 7, width = 9)
 
 # transition rate by cluster
 # ggplot(transition_rate, aes(x = t1, y = rate_group, fill = t2)) +

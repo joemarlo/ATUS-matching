@@ -5,7 +5,7 @@ source('analyses/helpers_analyses.R')
 # noise analysis ----------------------------------------------------------
 
 # read in data denoting the mahalonobis distance between pairs
-pair_distance <- read_csv(file.path('data', 'pair_distance.csv'))
+pair_distance <- read_csv(file.path('analyses', 'data', 'pair_distance.csv'))
 
 # read in data on cluster assignments
 pair_clusters <- read_csv(file.path('data', 'cluster_pairs.csv'))
@@ -191,21 +191,6 @@ demographics %>%
   ggplot(aes(x = age)) +
   geom_histogram(breaks = 1:100, color='white') + 
   facet_wrap(~time)
-
-pairs %>% 
-  left_join(select(demographics_t1, ID_t1 = ID, age),
-            by = 'ID_t1') %>% 
-  mutate(age_binned = cut(age, seq(0, 100, by = 1))) %>% 
-  group_by(distance_binned) %>% 
-  summarize(match_rate = mean(t1 == t2)) %>% 
-  ggplot(aes(x = distance_binned, y = match_rate)) +
-  geom_col() +
-  scale_y_continuous(breaks = seq(0, 1, by = 0.1),
-                     limits = c(0, 1)) +
-  labs(title = 'Proportion of matched pairs that transition to like cluster inter-year',
-       subtitle = paste0(time1, "/", time2),
-       x = 'Binned Mahalanobis distance',
-       y = 'Proportion')
 
 
 # gender ------------------------------------------------------------------
