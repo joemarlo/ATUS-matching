@@ -36,8 +36,12 @@ To reproduce, run the scripts in the following order:
     1. `data/cleaning_atus30.R`  
     2. `data/cleaning_demographics.R`  
     3. `data/essential_industries.R`  
-3. `analyses/matching/matching_mahalanobis.R`  
-4. `analyses/clustering.R`  
+3.  
+    - Run a single year:  
+        1. `analyses/matching/matching_mahalanobis.R`  
+        2. `analyses/clustering.R`  
+    - Run full back test:  
+        1. `analyses/backtest/batch_backtest.R`  
 
 <br>
 
