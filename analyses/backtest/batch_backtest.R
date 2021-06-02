@@ -48,13 +48,15 @@ source(file.path('analyses', 'backtest', 'backtest_summary_statistics.R'))
 
 # create readme with any relevant notes
 notes <- paste0('This batch was run at ', Sys.time(), ' with the following specifications:',
-                '\n\nYears: ', paste0(years, collapse = ', '),
-                '\nLag: ', lag_years,
-                '\nk values: float across t1 and t2',
-                '\nk search range: ', paste0(k_seq, collapse = ', '),
-                '\nDistance method: TRATE', #levenshtein
-                '\nClustering algorithm: hclust, ward.D2', #agnes, PAM
-                '\nMatching method: \n\t-Mahalanobis distance on ', paste0(matching_vars, collapse = ', '), '; \n\t-Stratified on sex, race, +/- 2 age')
+                '  \n\nYears: ', paste0(years, collapse = ', '),
+                '  \nLag: ', lag_years,
+                '  \nk values: float across t1 and t2',
+                '  \nk search range: ', paste0(k_seq, collapse = ', '),
+                '  \nDistance method: TRATE', #levenshtein
+                '  \nClustering algorithm: hclust, ward.D2', #agnes, PAM
+                '  \nMatching method:',
+                '  \n\t-Mahalanobis distance on ', paste0(matching_vars, collapse = ', '), 
+                '  \n\t-Stratified on sex, race, +/- 2 age')
 file_connection <- file(file.path(path_to_batch, "README.md"))
 writeLines(notes, file_connection)
 close(file_connection)

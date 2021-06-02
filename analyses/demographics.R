@@ -13,7 +13,7 @@ demographics <- read_delim(file = file.path("data", "demographic.tsv"),
 
 # data cleaning -----------------------------------------------------------
 
-# set time periods
+# set time periods if not in batch mode
 if (!isTRUE(get0('in_batch_mode'))){
   time1 <- 2006
   time2 <- time1 + 1
@@ -101,6 +101,7 @@ vars_numeric <- demographics %>%
   dplyr::select(all_of(matching_vars)) %>% 
   dplyr::select(where(is.numeric)) %>% 
   colnames()
+
 
 # overlap -----------------------------------------------------------------
 

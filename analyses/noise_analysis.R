@@ -43,7 +43,7 @@ pairs %>%
        subtitle = paste0(time1, "/", time2),
        x = 'Matched pairs ranked by Mahalanobis distance',
        y = 'Proportion at k')
-ggsave(file.path('analyses', 'plots', 'match_rate_at_k.png'),
+ggsave(file.path('analyses', 'plots', 'noise', 'match_rate_at_k.png'),
        width = 9, height = 6)
 
 # calculate match rate by binned score
@@ -59,7 +59,7 @@ pairs %>%
        subtitle = paste0(time1, "/", time2),
        x = 'Binned Mahalanobis distance',
        y = 'Proportion')
-ggsave(file.path('analyses', 'plots', 'match_rate_binned.png'),
+ggsave(file.path('analyses', 'plots', 'noise', 'match_rate_binned.png'),
        width = 9, height = 6)
 
 # match rate at k per cluster
@@ -81,7 +81,7 @@ pairs %>%
        y = 'Proportion at k',
        color = NULL) +
   theme(legend.position = 'bottom')
-ggsave(file.path('analyses', 'plots', 'match_rate_at_k_per_cluster.png'),
+ggsave(file.path('analyses', 'plots', 'noise', 'match_rate_at_k_per_cluster.png'),
        width = 9, height = 6)
 
 
@@ -117,7 +117,8 @@ pairs <- pairs %>%
 # are the same
 # e.g. Jan and Feb == TRUE; Jan and Dec == TRUE; Jan and Mar == FALSE
 match_season <- function(month_1, month_2, window = 3){
-  if (!(window %in% c(3, 5, 7, 9, 12))) stop('window must be 3, 5, 7, 9, 12')
+  if (length(month_1) != 1) stop('month_1 must be length 1')
+  if (window %notin% c(3, 5, 7, 9, 12)) stop('window must be 3, 5, 7, 9, 12')
   half_window <- (window - 1) / 2
   months <- 1:36 %% 12
   months[months == 0] <- 12
@@ -181,7 +182,7 @@ pairs %>%
        x = '\nBinned age of individual in time 1',
        y = NULL) +
   theme(axis.text.x = element_text(angle = -30, hjust = 0))
-ggsave(file.path('analyses', 'plots', 'match_rate_by_age.png'),
+ggsave(file.path('analyses', 'plots', 'noise', 'match_rate_by_age.png'),
        width = 9, height = 6)
 
 demographics %>% 
@@ -193,7 +194,8 @@ demographics %>%
   facet_wrap(~time)
 
 
-# gender ------------------------------------------------------------------
+
+# sex ---------------------------------------------------------------------
 
 pairs %>% 
   select(pair_id, t1, t2, ID_t1, ID_t2) %>% 
@@ -214,3 +216,44 @@ pairs %>%
        y = NULL,
        fill = NULL) +
   theme(legend.position = 'bottom')
+
+
+# seqI across time --------------------------------------------------------
+
+# read in ATUS data
+atus_raw <- read_tsv(file.path("data", "atus_30min.tsv"))
+
+# expand data to get sequences
+pair_activities <- pairs %>% 
+  select(pair_id ,t1, ID_t1, ID_t2) %>% 
+  mutate(y_id = paste0(pair_id, t1)) %>% 
+  pivot_longer(c('ID_t1', 'ID_t2'),
+               names_to = 'time',
+               values_to = 'ID') %>% 
+  mutate(time = recode(time, 'ID_t1' = 'Time 1', 'ID_t2' = 'Matched pair in time 2'),
+         time = factor(time, levels = c('Time 1', 'Matched pair in time 2'))) %>% 
+  left_join(atus_raw, by = "ID")
+
+# calculate of entropy of t1 sequence
+entropies <- pair_activities %>% 
+  filter(time == 'Time 1') %>% 
+  group_by(pair_id) %>% 
+  summarize(entropy = sequenchr::shannon_entropy(description))
+
+# plot the sequences side by side
+pair_activities %>% 
+  left_join(entropies, by = 'pair_id') %>% 
+  ggplot(aes(x = period, y = reorder(y_id, -entropy), fill = description)) +
+  geom_tile() +
+  scale_y_discrete(labels = NULL) +
+  facet_grid(t1~time, scales = 'free')  +
+  labs(title = 'Sequence index of matched pairs',
+       subtitle = paste0(
+         'Cluster represents cluster in time 1',
+         '\nSorted by Shannon entropy in time 1',
+         '\n',  paste0(time1, "/", time2)),
+       x = 'Period',
+       y = NULL,
+       fill = NULL)
+ggsave(file.path('analyses', 'plots', 'noise', 'matched_seqI.png'),
+       width = 9, height = 6)

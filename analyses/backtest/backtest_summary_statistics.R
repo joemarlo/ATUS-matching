@@ -131,7 +131,10 @@ transition_dfs %>%
   pivot_longer(-year1) %>% 
   ggplot(aes(x = year1, y = value, fill = name)) +
   geom_col(position = 'dodge', width = 0.7) +
-  scale_x_discrete(labels = paste0(2004:2017, '\n-\n', 2005:2018)) +
+  scale_x_discrete(labels = paste0(
+    sort(unique(transition_dfs$year1)), 
+    '\n-\n', 
+    as.numeric(sort(unique(transition_dfs$year1))) + 1)) +
   scale_y_continuous(breaks = 0:8) +
   labs(title = 'k clusters by year',
        x = NULL,
@@ -158,11 +161,12 @@ obs_with_no_match <- map_dfr(path_years, function(path){
 obs_with_no_match %>% 
   group_by(year) %>% 
   tally() %>% 
-  full_join(tibble(year = years_run)) %>% 
+  full_join(tibble(year = years_run),
+            by = 'year') %>% 
   ggplot(aes(x = year, y = n)) +
   geom_col() +
   scale_x_discrete(labels = paste0(2004:2017, '\n-\n', 2005:2018)) +
-  scale_y_continuous(breaks = 0:15) +
+  scale_y_continuous(breaks = 0:1000) +
   labs(title = 'Number of observations thrown out due to lack of match',
        x = NULL,
        y = 'n observations without a match')
