@@ -223,7 +223,7 @@ pairs %>%
 # read in ATUS data
 atus_raw <- read_tsv(file.path("data", "atus_30min.tsv"))
 
-# expand data to get sequences
+# expand data to get sequences by ID
 pair_activities <- pairs %>% 
   select(pair_id ,t1, ID_t1, ID_t2) %>% 
   mutate(y_id = paste0(pair_id, t1)) %>% 
@@ -257,3 +257,87 @@ pair_activities %>%
        fill = NULL)
 ggsave(file.path('analyses', 'plots', 'noise', 'matched_seqI.png'),
        width = 9, height = 6)
+ 
+
+# demographics predicting stability ---------------------------------------
+
+# get demographics data for calculating differentials b/t subgroups
+differential_data <- pairs %>% 
+  mutate(cluster_match = t1 == t2) %>% 
+  select(pair_id, ID = ID_t1, cluster_match) %>% 
+  left_join(demographics, by = 'ID') %>% 
+  select(cluster_match, age, sex, age_youngest, n_child, labor_force_status, 
+         partner_working, fam_income, elder_in_HH, has_partner, race, 
+         education, metropolitan) %>% 
+  mutate(age = cut(age, seq(0, 100, by = 5)),
+         fam_income = cut(fam_income, seq(0, 150000, by = 10000)),
+         sex = recode(sex, "1" = "Male", "2" = "Female")) 
+  
+# logistic regression to understand drivers of cluster match
+differential_data %>% 
+  glm(cluster_match ~ ., data = .) %>%
+  broom::tidy() %>% 
+  filter(term != '(Intercept)') %>% 
+  mutate(min = estimate - (1.96 * std.error),
+         max = estimate + (1.96 * std.error),
+         term = fct_reorder(term, estimate)) %>% 
+  ggplot() +
+  geom_vline(xintercept = 0, linetype = 'dashed', color = 'grey50') +
+  geom_linerange(aes(xmin = min, xmax = max, 
+                     y = term)) +
+  geom_point(aes(x = estimate, y = term)) +
+  labs(title = 'Log reg estimates predicting (cluster in t1) == (cluster in t2)',
+       subtitle = paste0(
+         'Range represents 95% confidence interval',
+         '\n', paste0(time1, "/", time2)),
+       x = NULL,
+       y = 'Varible in time 1')
+ggsave(file.path('analyses', 'plots', 'noise', 'log_estimates.png'),
+       width = 9, height = 8)
+
+# differential of cluster match
+differential_data %>% 
+  select(cluster_match, age, sex, n_child, labor_force_status, partner_working, 
+         fam_income, has_partner, race, education, metropolitan, elder_in_HH) %>% 
+  mutate(across(-cluster_match, as.character)) %>% 
+  pivot_longer(-cluster_match) %>% 
+  group_by(name, value) %>% 
+  summarize(match_rate = mean(cluster_match),
+            .groups = 'drop') %>% 
+  ggplot(aes(x = value, y = match_rate)) +
+  geom_col() +
+  facet_wrap(~name, scales = 'free_x') +
+  labs(title = 'Proportion of matched pairs that transition to like cluster inter-year',
+       subtitle = paste0(
+         'Variable in time 1',
+         '\n', paste0(time1, "/", time2)),
+       caption = 'All variables are matching variables except labor_force_status',
+       x = NULL,
+       y = 'Proportion') +
+  theme(axis.text.x = element_text(angle = -50, hjust = 0, size = 7))
+ggsave(file.path('analyses', 'plots', 'noise', 'match_rate_variable.png'),
+       width = 9, height = 7)
+
+# match quality by group
+pairs %>% 
+  mutate(cluster_match = t1 == t2) %>% 
+  select(pair_id, distance, ID = ID_t1) %>% 
+  left_join(select(demographics, ID, sex, labor_force_status),
+            by = "ID") %>% 
+  mutate(sex = recode(sex, '1' = 'Male', '2' = "Female")) %>% 
+  group_by(sex, labor_force_status) %>% 
+  mutate(mean = mean(distance)) %>% 
+  ggplot(aes(x = distance)) +
+  geom_vline(aes(xintercept = mean), 
+             linetype = 'dashed', color = 'grey50') +
+  geom_histogram(aes(y=..ncount..), color = 'white') +
+  scale_x_continuous(breaks = 0:10) +
+  facet_grid(sex ~ labor_force_status) +
+  labs(title = 'Distribution of match quality',
+       subtitle = paste0(
+         'Variable in time 1',
+         '\n', paste0(time1, "/", time2)),
+       x = "Distance (greater == worse quality match)",
+       y = 'Normalized count')
+ggsave(file.path('analyses', 'plots', 'noise', 'match_quality_sex_labor.png'),
+       width = 9, height = 5)

@@ -14,12 +14,12 @@
 
 <br>
 <p align="center">
-<img src="analyses/backtest/plots/mean_transition_rate_simulated.png" width=80%>
+<img src="analyses/backtest/plots/noise/mean_transition_rate_simulated.png" width=80%>
 </p>
 
 <br>
 <p align="center">
-<img src="analyses/plots/match_rate_at_k.png" width=80%>
+<img src="analyses/plots/noise/match_rate_at_k.png" width=80%>
 </p>
 
 <br>
