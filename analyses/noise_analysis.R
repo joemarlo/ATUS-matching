@@ -218,6 +218,19 @@ pairs %>%
   theme(legend.position = 'bottom')
 
 
+
+# education ---------------------------------------------------------------
+
+pairs %>% 
+  select(pair_id, ID_t1, ID_t2) %>% 
+  left_join(select(demographics, ID, education),
+            by = c('ID_t1' = 'ID')) %>% 
+  left_join(select(demographics, ID, education),
+            by = c('ID_t2' = 'ID')) %>% 
+  filter(education.x != education.y) %>% 
+  View
+
+
 # seqI across time --------------------------------------------------------
 
 # read in ATUS data
@@ -269,13 +282,16 @@ differential_data <- pairs %>%
   select(cluster_match, age, sex, age_youngest, n_child, labor_force_status, 
          partner_working, fam_income, elder_in_HH, has_partner, race, 
          education, metropolitan) %>% 
-  mutate(age = cut(age, seq(0, 100, by = 5)),
-         fam_income = cut(fam_income, seq(0, 150000, by = 10000)),
-         sex = recode(sex, "1" = "Male", "2" = "Female")) 
+  mutate(#age = cut(age, seq(0, 100, by = 5)),
+         #fam_income = cut(fam_income, seq(0, 150000, by = 10000)),
+         age_in_decades = age / 10,
+         fam_income_in_10k = fam_income / 10000,
+         sex = recode(sex, "1" = "Male", "2" = "Female")) %>% 
+  select(-fam_income, -age)
   
 # logistic regression to understand drivers of cluster match
 differential_data %>% 
-  glm(cluster_match ~ ., data = .) %>%
+  glm(cluster_match ~ ., data = ., family = 'binomial') %>%
   broom::tidy() %>% 
   filter(term != '(Intercept)') %>% 
   mutate(min = estimate - (1.96 * std.error),
@@ -286,19 +302,21 @@ differential_data %>%
   geom_linerange(aes(xmin = min, xmax = max, 
                      y = term)) +
   geom_point(aes(x = estimate, y = term)) +
+  scale_x_continuous(breaks = seq(-1, 2.5, by = 0.5)) +
   labs(title = 'Log reg estimates predicting (cluster in t1) == (cluster in t2)',
        subtitle = paste0(
          'Range represents 95% confidence interval',
          '\n', paste0(time1, "/", time2)),
-       x = NULL,
-       y = 'Varible in time 1')
+       caption = 'All variables are used in matching except labor_force_status',
+       x = "Estimate (log odds scale)",
+       y = 'Variable in time 1')
 ggsave(file.path('analyses', 'plots', 'noise', 'log_estimates.png'),
        width = 9, height = 8)
 
 # differential of cluster match
 differential_data %>% 
-  select(cluster_match, age, sex, n_child, labor_force_status, partner_working, 
-         fam_income, has_partner, race, education, metropolitan, elder_in_HH) %>% 
+  select(cluster_match, age_in_decades, sex, n_child, labor_force_status, partner_working, 
+         fam_income_in_10k, has_partner, race, education, metropolitan, elder_in_HH) %>% 
   mutate(across(-cluster_match, as.character)) %>% 
   pivot_longer(-cluster_match) %>% 
   group_by(name, value) %>% 
@@ -311,12 +329,12 @@ differential_data %>%
        subtitle = paste0(
          'Variable in time 1',
          '\n', paste0(time1, "/", time2)),
-       caption = 'All variables are matching variables except labor_force_status',
+       caption = 'All variables are used in matching except labor_force_status',
        x = NULL,
        y = 'Proportion') +
   theme(axis.text.x = element_text(angle = -50, hjust = 0, size = 7))
 ggsave(file.path('analyses', 'plots', 'noise', 'match_rate_variable.png'),
-       width = 9, height = 7)
+       width = 9, height = 9)
 
 # match quality by group
 pairs %>% 
