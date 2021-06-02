@@ -14,7 +14,7 @@
 
 <br>
 <p align="center">
-<img src="analyses/backtest/plots/noise/mean_transition_rate_simulated.png" width=80%>
+<img src="analyses/backtest/batch_20210531_173618/plots/mean_transition_rate_simulated.png" width=80%>
 </p>
 
 <br>
