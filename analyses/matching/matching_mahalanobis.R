@@ -161,6 +161,13 @@ race_matches <- sapply(demographics[demographics$treatment,]$race,
   return(is_match)
 })
 
+# strata: labor_force_status
+labor_force_matches <- sapply(demographics[demographics$treatment,]$labor_force_status, 
+                       USE.NAMES = FALSE, function(labor_force_status){
+  is_match <- demographics[!demographics$treatment,]$labor_force_status == labor_force_status
+  return(is_match)
+})
+
 # get the index of the best match within the age range
 index_of_best_match <- c()
 distance_of_best_match <- c()
@@ -175,7 +182,8 @@ for (i in 1:nrow(demographics_mdistance)){
   t2_matches_age <- age_matches[,i]
   t2_matches_sex <- sex_matches[,i]
   t2_matches_race <- race_matches[,i]
-  t2_matches_all <- t2_matches_age & t2_matches_sex & t2_matches_race
+  t2_matches_labor_force <- labor_force_matches[,i]
+  t2_matches_all <- t2_matches_age & t2_matches_sex & t2_matches_race & t2_matches_labor_force
   t1[!t2_matches_all] <- 1e10
   potential_match_pop[i] <- sum(t2_matches_all)
   
@@ -257,6 +265,8 @@ final_matches %>%
                'Midwest', 'Northeast', 'South', 'West',
                'TRUE', 'FALSE',
                'employed', 'not employed',
+               'not in labor force', 'unemployed - looking', 'unemployed - on layoff',
+               'employed - absent', 'employed - at work',
                unique(final_matches$sex),
                # unique(final_matches$labor_force_status),
                levels(final_matches$education),
@@ -269,7 +279,7 @@ final_matches %>%
   scale_y_continuous(labels = scales::percent_format(1)) +
   facet_wrap(~name, scales = 'free', ncol = 3) +
   labs(title = 'Counts of key groups within matched data',
-       subtitle = '\nMethodology: mahalanobis, blocking on sex, race, age +/- 2 years',
+       subtitle = 'Methodology: mahalanobis, blocking on sex, race, age +/- 2 years, labor_force_status',
        caption = 'Only includes distinct observations (i.e. removes duplicates due to matching with replacement)',
        x = NULL,
        y = NULL,
@@ -300,7 +310,7 @@ match_summary %>%
   labs(title = 'Proportion of matches that match perfectly on: ',
        subtitle = paste0(
          paste0(blocking_vars, collapse = ', '),
-         '\nMethodology: mahalanobis, blocking on sex, race, age +/- 2 years'
+         '\nMethodology: mahalanobis, blocking on sex, race, age +/- 2 years, labor_force_status'
        ),
        x = 'Number of matches across all privileged variables',
        y = 'Proportion of all pairs')
@@ -320,7 +330,7 @@ match_summary %>%
   facet_grid(~isNumeric, scales = 'free_x') +
   labs(title = 'How many pairs matched perfectly for each variable?',
        subtitle = paste0("Yellow variables are not explicitly privileged but are highlighted for emphasis",
-                         '\nMethodology: mahalanobis, blocking on sex, race, age +/- 2 years'),
+                         '\nMethodology: mahalanobis, blocking on sex, race, age +/- 2 years, labor_force_status'),
        x = NULL,
        y = 'Proportion of all pairs') +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
@@ -338,7 +348,7 @@ final_matches %>%
   scale_y_continuous(labels = NULL) +
   facet_wrap(~name, scales = 'free') +
   labs(title = 'Difference within matched pairs for numeric variables',
-       subtitle = 'Methodology: mahalanobis, blocking on sex, race, age +/- 2 years',
+       subtitle = 'Methodology: mahalanobis, blocking on sex, race, age +/- 2 years, labor_force_status',
        x = NULL,
        y = NULL)
 ggsave(file.path(file_path, "plots", 'matching', "numeric_differences_mahalanobis.png"), height = 5, width = 9)

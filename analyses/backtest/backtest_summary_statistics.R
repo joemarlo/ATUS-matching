@@ -48,7 +48,7 @@ stationary_rate %>%
        subtitle = 'Line represents mean rate. ⋄ represent individual cluster rates',
        x = NULL,
        y = 'Rate')
-ggsave(file.path(this_batch, 'plots', 'mean_transition_rate.png'),
+ggsave(file.path(path_to_batch, 'plots', 'mean_transition_rate.png'),
        width = 9, height = 6)
 
 # how does this compare to baseline noise? 
@@ -118,7 +118,7 @@ stationary_rate %>%
        caption = 'Simulated points calculated from random samples with same k and proportion by year',
        x = NULL,
        y = 'Rate')
-ggsave(file.path(this_batch, 'plots', 'mean_transition_rate_simulated.png'),
+ggsave(file.path(path_to_batch, 'plots', 'mean_transition_rate_simulated.png'),
        width = 9, height = 6)
 
 
@@ -141,7 +141,7 @@ transition_dfs %>%
        y = 'k clusters',
        fill = NULL) +
   theme(legend.position = 'bottom')
-ggsave(file.path(this_batch, 'plots', 'k_clusters.png'),
+ggsave(file.path(path_to_batch, 'plots', 'k_clusters.png'),
        width = 9, height = 6)
 
 
@@ -166,9 +166,9 @@ obs_with_no_match %>%
   ggplot(aes(x = year, y = n)) +
   geom_col() +
   scale_x_discrete(labels = paste0(2004:2017, '\n-\n', 2005:2018)) +
-  scale_y_continuous(breaks = 0:1000) +
+  scale_y_continuous() +
   labs(title = 'Number of observations thrown out due to lack of match',
        x = NULL,
        y = 'n observations without a match')
-ggsave(file.path(this_batch, 'plots', 'no_matches.png'),
+ggsave(file.path(path_to_batch, 'plots', 'no_matches.png'),
        width = 9, height = 6)

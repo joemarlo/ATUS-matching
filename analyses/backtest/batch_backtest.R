@@ -56,7 +56,8 @@ notes <- paste0('This batch was run at ', Sys.time(), ' with the following speci
                 '  \nClustering algorithm: hclust, ward.D2', #agnes, PAM
                 '  \nMatching method:',
                 '  \n\t-Mahalanobis distance on ', paste0(matching_vars, collapse = ', '), 
-                '  \n\t-Stratified on sex, race, +/- 2 age')
+                '  \n\t-Stratified on sex, race, +/- 2 age, labor_force_status',
+                '  \n\t-Matching performed from time1 to time2 (1-to-many)')
 file_connection <- file(file.path(path_to_batch, "README.md"))
 writeLines(notes, file_connection)
 close(file_connection)

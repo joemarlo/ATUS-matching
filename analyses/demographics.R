@@ -83,7 +83,7 @@ sum(is.na(demographics$fam_income))
 
 matching_vars <- c('age', 'sex', 'race', 'fam_income', 'has_partner', 
                    'education', 'child_in_HH', 'n_child', 'age_youngest', 'region', 
-                   'partner_working', 'elder_in_HH', 'metropolitan') #labor_force_status
+                   'partner_working', 'elder_in_HH', 'metropolitan', 'labor_force_status')
 demographics <- demographics[, c('ID', 'year', matching_vars)]
 
 # remove NAs b/c income unknown for 13%
