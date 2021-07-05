@@ -49,7 +49,7 @@ source(file.path('analyses', 'backtest', 'backtest_summary_statistics.R'))
 # create readme with any relevant notes
 notes <- paste0('This batch was run at ', Sys.time(), ' with the following specifications:',
                 '  \n\nYears: ', paste0(years, collapse = ', '),
-                '  \nLag: ', lag_years,
+                '  \nTime 1 to time 2 lag: ', lag_years,
                 '  \nk values: float across t1 and t2',
                 '  \nk search range: ', paste0(k_seq, collapse = ', '),
                 '  \nDistance method: TRATE', #levenshtein

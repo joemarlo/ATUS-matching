@@ -172,3 +172,15 @@ obs_with_no_match %>%
        y = 'n observations without a match')
 ggsave(file.path(path_to_batch, 'plots', 'no_matches.png'),
        width = 9, height = 6)
+
+
+# labor force status ------------------------------------------------------
+
+# read in the data
+# obs_with_no_match <- map_dfr(path_years, function(path){
+#   df <- read_csv(file.path(path, "data", "IDs_with_no_match.csv"),
+#                  col_types = cols(ID = col_character()))
+#   df$year <-   years <- str_extract(path, "[0-9]*_[0-9]*$")
+#   return(df)
+# })
+
