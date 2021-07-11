@@ -3,10 +3,15 @@
 ### Folder structure
     .
     ├── analyses          # Clustering, matching, demographic vars, etc.
-    │   └── plots         # Plots
+    │   ├── backtest      # 2003-2018 backtest scripts and results
+    │   ├── data          # Output data from one run
+    │   ├── matching      # Scripts to perform matching
+    │   ├── plots         # Plots from one run
+    │   └── supporting    # Supporting analyses
     ├── data              # Cleaned data and cleaning scripts
     ├── inputs            # Raw input data
     ├── outputs           # Formal write-ups
+    ├── tests             # Unit tests
     └── README.md
 
 
@@ -14,7 +19,7 @@
 
 <br>
 <p align="center">
-<img src="analyses/backtest/batch_20210531_173618/plots/mean_transition_rate_simulated.png" width=80%>
+<img src="analyses/backtest/batch_20210621_193945/plots/mean_transition_rate_simulated.png" width=80%>
 </p>
 
 <br>

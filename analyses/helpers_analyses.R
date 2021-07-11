@@ -239,7 +239,7 @@ swap_labels <- function(clusters_one, clusters_two, label_mapping){
 #' @param groups grouping variables. E.g. 'TESEX' for sex
 #' @param activities the t codes for time-use activities. If none are provided, then all t-codes are used
 #' @param simplify if TRUE, then simplify output to the group. Can be a dataframe specifying a rollup of activities (see `descriptions` dataframe in 'data/helpers.R')
-#' @include_SE include standard errors? Automatically sets `simplify = TRUE`. Uses method outlined here https://www.bls.gov/tus/atususersguide.pdf
+#' @include_SE include standard errors? Automatically sets `simplify = TRUE`. Calculation may take a while if there are multiple activities. Uses replicate weight method outlined here https://www.bls.gov/tus/atususersguide.pdf
 #'
 #' @return a tidy dataframe listing the activity, any grouping variables, and the survey-weighted mean minutes spent in that activity
 #' @export
@@ -363,7 +363,7 @@ get_participation <- function(df, groups = NULL, activities = NULL, simplify = N
   # if no activities are explicitly provided then include all of them
   if (is.null(activities)){
     activities <- str_subset(names(df), '^t[0-9]')
-    message('get_participation(): No activities explicitly provided. Returning all activities.')
+    message('get_participation(): No activities explicitly provided. Returning all activities in dataframe.')
   }
   
   if (isTRUE(simplify)){
