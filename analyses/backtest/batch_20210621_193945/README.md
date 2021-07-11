@@ -9,4 +9,4 @@ Clustering algorithm: hclust, ward.D2
 Matching method:  
 	-Mahalanobis distance on age, sex, race, fam_income, has_partner, education, child_in_HH, n_child, age_youngest, region, partner_working, elder_in_HH, metropolitan, labor_force_status  
 	-Stratified on sex, race, +/- 2 age, labor_force_status  
-	-Matching performed from time1 to time2 (1-to-many)  
+	-Matching performed from time1 to time2 (many-to-1)  

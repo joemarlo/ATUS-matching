@@ -145,6 +145,31 @@ ggsave(file.path(path_to_batch, 'plots', 'k_clusters.png'),
        width = 9, height = 6)
 
 
+
+# how many observations not used in time 2 due to matching ----------------
+
+# read in the data
+obs_unmatched <- map_dfr(path_years, function(path){
+  n_unmatched_observations <- read_csv(file.path(path, "data", "t2_unmatched_observations.csv")) %>% 
+    n_distinct(.$ID)
+  df <- tibble(year = str_extract(path, "[0-9]*_[0-9]*$"),
+               n = n_unmatched_observations)
+  return(df)
+})
+
+# plot it
+obs_unmatched %>% 
+  ggplot(aes(x = year, y = n)) +
+  geom_col() +
+  scale_x_discrete(labels = paste0(2004:2017, '\n-\n', 2005:2018)) +
+  scale_y_continuous() +
+  labs(title = 'Number of observations thrown out due to lack of match',
+       x = NULL,
+       y = 'n observations without a match')
+ggsave(file.path(path_to_batch, 'plots', 'no_matches.png'),
+       width = 9, height = 6)
+
+
 # bad matching ------------------------------------------------------------
 
 # how many observations were thrown out due to stratified matching
@@ -153,7 +178,7 @@ ggsave(file.path(path_to_batch, 'plots', 'k_clusters.png'),
 obs_with_no_match <- map_dfr(path_years, function(path){
   df <- read_csv(file.path(path, "data", "IDs_with_no_match.csv"),
            col_types = cols(ID = col_character()))
-  df$year <-   years <- str_extract(path, "[0-9]*_[0-9]*$")
+  df$year <- str_extract(path, "[0-9]*_[0-9]*$")
   return(df)
 })
 
@@ -167,10 +192,10 @@ obs_with_no_match %>%
   geom_col() +
   scale_x_discrete(labels = paste0(2004:2017, '\n-\n', 2005:2018)) +
   scale_y_continuous() +
-  labs(title = 'Number of observations thrown out due to lack of match',
+  labs(title = 'Number of observations thrown out due to stratified matching',
        x = NULL,
        y = 'n observations without a match')
-ggsave(file.path(path_to_batch, 'plots', 'no_matches.png'),
+ggsave(file.path(path_to_batch, 'plots', 'no_matches_due_to_stratify.png'),
        width = 9, height = 6)
 
 

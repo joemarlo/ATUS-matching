@@ -64,7 +64,10 @@ atussum_0318 %>%
   labs(title = 'Daily time spent on socializing activities',
        caption = "2003-2018 American Time Use Survey",
        x = 'Age',
-       y = NULL)
+       y = NULL,
+       color = NULL) +
+  theme(legend.position = 'bottom')
+
 
 
 # childcare ---------------------------------------------------------------
