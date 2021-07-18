@@ -3,7 +3,25 @@ source(file.path('analyses', 'plots', 'ggplot_settings.R'))
 source(file.path('data', 'helpers.R'))
 source(file.path("analyses", "helpers_analyses.R"))
 
+# add metropolitan status 
+# based on if respondent is in an MSA
+# GTMETSTA is newer than GEMETSTA (MSA definitions updated in 2004)
+atussum_0318 <- atussum_0318 %>% 
+  mutate(metropolitan = if_else(
+    GEMETSTA > 0,
+    case_when(
+      GEMETSTA == 1 ~ 'metropolitan',
+      GEMETSTA == 2 ~ 'non-metropolitan',
+      TRUE ~ 'NA'
+      ),
+    case_when(
+      GTMETSTA == 1 ~ 'metropolitan',
+      GTMETSTA == 2 ~ 'non-metropolitan',
+      TRUE ~ 'NA'
+    )))
+atussum_0318$metropolitan[atussum_0318$metropolitan == 'NA'] <- NA
 
+    
 # summary stats -----------------------------------------------------------
 
 # summary table of activities by sex
@@ -15,7 +33,6 @@ get_min_per_part(df = atussum_0318, groups = c('TESEX'), simplify = descriptions
          hours.per.participant = round(minutes.per.participant/ 60, 2)) %>% 
   select(-weighted.minutes, -minutes.per.participant ) %>% 
   View('2003-2018 summary')
-
 
 # summary table of activities by sex and age
 all_activities_by_age_sex <- atussum_0318 %>% 
@@ -67,7 +84,6 @@ atussum_0318 %>%
        y = NULL,
        color = NULL) +
   theme(legend.position = 'bottom')
-
 
 
 # childcare ---------------------------------------------------------------
@@ -153,20 +169,22 @@ housework_by_age_sex_year <- atussum_0318 %>%
                        minutes.per.participant = 'Average minutes per participant'),
          TEAGE = recode(TEAGE,
                         `(20,30]` = 'Age 20-29',
-                        `(30,50]` = 'Age 30-49',
+                        `(30,50]` = '30-49',
                         `(50,65]` = '50-64',
                         `(65,100]` = '65+'),
          grouping = paste0(TESEX, '-', TEAGE))
 
 housework_by_age_sex_year %>% 
+  filter(name != 'Average minutes') %>% 
   ggplot(aes(x = TUYEAR, y = value, group = grouping, color = as.factor(TESEX))) +
-  geom_point(alpha = 0.15) +
+  # geom_point(alpha = 0.15) +
   geom_smooth(method = lm,
               formula = y ~ x,
               se = TRUE,
               aes(linetype = TEAGE),
-              alpha = 0.2) +
+              alpha = 0.1) +
   ggplot2::scale_color_discrete() +
+  scale_linetype_manual(values = c("solid", "dashed", "dotdash", "dotted")) +
   facet_wrap(~name, nrow = 1, scales = 'free_y') + 
   labs(title = '[DRAFT] Time spent in household activities per day',
        subtitle = 'Includes activities such as cleaning, laundry, cooking, etc.',
@@ -176,7 +194,56 @@ housework_by_age_sex_year %>%
        y = NULL,
        color = NULL,
        linetype = NULL) +
-  theme(legend.position = 'bottom')
+  guides(linetype = guide_legend(override.aes = list(size = 0.7, color = 'grey10'))) +
+  theme(legend.position = 'bottom',
+        legend.key.width = unit(1.3, "cm"))
+# ggsave(file.path('analyses', 'supporting', 'plots', "housework_by_age_sex.png"),
+#        height = 6, width = 10)
+
+housework_by_age_sex_year_met <- atussum_0318 %>% 
+  select(TUFNWGTP, TUCASEID, house.codes, TESEX, TUYEAR, TEAGE, metropolitan) %>% 
+  filter(TEAGE > 20) %>% 
+  mutate(TEAGE = cut(TEAGE, breaks = c(20, 30, 50, 65, 100))) %>% 
+  get_min_per_part(groups = c('TESEX', 'TUYEAR', 'TEAGE', 'metropolitan'), simplify = TRUE) %>%
+  mutate(TESEX = recode(as.character(TESEX), '1' = 'Male', '2' = 'Female')) %>% 
+  pivot_longer(cols = 6:8) %>%
+  mutate(name = recode(name, 
+                       weighted.minutes = 'Average minutes',
+                       participation.rate = 'Participation rate',
+                       minutes.per.participant = 'Average minutes per participant'),
+         TEAGE = recode(TEAGE,
+                        `(20,30]` = 'Age 20-29',
+                        `(30,50]` = '30-49',
+                        `(50,65]` = '50-64',
+                        `(65,100]` = '65+'),
+         grouping = paste0(TESEX, '-', TEAGE))
+
+housework_by_age_sex_year_met %>% 
+  filter(name != 'Average minutes') %>% 
+  na.omit() %>% 
+  ggplot(aes(x = TUYEAR, y = value, group = grouping, color = as.factor(TESEX))) +
+  # geom_line() +
+  geom_smooth(method = lm,
+              formula = y ~ x,
+              se = TRUE,
+              aes(linetype = TEAGE),
+              alpha = 0.1) +
+  ggplot2::scale_color_discrete() +
+  scale_linetype_manual(values = c("solid", "dashed", "dotdash", "dotted")) +
+  facet_grid(name~metropolitan, scales = 'free_y') + 
+  labs(title = '[DRAFT] Time spent in household activities per day',
+       subtitle = 'Includes activities such as cleaning, laundry, cooking, etc.',
+       # subtitle = 'STANDARD ERRORS ARE PROBABLY MISESTIMATED',
+       caption = "2003-2018 American Time Use Survey",
+       x = NULL,
+       y = NULL,
+       color = NULL,
+       linetype = NULL) +
+  guides(linetype = guide_legend(override.aes = list(size = 0.7, color = 'grey10'))) +
+  theme(legend.position = 'bottom',
+        legend.key.width = unit(1.3, "cm"))
+# ggsave(file.path('analyses', 'supporting', 'plots', "housework_by_age_sex_metropolitan.png"),
+#        height = 8, width = 10)
 
 
 # cooking -----------------------------------------------------------------
