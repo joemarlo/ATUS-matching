@@ -5,8 +5,8 @@ require(rvest)
 # download data here: https://www.bls.gov/tus/#data
 #  and store in inputs/ATUS-2003-2018
 
-dat.files <- list.files(file.path('inputs', 'ATUS-2003-2018'), pattern = '*.dat')
-files <- lapply(dat.files, function(file) read_csv(file.path("inputs", "ATUS-2003-2018", file)))
+dat.files <- list.files(file.path('inputs', 'ATUS-2003-2020'), pattern = '*.dat')
+files <- lapply(dat.files, function(file) read_csv(file.path("inputs", "ATUS-2003-2020", file)))
 names(files) <- str_remove(dat.files, ".dat")
 list2env(files, envir = .GlobalEnv)
 rm(files, dat.files)
@@ -65,7 +65,7 @@ curated.codes <- tribble(
 )
 
 # all codes matched to description
-descriptions <- atussum_0318 %>% 
+descriptions <- atussum_0320 %>% 
   select(matches('^t[0-9].')) %>% 
   pivot_longer(cols = everything(), names_to = 'activity') %>%
   select(activity) %>% 
@@ -77,13 +77,13 @@ descriptions <- atussum_0318 %>%
 # additions to data -------------------------------------------------------
 
 # add indicator for work day to 2003-2018 summary file
-atussum_0318 <- atussum_0318 %>% 
+atussum_0318 <- atussum_0320 %>% 
   select(contains('t05')) %>% 
   rowSums() %>% 
   enframe() %>% 
   mutate(work.status = value >= 120) %>% 
   select(work.status) %>% 
-  bind_cols(atussum_0318)
+  bind_cols(atussum_0320)
 
 
 # income ------------------------------------------------------------------

@@ -20,7 +20,7 @@ demographics <- read_delim(file = file.path("data", "/demographic.tsv"),
                            trim_ws = TRUE,
                            col_types = cols(metropolitan = col_character()))
 
-# read in the matches
+# read in the matches (ie output of matching_mahalanobis.R)
 demographics_t1 <- read_csv(file = file.path(file_path, 'data', 'matched_time1_mahalanobis.csv'))
 demographics_t2_raw <- read_csv(file = file.path(file_path, 'data', 'matched_time2_mahalanobis.csv'))
 

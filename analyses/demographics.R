@@ -15,8 +15,28 @@ demographics <- read_delim(file = file.path("data", "demographic.tsv"),
 
 # set time periods if not in batch mode
 if (!isTRUE(get0('in_batch_mode'))){
-  time1 <- 2006
+  time1 <- 2019
   time2 <- time1 + 1
+}
+
+# for 2019:2020, throw out observations who interview was before May 10th
+# this is when the data collection started again
+if (time1 == 2019){
+  # read in data with diary date
+  atusresp_0320 <- read_csv(file.path("inputs", "ATUS-2003-2020", "atusresp_0320.dat"))
+  
+  # filter to just 2019:2020 data occurring in May or later
+  post_may_respondents <- atusresp_0320 %>% 
+    mutate(dairy_date = lubridate::ymd(TUDIARYDATE),
+           dairy_month = lubridate::month(dairy_date)) %>% 
+    filter(TUYEAR %in% c(2019, 2020),
+           dairy_month >= 5) %>% 
+    select(ID = TUCASEID, year = TUYEAR)
+  
+  # filter demographics to only include this observations
+  demographics <- inner_join(demographics, 
+                             post_may_respondents, 
+                             by = c('ID', 'year'))
 }
 
 # filter to just time1 and time2, just weekdays and non-holidays
@@ -51,10 +71,10 @@ rm(state_regions)
 # replace age_youngest NAs with 0s (these are NA b/c they don't have a child)
 demographics$age_youngest[is.na(demographics$age_youngest)] <- 0
 
-# replace partner_working NA with 'NA' (b/c propensity score matching)
+# replace partner_working NA with 'NA' (b/c matching)
 demographics$partner_working[is.na(demographics$partner_working)] <- 'NA'
 
-# replace metropolitan NA with 'NA' (b/c propensity score matching)
+# replace metropolitan NA with 'NA' (b/c matching)
 # demographics$metropolitan[is.na(demographics$metropolitan)] <- 'NA'
 
 # add indicator if child in household

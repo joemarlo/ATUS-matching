@@ -6,7 +6,7 @@ source(file.path("analyses", "helpers_analyses.R"))
 # add metropolitan status 
 # based on if respondent is in an MSA
 # GTMETSTA is newer than GEMETSTA (MSA definitions updated in 2004)
-atussum_0318 <- atussum_0318 %>% 
+atussum_0320 <- atussum_0320 %>% 
   mutate(metropolitan = if_else(
     GEMETSTA > 0,
     case_when(
@@ -19,13 +19,13 @@ atussum_0318 <- atussum_0318 %>%
       GTMETSTA == 2 ~ 'non-metropolitan',
       TRUE ~ 'NA'
     )))
-atussum_0318$metropolitan[atussum_0318$metropolitan == 'NA'] <- NA
+atussum_0320$metropolitan[atussum_0320$metropolitan == 'NA'] <- NA
 
     
 # summary stats -----------------------------------------------------------
 
 # summary table of activities by sex
-get_min_per_part(df = atussum_0318, groups = c('TESEX'), simplify = descriptions) %>% 
+get_min_per_part(df = atussum_0320, groups = c('TESEX'), simplify = descriptions) %>% 
   # match based on regex code in curated.codes
   mutate(TESEX = recode(as.character(TESEX), '1' = 'Male', '2' = 'Female'),
          weighted.hours = round(weighted.minutes / 60, 2),
@@ -35,7 +35,7 @@ get_min_per_part(df = atussum_0318, groups = c('TESEX'), simplify = descriptions
   View('2003-2018 summary')
 
 # summary table of activities by sex and age
-all_activities_by_age_sex <- atussum_0318 %>% 
+all_activities_by_age_sex <- atussum_0320 %>% 
   get_min_per_part(groups = c('TESEX', 'TEAGE'), simplify = descriptions) %>% 
   mutate(TESEX = recode(as.character(TESEX), '1' = 'Male', '2' = 'Female'),
          weighted.hours = round(weighted.minutes / 60, 2),
@@ -63,7 +63,7 @@ socializing_codes <- c('120101', '120199', '120201', '120202',
 socializing_codes <- paste0('t', socializing_codes)
 
 # plot of socializing activities
-atussum_0318 %>% 
+atussum_0320 %>% 
   select(TUFNWGTP, TUCASEID, any_of(socializing_codes), TESEX, TEAGE) %>%
   get_min_per_part(groups = c('TESEX', 'TEAGE'), simplify = TRUE) %>%
   mutate(TESEX = recode(as.character(TESEX), '1' = 'Male', '2' = 'Female')) %>% 
@@ -96,7 +96,7 @@ childcare_codes <- specific.codes %>%
 # specific.codes %>% mutate(Code = paste0("t", Code)) %>% inner_join(tibble(Code = childcare_codes)) %>% View
   
 # plot of childcare by age and sex
-atussum_0318 %>% 
+atussum_0320 %>% 
   select(TUFNWGTP, TUCASEID, any_of(childcare_codes), TESEX, TEAGE) %>%
   get_min_per_part(groups = c('TESEX', 'TEAGE'), simplify = TRUE) %>%
   mutate(TESEX = recode(as.character(TESEX), '1' = 'Male', '2' = 'Female')) %>% 
@@ -121,7 +121,7 @@ atussum_0318 %>%
 # home schooling ----------------------------------------------------------
 
 home_school_hh_child <- 't030203'
-get_min_per_part(df = atussum_0318, activities = home_school_hh_child,
+get_min_per_part(df = atussum_0320, activities = home_school_hh_child,
                  groups = c('TESEX', 'TUYEAR'), simplify = TRUE) %>% 
   mutate(TESEX = recode(as.character(TESEX), '1' = 'Male', '2' = 'Female')) %>% 
   pivot_longer(cols = 4:6) %>%
@@ -136,10 +136,11 @@ get_min_per_part(df = atussum_0318, activities = home_school_hh_child,
   labs(title = 'Daily time spent on household children homeschooling',
        caption = "2003-2018 American Time Use Survey",
        x = 'Year',
-       y = NULL)
+       y = NULL,
+       color = NULL)
 
 # amount of historical respondents that participate in home schooling has been around ~10-20 annually
-atussum_0318 %>% 
+atussum_0320 %>% 
   select(TUYEAR, TESEX, t030203) %>% 
   group_by(TUYEAR, TESEX) %>% 
   summarize(n_participants = sum(t030203 > 0)) %>% 
@@ -156,7 +157,7 @@ house.codes <- descriptions %>%
   pull(activity)
 specific.codes %>% mutate(Code = paste0("t", Code)) %>% inner_join(tibble(Code = house.codes)) %>% View
 
-housework_by_age_sex_year <- atussum_0318 %>% 
+housework_by_age_sex_year <- atussum_0320 %>% 
   select(TUFNWGTP, TUCASEID, house.codes, TESEX, TUYEAR, TEAGE) %>% 
   filter(TEAGE > 20) %>% 
   mutate(TEAGE = cut(TEAGE, breaks = c(20, 30, 50, 65, 100))) %>% 
@@ -200,7 +201,7 @@ housework_by_age_sex_year %>%
 # ggsave(file.path('analyses', 'supporting', 'plots', "housework_by_age_sex.png"),
 #        height = 6, width = 10)
 
-housework_by_age_sex_year_met <- atussum_0318 %>% 
+housework_by_age_sex_year_met <- atussum_0320 %>% 
   select(TUFNWGTP, TUCASEID, house.codes, TESEX, TUYEAR, TEAGE, metropolitan) %>% 
   filter(TEAGE > 20) %>% 
   mutate(TEAGE = cut(TEAGE, breaks = c(20, 30, 50, 65, 100))) %>% 
@@ -253,7 +254,7 @@ grocery.codes <- c('t070101', 't180701')
 specific.codes %>% mutate(Code = paste0("t", Code)) %>% inner_join(tibble(Code = c(cook.codes, grocery.codes))) %>% View
 
 # cooking by sex and generation
-atussum_0318 %>% 
+atussum_0320 %>% 
   select(TUFNWGTP, TUCASEID, cook.codes, grocery.codes, TESEX, TUYEAR, TEAGE) %>% 
   filter(TEAGE > 20) %>% 
   mutate(TEAGE = cut(TEAGE, breaks = c(20, 40, 60, 100))) %>% 
@@ -289,7 +290,7 @@ atussum_0318 %>%
 
 
 # cooking by age and sex
-atussum_0318 %>% 
+atussum_0320 %>% 
   select(TUFNWGTP, TUCASEID, cook.codes, TESEX, TEAGE) %>% 
   get_min_per_part(groups = c('TESEX', 'TEAGE'), simplify = TRUE) %>%
   mutate(TESEX = recode(as.character(TESEX), '1' = 'Male', '2' = 'Female')) %>% 
@@ -310,7 +311,7 @@ atussum_0318 %>%
        y = NULL)
 
 # groceries by age and sex
-atussum_0318 %>% 
+atussum_0320 %>% 
   select(TUFNWGTP, TUCASEID, grocery.codes, TESEX, TEAGE) %>% 
   get_min_per_part(groups = c('TESEX', 'TEAGE'), simplify = TRUE) %>%
   mutate(TESEX = recode(as.character(TESEX), '1' = 'Male', '2' = 'Female')) %>% 
@@ -334,20 +335,20 @@ atussum_0318 %>%
 # examples ----------------------------------------------------------------
 
 # all activities grouped by sex
-get_minutes(atussum_0318, 'TESEX', simplify = descriptions)
-get_minutes(atussum_0318, 'TESEX', simplify = descriptions, )
-get_participation(atussum_0318, 'TESEX', simplify = descriptions)
-get_min_per_part(atussum_0318, 'TESEX', simplify = descriptions)
+get_minutes(atussum_0320, 'TESEX', simplify = descriptions)
+get_minutes(atussum_0320, 'TESEX', simplify = descriptions, )
+get_participation(atussum_0320, 'TESEX', simplify = descriptions)
+get_min_per_part(atussum_0320, 'TESEX', simplify = descriptions)
 
 # specific activities
-game.codes <- colnames(atussum_0318)[colnames(atussum_0318) %in% paste0('t', 130101:130199)]
+game.codes <- colnames(atussum_0320)[colnames(atussum_0320) %in% paste0('t', 130101:130199)]
 grouping <- enframe(game.codes) %>%
   mutate(description = c(rep('yes', 30), rep('no', 7))) %>%
   select(activity = value, description)
-get_min_per_part(atussum_0318, 'TESEX', game.codes, simplify = grouping)
+get_min_per_part(atussum_0320, 'TESEX', game.codes, simplify = grouping)
 
 # tv by age and sex with 95% confidence interval
-get_minutes(df = atussum_0318, groups = c('TEAGE', 'TESEX'), 
+get_minutes(df = atussum_0320, groups = c('TEAGE', 'TESEX'), 
             activities = c('t120303', 't120304'), include_SE = TRUE) %>% 
   mutate(TESEX = recode(as.character(TESEX), '1' = 'Male', '2' = 'Female')) %>% 
   ggplot(aes(x = TEAGE, y = weighted.minutes, group = TESEX)) +

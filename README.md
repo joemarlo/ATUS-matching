@@ -14,10 +14,6 @@
     ├── tests             # Unit tests
     └── README.md
 
-
-### Todo
-- add `GEMETSTA` to `metropolitan` within `cleaning_demographics.R`  
-
 ### Status results
 
 <br>

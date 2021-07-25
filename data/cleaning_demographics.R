@@ -14,7 +14,7 @@ ATUS_30 <- read_tsv('data/atus_30min.tsv')
 
 # from CPS, check if there is an elder in the household
 # elder = parent or other relative who is >=1 year older than respondent
-elder_in_HH <- atusrost_0318 %>% 
+elder_in_HH <- atusrost_0320 %>% 
   group_by(TUCASEID) %>% 
   arrange(TUCASEID, TULINENO) %>%
   mutate(resp_age = first(TEAGE),
@@ -31,7 +31,7 @@ elder_in_HH <- atusrost_0318 %>%
 #   rename(ID = TUCASEID)
 
 # get occupation code and match to essential worker
-industry <- dplyr::select(atusresp_0318, ID = TUCASEID, industry = TEIO1ICD)
+industry <- dplyr::select(atusresp_0320, ID = TUCASEID, industry = TEIO1ICD)
 industry$industry[industry$industry == -1] <- NA
 industry$industry <- case_when(
   nchar(industry$industry) == 2 ~ paste0('00', industry$industry),
@@ -45,9 +45,9 @@ industry <- industry %>%
 
 # from CPS data, get race, marriage status, education, metropolitan status, and state 
 # data dictionary here: https://www2.census.gov/programs-surveys/cps/datasets/2021/basic/2021_Basic_CPS_Public_Use_Record_Layout_plus_IO_Code_list.txt
-CPS_vars <- atuscps_0318 %>%
+CPS_vars <- atuscps_0320 %>%
   filter(TULINENO == 1) %>%   # filter so only person responding to ATUS is included
-  select(TUCASEID, PTDTRACE, PEEDUCA, GESTFIPS, GTMETSTA) %>%
+  select(TUCASEID, PTDTRACE, PEEDUCA, GESTFIPS, GEMETSTA, GTMETSTA) %>%
   mutate(
     race = case_when(
       PTDTRACE == 1 ~ 'white',
@@ -64,22 +64,25 @@ CPS_vars <- atuscps_0318 %>%
       PEEDUCA %in% 44:45 ~ "Doctoral"
     ),
     metropolitan = case_when(
-      GTMETSTA == 1 ~ 'metropolitan',
-      GTMETSTA == 2 ~ 'non-metropolitan',
-      GTMETSTA %in% c(-1, 3) ~ 'NA',
-    )
+        GEMETSTA == 1 ~ 'metropolitan',
+        GEMETSTA == 2 ~ 'non-metropolitan',
+        GTMETSTA == 1 ~ 'metropolitan',
+        GTMETSTA == 2 ~ 'non-metropolitan',
+        TRUE ~ 'NA'
+      )
   ) %>% 
   left_join(FIPS[, c('Name', 'FIPS')], by = c(GESTFIPS = 'FIPS')) %>%
   select(ID = TUCASEID, race, education, state = Name, metropolitan) %>% 
   distinct()
 
 # from ATUS data, get weights, age, sex, children, income,  
-atus_vars <- atussum_0318 %>% 
+atus_vars <- atussum_0320 %>% 
   select(TUCASEID, survey_weight = TUFNWGTP, age = TEAGE,
          sex = TESEX, age_youngest = TRYHHCHILD, n_child = TRCHILDNUM,
          labor_force_status = TELFS, partner_working = TESPEMPNOT, 
-         has_partner = TRSPPRES %in% c(1, 2)) %>%
-  mutate(age_youngest = ifelse(age_youngest == -1, NA, age_youngest),
+         has_partner = TRSPPRES) %>%
+  mutate(has_partner = has_partner %in% c(1, 2),
+         age_youngest = ifelse(age_youngest == -1, NA, age_youngest),
          labor_force_status = case_when(
            labor_force_status == 1 ~ 'employed - at work',
            labor_force_status == 2 ~ 'employed - absent',
@@ -93,7 +96,7 @@ atus_vars <- atussum_0318 %>%
            partner_working == 1 ~ 'employed',
            partner_working == 2 ~ 'not employed'
          )) %>%
-  left_join(distinct(atuscps_0318[, c('TUCASEID', 'HEFAMINC', 'HUFAMINC')]),
+  left_join(distinct(atuscps_0320[, c('TUCASEID', 'HEFAMINC', 'HUFAMINC')]),
             by = 'TUCASEID')
 
 # recode family income and account for change in reporting code
@@ -109,14 +112,20 @@ atus_vars <- atus_vars %>%
 # final dataset of demographic variables
 demographic_vars <- atus_vars %>% 
   left_join(elder_in_HH, by = 'ID') %>%
-  left_join(has_partner, by = 'ID') %>% 
+  # left_join(has_partner, by = 'ID') %>% 
   left_join(industry, by = 'ID') %>% 
   left_join(CPS_vars, by = 'ID') %>% 
   semi_join(distinct(ATUS_30, ID), by = 'ID') %>% 
-  left_join(atusresp_0318 %>% 
+  left_join(atusresp_0320 %>% 
               select(ID = TUCASEID, date = TUDIARYDATE, day_of_week = TUDIARYDAY, holiday = TRHOLIDAY,
                      year = TUYEAR, TRTALONE, TRTALONE_WK, TESCHFT),
-            by = 'ID')
+            by = 'ID') %>% 
+  mutate(student = case_when(
+    TESCHFT == 1 ~ 'Full-time',
+    TESCHFT == 2 ~ 'Part-time',
+    TRUE ~ 'No'
+  )) %>% 
+  select(-TESCHFT)
 
 
 # write out the final datasets --------------------------------------------

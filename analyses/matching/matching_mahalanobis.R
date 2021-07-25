@@ -17,7 +17,7 @@ if (!isTRUE(get0('in_batch_mode'))) file_path <- "analyses"
 # demographics <- filter(demographics, year == 2006)
 demographics$treatment <- demographics$year == time1
 
-# remove unnecessary columns
+# remove unnecessary columns for m distance
 demographics_trimmed <- demographics[, matching_vars]
 
 # split into treat and control
@@ -41,6 +41,10 @@ col_names <- stringr::str_squish(col_names)
 col_names <- stringr::str_replace_all(col_names, "[ ]", "_")
 colnames(demographics_treatment) <- col_names
 colnames(demographics_control) <- col_names
+
+# remove partner_working_NA column b/c it is co-linear
+demographics_treatment <- dplyr::select(demographics_treatment, -partner_working_NA)
+demographics_control <- dplyr::select(demographics_control, -partner_working_NA)
 
 
 # weighting ---------------------------------------------------------------

@@ -2,8 +2,8 @@
 # set batch mode to TRUE as this tells the child scripts where to save files
 in_batch_mode <- TRUE
 
-# set years to backtest
-years <- 2004:2017
+# set start years to backtest
+years <- 2004:2019
 
 # set lag between time1 and time2
 lag_years <- 1

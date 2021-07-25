@@ -41,8 +41,8 @@ stationary_rate %>%
   geom_point(data = stationary_rate_cluster,
              aes(x = as.numeric(year), y = rate, group = t1),
              shape = 5) +
-  scale_x_continuous(breaks = 2004:2017,
-                     labels = paste0(2004:2017, '\n-\n', 2005:2018)) +
+  scale_x_continuous(breaks = 2004:2019,
+                     labels = paste0(2004:2019, '\n-\n', 2005:2020)) +
   scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.1)) +
   labs(title = 'Rate that observations transition to like cluster inter-year',
        subtitle = 'Line represents mean rate. ⋄ represent individual cluster rates',
@@ -110,8 +110,8 @@ stationary_rate %>%
   geom_point() +
   geom_point(aes(y = simulated_rate), 
              shape = 4) +
-  scale_x_continuous(breaks = 2004:2017,
-                     labels = paste0(2004:2017, '\n-\n', 2005:2018)) +
+  scale_x_continuous(breaks = 2004:2019,
+                     labels = paste0(2004:2019, '\n-\n', 2005:2020)) +
   scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.1)) +
   labs(title = 'Mean rate that observations transition to like cluster inter-year',
        subtitle = 'x point represents simulated rate if t1/t2 transitions were random',
@@ -161,7 +161,7 @@ obs_unmatched <- map_dfr(path_years, function(path){
 obs_unmatched %>% 
   ggplot(aes(x = year, y = n)) +
   geom_col() +
-  scale_x_discrete(labels = paste0(2004:2017, '\n-\n', 2005:2018)) +
+  scale_x_discrete(labels = paste0(2004:2019, '\n-\n', 2004:2020)) +
   scale_y_continuous() +
   labs(title = 'Number of observations thrown out due to lack of match',
        x = NULL,
@@ -190,7 +190,7 @@ obs_with_no_match %>%
             by = 'year') %>% 
   ggplot(aes(x = year, y = n)) +
   geom_col() +
-  scale_x_discrete(labels = paste0(2004:2017, '\n-\n', 2005:2018)) +
+  scale_x_discrete(labels = paste0(2004:2019, '\n-\n', 2005:2020)) +
   scale_y_continuous() +
   labs(title = 'Number of observations thrown out due to stratified matching',
        x = NULL,

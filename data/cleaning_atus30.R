@@ -11,7 +11,7 @@ options(mc.cores = parallel::detectCores())
 # cut down atus activity file ---------------------------------------------
 
 # create dataframe of start and end time for each activity for each respondent
-ATUS <- atusact_0318 %>%
+ATUS <- atusact_0320 %>%
   select(TUCASEID, TUSTARTTIM, TUSTOPTIME, TRCODEP) %>% 
   mutate(activity = paste0("t", TRCODEP)) %>% 
   fuzzyjoin::regex_left_join(y = curated.codes, by = 'activity') %>%
@@ -41,7 +41,7 @@ split_ATUS <- ATUS %>%
   select(TUCASEID, start_time, end_time, description) %>% 
   group_split(TUCASEID)
 
-# throw out 14 respondents who's responses don't capture the whole day
+# throw out ~14 respondents who's responses don't capture the whole day
 whole_day <- parallel::mclapply(split_ATUS, FUN = function(tbl){
   max(tbl$end_time)
 }) %>% unlist() == 1440
