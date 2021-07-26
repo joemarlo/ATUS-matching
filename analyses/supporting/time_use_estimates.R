@@ -3,25 +3,26 @@ source(file.path('analyses', 'plots', 'ggplot_settings.R'))
 source(file.path('data', 'helpers.R'))
 source(file.path("analyses", "helpers_analyses.R"))
 
+# read in the demographics data
+demographics <- read_delim(file = file.path("data", "demographic.tsv"),
+                           delim = "\t",
+                           escape_double = FALSE,
+                           trim_ws = TRUE,
+                           col_types = cols(metropolitan = col_character()))
+
 # add metropolitan status 
 # based on if respondent is in an MSA
 # GTMETSTA is newer than GEMETSTA (MSA definitions updated in 2004)
-atussum_0320 <- atussum_0320 %>% 
-  mutate(metropolitan = if_else(
-    GEMETSTA > 0,
-    case_when(
-      GEMETSTA == 1 ~ 'metropolitan',
-      GEMETSTA == 2 ~ 'non-metropolitan',
-      TRUE ~ 'NA'
-      ),
-    case_when(
-      GTMETSTA == 1 ~ 'metropolitan',
-      GTMETSTA == 2 ~ 'non-metropolitan',
-      TRUE ~ 'NA'
-    )))
-atussum_0320$metropolitan[atussum_0320$metropolitan == 'NA'] <- NA
+# add essential worker status
+atussum_0320 <- left_join(atussum_0320,
+                          select(demographics, TUCASEID = ID, metropolitan, essential_industry),
+                          by = 'TUCASEID')
 
-    
+# binorize essential worker status
+atussum_0320$essential_industry_round <- round(atussum_0320$essential_industry)
+atussum_0320$essential_industry_round[is.na(atussum_0320$essential_industry_round)] <- 5
+
+
 # summary stats -----------------------------------------------------------
 
 # summary table of activities by sex
@@ -32,7 +33,7 @@ get_min_per_part(df = atussum_0320, groups = c('TESEX'), simplify = descriptions
          participation.rate = round(participation.rate, 4),
          hours.per.participant = round(minutes.per.participant/ 60, 2)) %>% 
   select(-weighted.minutes, -minutes.per.participant ) %>% 
-  View('2003-2018 summary')
+  View('2003-2020 summary')
 
 # summary table of activities by sex and age
 all_activities_by_age_sex <- atussum_0320 %>% 
@@ -47,7 +48,7 @@ all_activities_by_age_sex %>%
   scale_y_continuous(breaks = seq(0, 24, by = 2)) +
   facet_wrap(~TESEX) +
   labs(title = 'Average hours spent in activity per day',
-       caption = "2003-2018 American Time Use Survey",
+       caption = "2003-2020 American Time Use Survey",
        x = 'Age',
        y = 'Hours',
        fill = NULL)
@@ -79,7 +80,7 @@ atussum_0320 %>%
               linetype = 'dashed') +
   facet_wrap(~name, ncol = 3, scales = 'free_y') +
   labs(title = 'Daily time spent on socializing activities',
-       caption = "2003-2018 American Time Use Survey",
+       caption = "2003-2020 American Time Use Survey",
        x = 'Age',
        y = NULL,
        color = NULL) +
@@ -113,9 +114,68 @@ atussum_0320 %>%
   facet_wrap(~name, ncol = 3, scales = 'free_y') +
   labs(title = 'Daily time spent on child-related activities',
        subtitle = 'Includes household and non-household children',
-       caption = "2003-2018 American Time Use Survey",
+       caption = "2003-2020 American Time Use Survey",
        x = 'Age',
        y = NULL)
+
+# plot of childcare by year and sex
+atussum_0320 %>% 
+  select(TUFNWGTP, TUCASEID, any_of(childcare_codes), TESEX, TUYEAR) %>%
+  get_min_per_part(groups = c('TESEX', 'TUYEAR'), simplify = TRUE) %>%
+  mutate(TESEX = recode(as.character(TESEX), '1' = 'Male', '2' = 'Female')) %>% 
+  pivot_longer(cols = 4:6) %>%
+  mutate(name = recode(name, 
+                       weighted.minutes = 'Minutes',
+                       participation.rate = 'Participation rate',
+                       minutes.per.participant = 'Minutes per participant')) %>% 
+  filter(name != 'Minutes') %>% 
+  ggplot(aes(x = TUYEAR, y = value, group = TESEX, color = as.factor(TESEX))) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = loess,
+              se = FALSE,
+              linetype = 'dashed') +
+  ggplot2::scale_color_discrete() +
+  facet_wrap(~name, ncol = 3, scales = 'free_y') +
+  labs(title = 'Daily time spent on child-related activities',
+       subtitle = 'Includes household and non-household children',
+       caption = "2003-2020 American Time Use Survey",
+       x = 'Year',
+       y = NULL,
+       color = NULL) +
+  theme(legend.position = 'bottom')
+
+# plot of childcare by year, sex, and essential industry
+atussum_0320 %>% 
+  select(TUFNWGTP, TUCASEID, any_of(childcare_codes), TESEX, TUYEAR, essential_industry_round) %>%
+  get_min_per_part(groups = c('TESEX', 'TUYEAR', 'essential_industry_round'), simplify = TRUE) %>%
+  mutate(TESEX = recode(as.character(TESEX), '1' = 'Male', '2' = 'Female')) %>% 
+  pivot_longer(cols = 5:7) %>%
+  mutate(name = recode(name, 
+                       weighted.minutes = 'Minutes',
+                       participation.rate = 'Participation rate',
+                       minutes.per.participant = 'Minutes per participant'),
+         essential_industry_round = case_when(
+           essential_industry_round == 1 ~ '(1) Most essential industry',
+           essential_industry_round == 2 ~ '(2)',
+           essential_industry_round == 3 ~ '(3)',
+           essential_industry_round == 4 ~ '(4)',
+           essential_industry_round == 5 ~ '(5) Least essential industry',
+         )) %>% 
+  filter(name != 'Minutes') %>% 
+  ggplot(aes(x = TUYEAR, y = value, group = TESEX, color = as.factor(TESEX))) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = loess,
+              se = FALSE,
+              linetype = 'dashed') +
+  ggplot2::scale_color_discrete() +
+  facet_grid(name~essential_industry_round, scales = 'free_y') +
+  labs(title = 'Daily time spent on child-related activities',
+       subtitle = 'Includes household and non-household children',
+       caption = "2003-2020 American Time Use Survey",
+       x = 'Year',
+       y = NULL,
+       color = NULL) +
+  theme(legend.position = 'bottom')
 
 
 # home schooling ----------------------------------------------------------
@@ -129,15 +189,20 @@ get_min_per_part(df = atussum_0320, activities = home_school_hh_child,
                        weighted.minutes = 'Minutes',
                        participation.rate = 'Participation rate',
                        minutes.per.participant = 'Minutes per participant')) %>%
+  filter(name != 'Minutes') %>% 
   ggplot(aes(x = TUYEAR, y = value, group = TESEX, color = TESEX)) +
-  geom_line() +
-  geom_point() +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = loess,
+              se = FALSE,
+              linetype = 'dashed') +
+  ggplot2::scale_color_discrete() +
   facet_wrap(~name, nrow = 1, scales = 'free_y') +
   labs(title = 'Daily time spent on household children homeschooling',
-       caption = "2003-2018 American Time Use Survey",
+       caption = "2003-2020 American Time Use Survey",
        x = 'Year',
        y = NULL,
-       color = NULL)
+       color = NULL) +
+  theme(legend.position = 'bottom')
 
 # amount of historical respondents that participate in home schooling has been around ~10-20 annually
 atussum_0320 %>% 
@@ -145,7 +210,6 @@ atussum_0320 %>%
   group_by(TUYEAR, TESEX) %>% 
   summarize(n_participants = sum(t030203 > 0)) %>% 
   View
-
 
 
 # household activities ----------------------------------------------------
@@ -190,7 +254,7 @@ housework_by_age_sex_year %>%
   labs(title = '[DRAFT] Time spent in household activities per day',
        subtitle = 'Includes activities such as cleaning, laundry, cooking, etc.',
        # subtitle = 'STANDARD ERRORS ARE PROBABLY MISESTIMATED',
-       caption = "2003-2018 American Time Use Survey",
+       caption = "2003-2020 American Time Use Survey",
        x = NULL,
        y = NULL,
        color = NULL,
@@ -235,7 +299,7 @@ housework_by_age_sex_year_met %>%
   labs(title = '[DRAFT] Time spent in household activities per day',
        subtitle = 'Includes activities such as cleaning, laundry, cooking, etc.',
        # subtitle = 'STANDARD ERRORS ARE PROBABLY MISESTIMATED',
-       caption = "2003-2018 American Time Use Survey",
+       caption = "2003-2020 American Time Use Survey",
        x = NULL,
        y = NULL,
        color = NULL,
@@ -281,7 +345,7 @@ atussum_0320 %>%
   facet_wrap(~name, nrow = 1, scales = 'free_y') + 
   labs(title = 'Time spent in cooking and grocery activities per day',
        subtitle = 'STANDARD ERRORS ARE PROBABLY UNDERESTIMATED',
-       caption = "2003-2018 American Time Use Survey",
+       caption = "2003-2020 American Time Use Survey",
        x = NULL,
        y = NULL,
        color = NULL,
@@ -306,7 +370,7 @@ atussum_0320 %>%
               linetype = 'dashed') +
   facet_wrap(~name, ncol = 3, scales = 'free_y') +
   labs(title = 'Daily time spent cooking',
-       caption = "2003-2018 American Time Use Survey",
+       caption = "2003-2020 American Time Use Survey",
        x = 'Age',
        y = NULL)
 
@@ -327,7 +391,7 @@ atussum_0320 %>%
               linetype = 'dashed') +
   facet_wrap(~name, ncol = 3, scales = 'free_y') +
   labs(title = 'Daily time spent grocery shopping',
-       caption = "2003-2018 American Time Use Survey",
+       caption = "2003-2020 American Time Use Survey",
        x = 'Age',
        y = NULL)
 
@@ -363,4 +427,4 @@ get_minutes(df = atussum_0320, groups = c('TEAGE', 'TESEX'),
        subtitle = 'Range represents 95% confidence interval',
        x = "Age",
        y = 'Hours:minutes',
-       caption = "2003-2018 American Time Use Survey")
+       caption = "2003-2020 American Time Use Survey")
