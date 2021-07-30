@@ -18,9 +18,10 @@ atussum_0320 <- left_join(atussum_0320,
                           select(demographics, TUCASEID = ID, metropolitan, essential_industry),
                           by = 'TUCASEID')
 
-# binorize essential worker status
+# categorize essential worker status
 atussum_0320$essential_industry_round <- round(atussum_0320$essential_industry)
-atussum_0320$essential_industry_round[is.na(atussum_0320$essential_industry_round)] <- 5
+atussum_0320$essential_industry_round[atussum_0320$essential_industry_round == 5] <- 'No industry'
+atussum_0320$essential_industry_round[is.na(atussum_0320$essential_industry_round)] <- 'No industry'
 
 
 # summary stats -----------------------------------------------------------
@@ -155,11 +156,11 @@ atussum_0320 %>%
                        participation.rate = 'Participation rate',
                        minutes.per.participant = 'Minutes per participant'),
          essential_industry_round = case_when(
-           essential_industry_round == 1 ~ '(1) Most essential industry',
-           essential_industry_round == 2 ~ '(2)',
-           essential_industry_round == 3 ~ '(3)',
-           essential_industry_round == 4 ~ '(4)',
-           essential_industry_round == 5 ~ '(5) Least essential industry',
+           essential_industry_round == '1' ~ '(1) Most essential industry',
+           essential_industry_round == '2' ~ '(2)',
+           essential_industry_round == '3' ~ '(3)',
+           essential_industry_round == '4' ~ '(4) Least essential industry',
+           essential_industry_round == 'No industry' ~ 'No industry',
          )) %>% 
   filter(name != 'Minutes') %>% 
   ggplot(aes(x = TUYEAR, y = value, group = TESEX, color = as.factor(TESEX))) +

@@ -77,7 +77,7 @@ descriptions <- atussum_0320 %>%
 # additions to data -------------------------------------------------------
 
 # add indicator for work day to 2003-2018 summary file
-atussum_0318 <- atussum_0320 %>% 
+atussum_0320 <- atussum_0320 %>% 
   select(contains('t05')) %>% 
   rowSums() %>% 
   enframe() %>% 

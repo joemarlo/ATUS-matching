@@ -18,7 +18,7 @@
 
 <br>
 <p align="center">
-<img src="analyses/backtest/batch_20210621_193945/plots/mean_transition_rate_simulated.png" width=80%>
+<img src="analyses/backtest/batch_20210725_190501/plots/mean_transition_rate_simulated.png" width=80%>
 </p>
 
 <br>
@@ -35,7 +35,7 @@
 
 ### Reproducibility
 To reproduce, run the scripts in the following order:  
-1. Download 2003-2018 multi-year microdata from the [BLS](https://www.bls.gov/tus/#data) and save to `inputs/ATUS-2003-2018/`    
+1. Download 2003-2020 multi-year microdata from the [BLS](https://www.bls.gov/tus/#data) and save to `inputs/ATUS-2003-2020/`    
 2. Clean and consolidate the data:  
     1. `data/cleaning_atus30.R`  
     2. `data/cleaning_demographics.R`  

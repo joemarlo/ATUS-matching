@@ -456,6 +456,24 @@ get_min_per_part <- function(df, groups = NULL, activities = NULL, simplify = NU
   return(rslts)
 }
 
+#' Format minutes as hour:minute
+#'
+#' @param min a numeric representing a count of minutes
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' format_hour_minute(230)
+format_hour_minute <- function(min) {
+  hours <- floor(min / 60)
+  minutes <- min %% 60
+  hours <- stringr::str_sub(paste0('0', hours), -2)
+  minutes <- stringr::str_sub(paste0('0', minutes), -2)
+  formatted_time <- paste0(hours, ":", minutes)
+  return(formatted_time)
+}
+
 
 # global vars -------------------------------------------------------------
 options(scipen = 999)

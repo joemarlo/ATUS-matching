@@ -81,7 +81,6 @@ TRATE_cost <- seqsubm(atus_seq_t1, method = 'TRATE') #, time.varying = TRUE
 # compute distances
 dist_t1 <- seqdist(atus_seq_t1, method = "OM", sm = TRATE_cost)
 dist_t2 <- seqdist(atus_seq_t2, method = "OM", sm = TRATE_cost)
-# TODO: can/should TRATE vary by time of day???
 
 # cluster the data
 cluster_model_t1 <- fastcluster::hclust(as.dist(dist_t1), method = "ward.D2")
