@@ -10,7 +10,7 @@ theme_custom <- function() {
       panel.grid.major.x = element_line(color = "gray95"),
       panel.background = element_rect(fill = NA),
       plot.background = element_rect(
-        fill = NA,
+        fill = 'white',
         color = "gray95",
         size = 10
       ),

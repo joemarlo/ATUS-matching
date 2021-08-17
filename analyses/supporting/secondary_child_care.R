@@ -63,7 +63,41 @@ respondents_with_children %>%
        caption = 'Only includes May-December',
        x = NULL,
        y = NULL)
+
+# time series: just trying to add autoregressive error; rho is autocorrelation
+secondary_childcare_quarterly <- respondents_with_children %>% 
+  filter(year != 2003) %>% 
+  mutate(quarter = ceiling(dairy_month / 3),
+         quarter = as.Date(paste0(year, '-', quarter * 3, '-01')),
+         is_covid_era = quarter > as.Date('2020-03-01')) %>% 
+  group_by(quarter, sex, is_covid_era) %>% 
+  summarize(mean_secondary_childcare = mean(secondary_childcare, na.rm = TRUE),
+            weighted_secondary_childcare = sum(survey_weight * secondary_childcare) / sum(survey_weight),
+            .groups = 'drop')
+model_secondary_childcare <- nlme::gls(weighted_secondary_childcare ~ quarter + sex + is_covid_era,
+          data = secondary_childcare_quarterly)
+summary(model_secondary_childcare)
   
+# plot the model
+preds <- mutate(secondary_childcare_quarterly,
+                preds = predict(model_secondary_childcare, newdata = secondary_childcare_quarterly))
+ggplot(preds, aes(x = quarter, y = weighted_secondary_childcare)) +
+  geom_line(color = 'grey50') + 
+  geom_point(color = 'grey50') +
+  geom_line(data = filter(preds, !is_covid_era),
+            aes(y = preds), color = 'blue') + 
+  geom_line(data = filter(preds, is_covid_era),
+            aes(y = preds), color = 'blue') + 
+  facet_wrap(~sex) +
+  labs(title = 'Mean daily time spent on secondary childcare for household children under 13',
+       subtitle = paste0('Only includes respondents with children. n = ', 
+                         scales::comma_format()(nrow(filter(respondents_with_children, year != 2003)))),
+       caption = 'Covid era defined as occuring on or after May 12 2020 due to data collection limitations',
+       x = NULL,
+       y = "Mean daily minutes")
+# ggsave(file.path('analyses', 'supporting', 'plots', "model_secondary_childcare.png"),
+#        height = 6, width = 10)
+
 # cut by partner, n child, sex
 respondents_with_children %>% 
   filter(year != 2003) %>% 
@@ -77,7 +111,7 @@ respondents_with_children %>%
            has_partner == TRUE ~ 'Has partner',
            has_partner == FALSE ~ 'No partner',
            TRUE ~ 'NA')) %>% 
-  group_by(quarter, sex, has_partner, n_child) %>% 
+  group_by(quarter, sex, labor_force_status, has_partner) %>% 
   summarize(mean_secondary_childcare = mean(secondary_childcare, na.rm = TRUE),
             weighted_secondary_childcare = sum(survey_weight * secondary_childcare) / sum(survey_weight),
             n = n(),
@@ -91,8 +125,9 @@ respondents_with_children %>%
   geom_point() +
   geom_line() +
   geom_smooth(method = 'lm', se = FALSE) +
+  ggplot2::scale_color_discrete() +
   scale_y_continuous(labels = format_hour_minute) +
-  facet_grid(n_child~has_partner, scales = 'free_y') +
+  facet_grid(has_partner~labor_force_status) +
   labs(title = 'Mean daily time spent on secondary childcare for household children under 13',
        subtitle = paste0('Only includes respondents with children. n = ', 
                          scales::comma_format()(nrow(filter(respondents_with_children, year != 2003)))),

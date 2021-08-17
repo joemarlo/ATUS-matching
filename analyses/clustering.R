@@ -124,7 +124,7 @@ mean_metric %>%
   geom_point() +
   scale_x_continuous(breaks = k_range[1]:k_range[2]) +
   facet_wrap(~name, nrow = 1) +
-  guides(color = FALSE) +
+  guides(color = 'none') +
   labs(title = "Normalized cluster validity statistics",
        subtitle = paste0("Best = max(CH), min(Hubert C), max(Silhouette), max(aggregate)\n", time1, "/", time2),
        x = 'n clusters',
