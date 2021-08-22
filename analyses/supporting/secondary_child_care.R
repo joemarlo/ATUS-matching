@@ -25,8 +25,8 @@ respondents_with_children <- demographics %>%
          n_child >= 1) %>% 
   left_join(select(atusresp_0320, ID = TUCASEID, secondary_childcare = TRTHH, TUDIARYDATE),
             by = 'ID') %>% 
-  mutate(dairy_date = lubridate::ymd(TUDIARYDATE),
-         dairy_month = lubridate::month(dairy_date))
+  mutate(diary_date = lubridate::ymd(TUDIARYDATE),
+         diary_month = lubridate::month(diary_date))
 
 
 # secondary childcare -----------------------------------------------------
@@ -38,7 +38,7 @@ respondents_with_children <- demographics %>%
 
 
 respondents_with_children %>% 
-  filter(dairy_month >= 5,
+  filter(diary_month >= 5,
          year != 2003) %>% 
   group_by(year, sex) %>% 
   summarize(mean_secondary_childcare = mean(secondary_childcare, na.rm = TRUE),
@@ -48,7 +48,7 @@ respondents_with_children %>%
   geom_line() +
   geom_point() +
   geom_smooth(data = respondents_with_children %>% 
-                filter(dairy_month >= 5,
+                filter(diary_month >= 5,
                        year %notin% c(2003, 2020)) %>% 
                 group_by(year, sex) %>% 
                 summarize(mean_secondary_childcare = mean(secondary_childcare, na.rm = TRUE),
@@ -67,15 +67,25 @@ respondents_with_children %>%
 # time series: just trying to add autoregressive error; rho is autocorrelation
 secondary_childcare_quarterly <- respondents_with_children %>% 
   filter(year != 2003) %>% 
-  mutate(quarter = ceiling(dairy_month / 3),
+  mutate(quarter = ceiling(diary_month / 3),
          quarter = as.Date(paste0(year, '-', quarter * 3, '-01')),
          is_covid_era = quarter > as.Date('2020-03-01')) %>% 
   group_by(quarter, sex, is_covid_era) %>% 
   summarize(mean_secondary_childcare = mean(secondary_childcare, na.rm = TRUE),
             weighted_secondary_childcare = sum(survey_weight * secondary_childcare) / sum(survey_weight),
-            .groups = 'drop')
-model_secondary_childcare <- nlme::gls(weighted_secondary_childcare ~ quarter + sex + is_covid_era,
-          data = secondary_childcare_quarterly)
+            .groups = 'drop') %>% 
+  arrange(quarter, sex)
+
+# assess autocorrelation
+# female_ts <- secondary_childcare_quarterly %>% 
+#   filter(sex == 'Female')
+# ts(female_ts$weighted_secondary_childcare, start = female_ts$quarter)
+
+# fit model
+model_secondary_childcare <- nlme::gls(
+  weighted_secondary_childcare ~ quarter + sex + is_covid_era,
+  data = secondary_childcare_quarterly,
+  corr = nlme::corAR1(form = ~ quarter | sex)) #form = ~ quarter | sex)) # TODO corr = corAR1(0.5, form = ~ Quarter|Sex) 
 summary(model_secondary_childcare)
   
 # plot the model
@@ -98,10 +108,60 @@ ggplot(preds, aes(x = quarter, y = weighted_secondary_childcare)) +
 # ggsave(file.path('analyses', 'supporting', 'plots', "model_secondary_childcare.png"),
 #        height = 6, width = 10)
 
+# 2019 vs 2020 using 2020 weights only
+respondents_with_children %>% 
+  filter(year %in% 2019:2020) %>% 
+  mutate(quarter = ceiling(diary_month / 3),
+         quarter = as.Date(paste0(year, '-', quarter * 3, '-01')),
+         is_covid_era = quarter > as.Date('2020-03-01')) %>% 
+  group_by(quarter, sex, is_covid_era) %>% 
+  summarize(mean_secondary_childcare = mean(secondary_childcare, na.rm = TRUE),
+            weighted_secondary_childcare = sum(survey_weight_2020 * secondary_childcare) / sum(survey_weight_2020),
+            .groups = 'drop') %>% 
+  ggplot(aes(x = quarter, y = weighted_secondary_childcare)) +
+  geom_line(color = 'grey50') + 
+  geom_point(color = 'grey50') +
+  facet_wrap(~sex)
+respondents_with_children %>% 
+  filter(year %in% 2019:2020) %>% 
+  group_by(year, sex) %>% 
+  summarize(mean_secondary_childcare = mean(secondary_childcare, na.rm = TRUE),
+            weighted_secondary_childcare = sum(survey_weight_2020 * secondary_childcare) / sum(survey_weight_2020),
+            .groups = 'drop') %>% 
+  ggplot(aes(x = year, y = weighted_secondary_childcare, group = sex, color = sex)) +
+  geom_line() + 
+  geom_point()
+
+# boxplots by quarter
+# TODO no weights for 2020!!!!!
+respondents_with_children %>% 
+  filter(year != 2003,
+         survey_weight != -1) %>% 
+  mutate(quarter = ceiling(diary_month / 3),
+         quarter = as.Date(paste0(year, '-', quarter * 3, '-01')),
+         is_covid_era = quarter > as.Date('2020-03-01'),
+         is_covid_era = if_else(is_covid_era, 'Covid era', 'Pre Covid'),
+         is_covid_era = factor(is_covid_era, levels = c('Pre Covid', 'Covid era'))) %>% 
+  filter(secondary_childcare > 0) %>% 
+  ggplot(aes(x = quarter, y = secondary_childcare, group = quarter, fill = is_covid_era)) +
+  geom_boxplot(aes(weight = survey_weight)) +
+  scale_fill_manual(values = c('grey70', 'steelblue')) +
+  facet_wrap(~sex) +
+  labs(title = 'Daily time spent on secondary childcare among respondents who provided secondary childcare',
+       subtitle = paste0('Only includes respondents with children under age 13. n = ', 
+                         scales::comma_format()(nrow(filter(respondents_with_children, year != 2003)))),
+       caption = 'Covid era defined as occuring on or after May 12 2020 due to data collection limitations',
+       x = NULL,
+       y = "Mean daily minutes",
+       fill = NULL) +
+  theme(legend.position = 'bottom')
+# ggsave(file.path('analyses', 'supporting', 'plots', "secondary_childcare_distribution.png"),
+#        height = 6, width = 10)
+
 # cut by partner, n child, sex
 respondents_with_children %>% 
   filter(year != 2003) %>% 
-  mutate(quarter = ceiling(dairy_month / 3),
+  mutate(quarter = ceiling(diary_month / 3),
          quarter = as.Date(paste0(year, '-', quarter * 3, '-01')),
          n_child  = case_when(
            n_child == 1 ~ '1 child',

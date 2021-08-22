@@ -77,25 +77,31 @@ CPS_vars <- atuscps_0320 %>%
 
 # from ATUS data, get weights, age, sex, children, income,  
 atus_vars <- atussum_0320 %>% 
-  select(TUCASEID, survey_weight = TUFNWGTP, age = TEAGE,
-         sex = TESEX, age_youngest = TRYHHCHILD, n_child = TRCHILDNUM,
-         labor_force_status = TELFS, partner_working = TESPEMPNOT, 
-         has_partner = TRSPPRES) %>%
-  mutate(has_partner = has_partner %in% c(1, 2),
-         age_youngest = ifelse(age_youngest == -1, NA, age_youngest),
-         labor_force_status = case_when(
-           labor_force_status == 1 ~ 'employed - at work',
-           labor_force_status == 2 ~ 'employed - absent',
-           labor_force_status == 3 ~ 'unemployed - on layoff',
-           labor_force_status == 4 ~ 'unemployed - looking',
-           labor_force_status == 5 ~ 'not in labor force',
-           TRUE ~ 'NA'
-         ),
-         partner_working = case_when(
-           partner_working == -1 ~ 'NA',
-           partner_working == 1 ~ 'employed',
-           partner_working == 2 ~ 'not employed'
-         )) %>%
+  mutate(survey_weight_2020 = TU20FWGT,
+         survey_weight_ex_2020 = TUFNWGTP,
+         survey_weight = if_else(TUYEAR == 2020, 
+                                 survey_weight_2020,
+                                 survey_weight_ex_2020)) %>% 
+  select(TUCASEID, survey_weight, survey_weight_2020, survey_weight_ex_2020, 
+         age = TEAGE, sex = TESEX, age_youngest = TRYHHCHILD, 
+         n_child = TRCHILDNUM, labor_force_status = TELFS, 
+         partner_working = TESPEMPNOT, has_partner = TRSPPRES) %>%
+  mutate(
+    has_partner = has_partner %in% c(1, 2),
+    age_youngest = ifelse(age_youngest == -1, NA, age_youngest),
+    labor_force_status = case_when(
+      labor_force_status == 1 ~ 'employed - at work',
+      labor_force_status == 2 ~ 'employed - absent',
+      labor_force_status == 3 ~ 'unemployed - on layoff',
+      labor_force_status == 4 ~ 'unemployed - looking',
+      labor_force_status == 5 ~ 'not in labor force',
+      TRUE ~ 'NA'
+    ),
+    partner_working = case_when(
+      partner_working == -1 ~ 'NA',
+      partner_working == 1 ~ 'employed',
+      partner_working == 2 ~ 'not employed'
+    )) %>%
   left_join(distinct(atuscps_0320[, c('TUCASEID', 'HEFAMINC', 'HUFAMINC')]),
             by = 'TUCASEID')
 
