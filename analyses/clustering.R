@@ -11,7 +11,8 @@ set.seed(44)
 if (!isTRUE(get0('in_batch_mode'))) file_path <- "analyses"
 
 # read in ATUS data
-atus_raw <- read_tsv(file.path("data", "atus_30min.tsv"))
+# atus_raw <- read_tsv(file.path("data", "atus_30min.tsv"))
+atus_raw <- read_tsv(file.path("data", "atus_30min_SSC.tsv"))
 
 # read in the demographics data
 demographics <- read_delim(file = file.path("data", "demographic.tsv"),
@@ -57,13 +58,13 @@ atus_seq_t1 <- seqdef(
   data = atus_t1[, -1], 
   alphabet = alphabet, 
   id = atus_t1$ID,
-  labels = labels,
+  # labels = labels,
   xtstep = 1)
 atus_seq_t2 <- seqdef(
   data = atus_t2[, -1], 
   alphabet = alphabet, 
   id = atus_t2$ID,
-  labels = labels,
+  # labels = labels,
   xtstep = 1)
 
 # sequenchr::launch_sequenchr(atus_seq_t1)
@@ -76,8 +77,8 @@ atus_seq_t2 <- seqdef(
 
 # calculate substitution cost from time1
 TRATE_cost <- seqsubm(atus_seq_t1, method = 'TRATE') #, time.varying = TRUE
-# TRATE_cost_t2 <- TRATE_cost # default
-TRATE_cost_t2 <- seqsubm(atus_seq_t2, method = 'TRATE') # only use when clustering seperately
+TRATE_cost_t2 <- TRATE_cost # default
+# TRATE_cost_t2 <- seqsubm(atus_seq_t2, method = 'TRATE') # only use when clustering separately
 # TODO: do levenshtein difference as well
 
 # compute distances

@@ -33,8 +33,8 @@ for (time1 in years){
     dir.create(file.path(file_path, "data"))
   
     # run the scripts
-    # source(file.path('analyses', 'matching', 'matching_mahalanobis.R')) # note: this calls demographics.R
-    source(file.path('analyses', 'matching', 'matching_none.R')) # this skips the matching process
+    source(file.path('analyses', 'matching', 'matching_mahalanobis.R')) # note: this calls demographics.R
+    # source(file.path('analyses', 'matching', 'matching_none.R')) # this skips the matching process
     source(file.path('analyses', 'clustering.R'))
     source(file.path('analyses', 'clustering_unmatched.R'))
   })
@@ -56,11 +56,12 @@ notes <- paste0('This batch was run at ', Sys.time(), ' with the following speci
                 '  \nk search range: ', paste0(k_seq, collapse = ', '),
                 '  \nDistance method: TRATE', #levenshtein
                 '  \nClustering algorithm: hclust, ward.D2', #agnes, PAM
-                '  \nNo matching')
-                # '  \nMatching method:',
-                # '  \n\t-Mahalanobis distance on ', paste0(matching_vars, collapse = ', '), 
-                # '  \n\t-Stratified on sex, race, +/- 2 age, labor_force_status',
-                # '  \n\t-Matching performed from time1 to time2 (many-to-1)')
+                # '  \nNo matching')
+                '  \nMatching method:',
+                '  \n\t-Mahalanobis distance on ', paste0(matching_vars, collapse = ', '),
+                '  \n\t-Stratified on sex, race, +/- 2 age, labor_force_status',
+                '  \n\t-Matching performed from time1 to time2 (many-to-1)',
+                '  \nActivities are segmented to include/not include secondary child care')
 file_connection <- file(file.path(path_to_batch, "README.md"))
 writeLines(notes, file_connection)
 close(file_connection)

@@ -14,13 +14,14 @@ options(mc.cores = parallel::detectCores())
 # cut down atus activity file ---------------------------------------------
 
 # create dataframe of start and end time for each activity for each respondent
+# if any secondary child care is provided during a given activity then denote it as SSC
 ATUS <- atusact_0320 %>%
   select(TUCASEID, TUSTARTTIM, TUSTOPTIME, TRCODEP, secondary_childcare = TRTHH_LN) %>% 
   mutate(secondary_childcare = if_else(
     secondary_childcare > 0,
     'SCC',
     'No SCC'),
-         activity = paste0("t", TRCODEP)) %>% 
+    activity = paste0("t", TRCODEP)) %>% 
   fuzzyjoin::regex_left_join(y = curated.codes, by = 'activity') %>%
   mutate(description = paste0(description, ' - ', secondary_childcare)) %>% 
   select(TUCASEID, TUSTARTTIM, TUSTOPTIME, activity = activity.x, description)
@@ -98,5 +99,5 @@ ATUS_30 <- ATUS_1 %>%
 
 
 # write out the final datasets --------------------------------------------
-write_tsv(ATUS_1, 'data/atus.tsv')
-write_tsv(ATUS_30, 'data/atus_30min.tsv')
+write_tsv(ATUS_1, 'data/atus_SSC.tsv')
+write_tsv(ATUS_30, 'data/atus_30min_SSC.tsv')
