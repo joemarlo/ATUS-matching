@@ -14,7 +14,7 @@ if (!isTRUE(get0('in_batch_mode'))) file_path <- "analyses"
 atus_raw <- read_tsv(file.path("data", "atus_30min.tsv"))
 
 # read in the demographics data
-demographics <- read_delim(file = file.path("data", "/demographic.tsv"),
+demographics <- read_delim(file = file.path("data", "demographic.tsv"),
                            delim = "\t",
                            escape_double = FALSE,
                            trim_ws = TRUE,
@@ -76,11 +76,13 @@ atus_seq_t2 <- seqdef(
 
 # calculate substitution cost from time1
 TRATE_cost <- seqsubm(atus_seq_t1, method = 'TRATE') #, time.varying = TRUE
+# TRATE_cost_t2 <- TRATE_cost # default
+TRATE_cost_t2 <- seqsubm(atus_seq_t2, method = 'TRATE') # only use when clustering seperately
 # TODO: do levenshtein difference as well
 
 # compute distances
 dist_t1 <- seqdist(atus_seq_t1, method = "OM", sm = TRATE_cost)
-dist_t2 <- seqdist(atus_seq_t2, method = "OM", sm = TRATE_cost)
+dist_t2 <- seqdist(atus_seq_t2, method = "OM", sm = TRATE_cost_t2)
 
 # cluster the data
 cluster_model_t1 <- fastcluster::hclust(as.dist(dist_t1), method = "ward.D2")
