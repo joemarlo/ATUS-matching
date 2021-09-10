@@ -12,7 +12,7 @@ if (!isTRUE(get0('in_batch_mode'))) file_path <- "analyses"
 
 # read in ATUS data
 # atus_raw <- read_tsv(file.path("data", "atus_30min.tsv"))
-atus_raw <- read_tsv(file.path("data", "atus_30min_SSC.tsv"))
+atus_raw <- read_tsv(file.path("data", "atus_30min_SSC.tsv")) # tokens with supplemental child care
 
 # read in the demographics data
 demographics <- read_delim(file = file.path("data", "demographic.tsv"),
