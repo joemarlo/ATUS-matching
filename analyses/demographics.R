@@ -21,7 +21,7 @@ if (!isTRUE(get0('in_batch_mode'))){
 
 # for 2019:2020, throw out observations who interview was before May 10th
 # this is when the data collection started again
-if (time1 == 2019){
+# if (time1 == 2019){
   # read in data with diary date
   atusresp_0320 <- read_csv(file.path("inputs", "ATUS-2003-2020", "atusresp_0320.dat"))
   
@@ -29,7 +29,7 @@ if (time1 == 2019){
   post_may_respondents <- atusresp_0320 %>% 
     mutate(dairy_date = lubridate::ymd(TUDIARYDATE),
            dairy_month = lubridate::month(dairy_date)) %>% 
-    filter(TUYEAR %in% c(2019, 2020),
+    filter(TUYEAR %in% c(time1, time2),
            dairy_month >= 5) %>% 
     select(ID = TUCASEID, year = TUYEAR)
   
@@ -37,7 +37,8 @@ if (time1 == 2019){
   demographics <- inner_join(demographics, 
                              post_may_respondents, 
                              by = c('ID', 'year'))
-}
+# }
+
 
 # filter to just time1 and time2, just weekdays and non-holidays
 boolean <- demographics$year %in% c(time1, time2) &

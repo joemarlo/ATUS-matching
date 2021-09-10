@@ -196,7 +196,7 @@ for (i in 1:nrow(demographics_mdistance)){
   distance_of_best_match[i] <- min(t1)
 }
 rm(t1, t2_matches_age, t2_matches_sex, t2_matches_race, t2_matches_all, 
-   i, age_matches, sex_matches, race_matches)
+   i, age_matches, sex_matches, race_matches, labor_force_matches)
 
 # how often is there no potential matchs
 # sum(potential_match_pop == 0)
