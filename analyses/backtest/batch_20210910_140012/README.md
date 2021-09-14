@@ -11,3 +11,4 @@ Matching method:
 	-Stratified on sex, race, +/- 2 age, labor_force_status  
 	-Matching performed from time1 to time2 (many-to-1)  
 Activities are segmented to include/not include secondary child care
+Only months May+ (inclusive) are included

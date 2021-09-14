@@ -37,6 +37,7 @@ if (!isTRUE(get0('in_batch_mode'))){
   demographics <- inner_join(demographics, 
                              post_may_respondents, 
                              by = c('ID', 'year'))
+  rm(post_may_respondents)
 # }
 
 
