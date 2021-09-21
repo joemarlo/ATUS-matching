@@ -105,7 +105,7 @@ sum(is.na(demographics$fam_income))
 
 matching_vars <- c('age', 'sex', 'race', 'fam_income', 'has_partner', 
                    'education', 'child_in_HH', 'n_child', 'age_youngest', 'region', 
-                   'partner_working', 'elder_in_HH', 'metropolitan', 'labor_force_status')
+                   'partner_working', 'elder_in_HH', 'metropolitan')#, 'labor_force_status')
 demographics <- demographics[, c('ID', 'year', matching_vars)]
 
 # NAs by column
@@ -118,7 +118,7 @@ demographics <- na.omit(demographics)
 # set blocking variables --------------------------------------------------
 
 # blocking_vars <- c('sex', 'race', 'metropolitan', 'region', 'has_partner', 'labor_force_status') #'essential_worker # add child_in_HH?
-blocking_vars <- c('sex', 'race', 'metropolitan', 'has_partner') #'essential_worker
+blocking_vars <- c('sex', 'race', 'metropolitan') #, 'has_partner') #'essential_worker
 # demographics %>% group_by_at(all_of(blocking_vars)) %>% tally() %>% arrange(desc(n)) %>% View
 
 # create list of numeric vars

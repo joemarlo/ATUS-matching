@@ -47,75 +47,6 @@ demographics_treatment <- dplyr::select(demographics_treatment, -partner_working
 demographics_control <- dplyr::select(demographics_control, -partner_working_NA)
 
 
-# weighting ---------------------------------------------------------------
-
-# TODO: this is all TBD; unsure how to weight mahalanobis distance
-# prescaling and pre-weighting before calculating mdistance doesn't make sense
-# http://isl.anthropomatik.kit.edu/pdf/Woelfel2005.pdf
-# https://rdrr.io/cran/WMDB/man/wmahalanobis.html
-# https://www.researchgate.net/publication/290037437_Application_of_weighted_Mahalanobis_distance_discriminant_analysis_method_to_classification_of_rock_mass_quality
-# just weight the covariance matrix before inverting?
-  # cov_weighted <- weight %*% solve(cov)
-  # mdist <- diag(x %*% cov_weighted %*% t(x))
-
-# scale variables
-# demographics_treatment <- as_tibble(scale(demographics_treatment))
-# demographics_control <- as_tibble(scale(demographics_control))
-# colnames(demographics_treatment) <- col_names
-# colnames(demographics_control) <- col_names
-
-# check colmeans and variance
-# tibble(
-#   column = col_names,
-#   means = round(colMeans(demographics_treatment), 10),
-#   sd = apply(demographics_treatment, 2, sd)
-# ) %>% View
-  
-# set variable weights
-# var_weights <- c(
-#   'age' = 1,
-#   'fam_income' = 1,
-#   'child_in_HH' = 1,
-#   'n_child' = 1,
-#   'age_youngest' = 1,
-#   'elder_in_HH' = 1,
-#   'sex_male' = 1,
-#   'race_black' = 1,
-#   'race_other' = 1,
-#   'race_white' = 1,
-#   'married_not_married' = 1,
-#   'education_HS' = 1,
-#   'education_Some_college' = 1,
-#   'education_Bachelors' = 1,
-#   'education_Masters' = 1,
-#   'education_Doctoral' = 1,
-#   'region_Northeast' = 1,
-#   'region_South' = 1,
-#   'region_West' = 1,
-#   'labor_force_status_employed_at_work' = 1,
-#   'labor_force_status_not_in_labor_force' = 1,
-#   'labor_force_status_unemployed_looking' = 1,
-#   'labor_force_status_unemployed_on_layoff' = 1,
-#   'partner_working_NA' = 1,
-#   'partner_working_not_employed' = 1,
-#   'metropolitan_non_metropolitan' = 1
-# )
-
-# apply weights column-wise
-# demographics_treatment <- as_tibble(t(t(demographics_treatment) * var_weights))
-
-# apply weights to covariance matrix and calculate mdistance
-# X <- as.matrix(demographics_treatment[, names(var_weights)])
-# X_cov <- cov(X)
-# cov_weighted <- diag(var_weights) %*% solve(X_cov)
-# X <- sweep(X, 2, colMeans(X))
-# mdist <- diag(X %*% cov_weighted %*% t(X))
-# mdist_baseR <- rowSums(X %*% cov_weighted * X) #stats::mahalanobis
-# all.equal(mdist, mdist_baseR)
-
-# TODO mdist_weighted()
-
-
 # non weighted method -----------------------------------------------------
 
 # calculate mahalanobis distance
@@ -166,11 +97,11 @@ race_matches <- sapply(demographics[demographics$treatment,]$race,
 })
 
 # strata: labor_force_status
-labor_force_matches <- sapply(demographics[demographics$treatment,]$labor_force_status, 
-                       USE.NAMES = FALSE, function(labor_force_status){
-  is_match <- demographics[!demographics$treatment,]$labor_force_status == labor_force_status
-  return(is_match)
-})
+# labor_force_matches <- sapply(demographics[demographics$treatment,]$labor_force_status, 
+#                        USE.NAMES = FALSE, function(labor_force_status){
+#   is_match <- demographics[!demographics$treatment,]$labor_force_status == labor_force_status
+#   return(is_match)
+# })
 
 # get the index of the best match within the age range
 index_of_best_match <- c()
@@ -186,8 +117,8 @@ for (i in 1:nrow(demographics_mdistance)){
   t2_matches_age <- age_matches[,i]
   t2_matches_sex <- sex_matches[,i]
   t2_matches_race <- race_matches[,i]
-  t2_matches_labor_force <- labor_force_matches[,i]
-  t2_matches_all <- t2_matches_age & t2_matches_sex & t2_matches_race & t2_matches_labor_force
+  # t2_matches_labor_force <- labor_force_matches[,i]
+  t2_matches_all <- t2_matches_age & t2_matches_sex & t2_matches_race #& t2_matches_labor_force
   t1[!t2_matches_all] <- 1e10
   potential_match_pop[i] <- sum(t2_matches_all)
   
@@ -283,7 +214,7 @@ final_matches %>%
   scale_y_continuous(labels = scales::percent_format(1)) +
   facet_wrap(~name, scales = 'free', ncol = 3) +
   labs(title = 'Counts of key groups within matched data',
-       subtitle = 'Methodology: mahalanobis, blocking on sex, race, age +/- 2 years, labor_force_status',
+       subtitle = 'Methodology: mahalanobis, blocking on sex, race, age +/- 2 years', #, labor_force_status',
        caption = 'Only includes distinct observations (i.e. removes duplicates due to matching with replacement)',
        x = NULL,
        y = NULL,
@@ -314,7 +245,7 @@ match_summary %>%
   labs(title = 'Proportion of matches that match perfectly on: ',
        subtitle = paste0(
          paste0(blocking_vars, collapse = ', '),
-         '\nMethodology: mahalanobis, blocking on sex, race, age +/- 2 years, labor_force_status'
+         '\nMethodology: mahalanobis, blocking on sex, race, age +/- 2 years' #, labor_force_status'
        ),
        x = 'Number of matches across all privileged variables',
        y = 'Proportion of all pairs')
@@ -334,7 +265,7 @@ match_summary %>%
   facet_grid(~isNumeric, scales = 'free_x') +
   labs(title = 'How many pairs matched perfectly for each variable?',
        subtitle = paste0("Yellow variables are not explicitly privileged but are highlighted for emphasis",
-                         '\nMethodology: mahalanobis, blocking on sex, race, age +/- 2 years, labor_force_status'),
+                         '\nMethodology: mahalanobis, blocking on sex, race, age +/- 2 years'), #, labor_force_status'),
        x = NULL,
        y = 'Proportion of all pairs') +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
@@ -352,7 +283,7 @@ final_matches %>%
   scale_y_continuous(labels = NULL) +
   facet_wrap(~name, scales = 'free') +
   labs(title = 'Difference within matched pairs for numeric variables',
-       subtitle = 'Methodology: mahalanobis, blocking on sex, race, age +/- 2 years, labor_force_status',
+       subtitle = 'Methodology: mahalanobis, blocking on sex, race, age +/- 2 years', #, labor_force_status',
        x = NULL,
        y = NULL)
 ggsave(file.path(file_path, "plots", 'matching', "numeric_differences_mahalanobis.png"), height = 5, width = 9)

@@ -165,6 +165,11 @@ turbulence_all %>%
   theme(legend.position = 'bottom')
   
 
+# Is it people who are caring by younger generation and older generation?
+# People that perhaps work part time or more flexibly
+# how scattered is the day? Is it a confetti day? 
+
+
 # where -------------------------------------------------------------------
 
 # df to lookup plain text description from TEWHERE code

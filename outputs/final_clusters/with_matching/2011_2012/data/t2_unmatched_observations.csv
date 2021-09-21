@@ -1,0 +1,1595 @@
+ID,year,age,sex,race,fam_income,has_partner,education,child_in_HH,n_child,age_youngest,region,partner_working,elder_in_HH,metropolitan
+20120502121931,2012,32,male,black,20000,TRUE,Did not graduate from HS,TRUE,2,6,South,employed,FALSE,metropolitan
+20120503120051,2012,35,female,white,5000,TRUE,HS,TRUE,3,5,Midwest,employed,FALSE,metropolitan
+20120503120552,2012,45,male,white,50000,TRUE,Masters,TRUE,4,2,West,employed,FALSE,non-metropolitan
+20120503120640,2012,67,male,white,20000,TRUE,Some college,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20120503120673,2012,47,male,white,25000,TRUE,Did not graduate from HS,TRUE,2,7,South,not employed,FALSE,metropolitan
+20120503120700,2012,16,female,white,60000,FALSE,Did not graduate from HS,TRUE,3,1,South,"NA",TRUE,metropolitan
+20120503120810,2012,27,female,white,75000,TRUE,Did not graduate from HS,FALSE,0,0,West,not employed,TRUE,metropolitan
+20120503120854,2012,19,male,black,35000,FALSE,Some college,TRUE,1,11,South,"NA",TRUE,metropolitan
+20120503120929,2012,30,male,other,60000,FALSE,Some college,TRUE,2,2,West,"NA",TRUE,metropolitan
+20120503120974,2012,48,female,white,10000,TRUE,Some college,TRUE,2,12,Midwest,employed,FALSE,metropolitan
+20120503121088,2012,45,male,white,75000,TRUE,HS,TRUE,2,6,Northeast,employed,FALSE,non-metropolitan
+20120503121121,2012,35,female,white,12500,TRUE,Did not graduate from HS,TRUE,1,1,West,employed,FALSE,metropolitan
+20120503121188,2012,79,female,white,15000,FALSE,Bachelors,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20120503121310,2012,55,female,white,60000,TRUE,Some college,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20120503121376,2012,76,male,white,7500,FALSE,Did not graduate from HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120503121511,2012,69,male,black,75000,TRUE,Bachelors,FALSE,0,0,Midwest,not employed,FALSE,metropolitan
+20120503121663,2012,32,female,white,25000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120503121706,2012,34,male,white,15000,TRUE,HS,TRUE,5,2,Midwest,not employed,FALSE,non-metropolitan
+20120503121730,2012,22,female,white,100000,FALSE,Some college,FALSE,0,0,South,"NA",TRUE,metropolitan
+20120503121737,2012,39,male,white,25000,FALSE,Bachelors,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120503121779,2012,30,male,white,50000,FALSE,Did not graduate from HS,TRUE,1,4,Midwest,"NA",TRUE,metropolitan
+20120503121793,2012,61,female,white,100000,FALSE,Bachelors,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120503121838,2012,34,female,white,35000,FALSE,Bachelors,TRUE,1,8,Midwest,"NA",FALSE,metropolitan
+20120503121843,2012,55,female,black,40000,FALSE,HS,TRUE,2,1,Northeast,"NA",FALSE,metropolitan
+20120503121969,2012,61,female,white,25000,TRUE,Some college,TRUE,2,4,South,not employed,FALSE,metropolitan
+20120503121987,2012,26,female,white,0,FALSE,Some college,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120503122008,2012,21,female,white,75000,FALSE,Some college,FALSE,0,0,Midwest,"NA",TRUE,non-metropolitan
+20120503122079,2012,38,male,white,40000,TRUE,Some college,TRUE,3,9,West,not employed,FALSE,metropolitan
+20120503122175,2012,31,female,white,100000,FALSE,Masters,TRUE,1,6,Northeast,"NA",FALSE,metropolitan
+20120503122238,2012,47,female,other,60000,FALSE,Doctoral,TRUE,2,11,South,"NA",FALSE,metropolitan
+20120503122262,2012,58,male,black,35000,TRUE,HS,TRUE,2,15,South,employed,FALSE,metropolitan
+20120503122290,2012,58,male,white,150000,TRUE,Some college,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20120503122371,2012,33,male,black,7500,FALSE,HS,TRUE,2,8,West,"NA",FALSE,non-metropolitan
+20120503122375,2012,23,male,asian,7500,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120503122474,2012,80,female,white,25000,FALSE,Did not graduate from HS,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120503122506,2012,35,female,white,50000,TRUE,Some college,TRUE,2,0,South,employed,FALSE,non-metropolitan
+20120503122523,2012,56,female,white,50000,TRUE,Masters,FALSE,0,0,West,employed,FALSE,metropolitan
+20120504120001,2012,37,female,white,35000,FALSE,Did not graduate from HS,TRUE,2,2,Northeast,"NA",TRUE,metropolitan
+20120504120084,2012,29,male,white,100000,FALSE,Doctoral,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120504120089,2012,65,female,white,30000,TRUE,Bachelors,FALSE,0,0,South,employed,FALSE,metropolitan
+20120504120090,2012,32,female,asian,15000,TRUE,Bachelors,TRUE,1,1,Midwest,employed,FALSE,metropolitan
+20120504120114,2012,27,female,white,0,TRUE,Bachelors,TRUE,3,1,Northeast,not employed,FALSE,metropolitan
+20120504120128,2012,74,female,black,30000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120504120139,2012,64,female,white,7500,FALSE,HS,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120504120141,2012,72,female,black,35000,FALSE,HS,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120504120510,2012,78,female,white,10000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120504120513,2012,40,male,white,60000,TRUE,Some college,FALSE,0,0,West,employed,FALSE,metropolitan
+20120504120515,2012,58,male,white,40000,TRUE,Some college,FALSE,0,0,South,employed,FALSE,metropolitan
+20120504120516,2012,48,male,white,60000,TRUE,Bachelors,TRUE,1,0,Northeast,employed,FALSE,metropolitan
+20120504120527,2012,62,female,white,100000,TRUE,Bachelors,FALSE,0,0,South,employed,FALSE,metropolitan
+20120504120530,2012,63,male,white,50000,FALSE,Bachelors,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120504120541,2012,29,female,white,60000,FALSE,Some college,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120504120543,2012,20,female,white,100000,FALSE,Some college,TRUE,1,14,West,"NA",TRUE,metropolitan
+20120504120547,2012,78,female,white,25000,TRUE,HS,FALSE,0,0,Midwest,not employed,FALSE,non-metropolitan
+20120504120550,2012,36,female,white,60000,TRUE,Bachelors,TRUE,1,1,South,employed,FALSE,metropolitan
+20120504120563,2012,59,female,white,150000,TRUE,HS,FALSE,0,0,South,not employed,FALSE,metropolitan
+20120504120605,2012,21,male,white,150000,FALSE,Some college,FALSE,0,0,Northeast,"NA",TRUE,metropolitan
+20120504120608,2012,65,female,black,0,FALSE,Did not graduate from HS,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120504120620,2012,41,male,white,100000,TRUE,Bachelors,TRUE,2,11,Midwest,employed,FALSE,non-metropolitan
+20120504120626,2012,35,female,white,100000,TRUE,Masters,TRUE,1,0,Northeast,employed,FALSE,metropolitan
+20120504120646,2012,23,female,white,75000,FALSE,Some college,FALSE,0,0,South,"NA",TRUE,metropolitan
+20120504120690,2012,85,female,white,12500,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20120504120704,2012,41,female,white,35000,TRUE,Some college,TRUE,5,2,South,not employed,TRUE,metropolitan
+20120504120709,2012,48,male,white,100000,TRUE,Bachelors,TRUE,1,6,South,employed,FALSE,metropolitan
+20120504120725,2012,77,male,other,12500,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120504120740,2012,52,male,black,10000,FALSE,Some college,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120504120750,2012,56,male,white,7500,FALSE,HS,FALSE,0,0,Northeast,"NA",FALSE,non-metropolitan
+20120504120758,2012,43,male,white,75000,FALSE,HS,FALSE,0,0,Midwest,"NA",TRUE,metropolitan
+20120504120768,2012,62,female,black,75000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120504120777,2012,32,female,white,40000,FALSE,HS,TRUE,1,12,Midwest,"NA",FALSE,non-metropolitan
+20120504120784,2012,41,female,white,150000,TRUE,Masters,TRUE,3,4,South,employed,FALSE,metropolitan
+20120504120790,2012,53,female,white,150000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120504120795,2012,80,female,white,60000,TRUE,HS,FALSE,0,0,West,not employed,FALSE,metropolitan
+20120504120798,2012,53,male,black,75000,TRUE,Bachelors,FALSE,0,0,South,not employed,FALSE,metropolitan
+20120504120822,2012,79,female,white,75000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120504120836,2012,59,male,white,100000,TRUE,Some college,FALSE,0,0,West,not employed,FALSE,metropolitan
+20120504120842,2012,37,male,white,75000,TRUE,Some college,TRUE,3,0,Midwest,not employed,FALSE,non-metropolitan
+20120504120846,2012,80,female,black,15000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120504120853,2012,29,male,other,60000,TRUE,Some college,FALSE,0,0,West,employed,FALSE,metropolitan
+20120504120869,2012,71,male,white,10000,TRUE,Did not graduate from HS,FALSE,0,0,South,employed,FALSE,metropolitan
+20120504120873,2012,16,female,white,100000,FALSE,Did not graduate from HS,TRUE,2,16,Northeast,"NA",TRUE,metropolitan
+20120504120877,2012,44,female,white,60000,FALSE,HS,TRUE,1,14,Midwest,"NA",FALSE,non-metropolitan
+20120504120879,2012,62,male,white,35000,TRUE,Some college,FALSE,0,0,Midwest,not employed,FALSE,non-metropolitan
+20120504120892,2012,54,male,black,100000,TRUE,Some college,FALSE,0,0,South,employed,FALSE,metropolitan
+20120504120897,2012,45,male,white,10000,TRUE,Did not graduate from HS,TRUE,3,9,South,employed,FALSE,metropolitan
+20120504120899,2012,62,male,white,40000,TRUE,HS,TRUE,1,16,South,not employed,FALSE,non-metropolitan
+20120504120901,2012,37,female,white,12500,FALSE,Did not graduate from HS,TRUE,4,3,West,"NA",FALSE,metropolitan
+20120504120906,2012,17,male,white,150000,FALSE,Did not graduate from HS,TRUE,2,15,West,"NA",TRUE,metropolitan
+20120504120932,2012,35,male,white,35000,TRUE,Bachelors,TRUE,2,0,West,not employed,TRUE,metropolitan
+20120504120936,2012,59,male,black,20000,TRUE,Some college,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20120504120939,2012,61,male,black,50000,FALSE,Bachelors,TRUE,1,4,South,"NA",FALSE,metropolitan
+20120504120968,2012,85,female,white,12500,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120504120974,2012,16,male,white,150000,FALSE,Did not graduate from HS,TRUE,3,9,West,"NA",TRUE,metropolitan
+20120504120993,2012,72,female,black,20000,FALSE,Some college,FALSE,0,0,Midwest,"NA",TRUE,metropolitan
+20120504120994,2012,80,male,white,30000,TRUE,HS,FALSE,0,0,Midwest,not employed,FALSE,non-metropolitan
+20120504121001,2012,26,male,white,60000,TRUE,Bachelors,TRUE,1,0,Midwest,employed,FALSE,metropolitan
+20120504121044,2012,38,male,white,20000,TRUE,Some college,TRUE,8,0,West,not employed,TRUE,metropolitan
+20120504121047,2012,40,male,white,100000,TRUE,Masters,TRUE,3,2,Midwest,employed,FALSE,metropolitan
+20120504121050,2012,20,male,white,35000,FALSE,Did not graduate from HS,FALSE,0,0,South,"NA",TRUE,non-metropolitan
+20120504121051,2012,52,male,white,60000,TRUE,Masters,TRUE,1,5,South,employed,FALSE,metropolitan
+20120504121063,2012,53,male,white,5000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120504121066,2012,85,female,white,25000,FALSE,HS,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120504121094,2012,44,male,white,7500,FALSE,Did not graduate from HS,TRUE,3,2,South,"NA",FALSE,metropolitan
+20120504121134,2012,31,female,white,30000,TRUE,Bachelors,TRUE,3,2,South,employed,FALSE,metropolitan
+20120504121159,2012,31,female,white,30000,FALSE,Did not graduate from HS,TRUE,3,9,Midwest,"NA",FALSE,non-metropolitan
+20120504121210,2012,29,male,white,40000,TRUE,Some college,TRUE,1,2,Midwest,employed,FALSE,metropolitan
+20120504121222,2012,27,female,white,20000,TRUE,Did not graduate from HS,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20120504121235,2012,54,male,white,30000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20120504121272,2012,85,female,white,7500,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20120504121305,2012,16,female,white,150000,FALSE,Did not graduate from HS,TRUE,1,16,Northeast,"NA",TRUE,metropolitan
+20120504121310,2012,34,female,black,15000,FALSE,HS,TRUE,4,10,Northeast,"NA",FALSE,metropolitan
+20120504121314,2012,51,female,white,25000,TRUE,Some college,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20120504121315,2012,32,male,white,12500,FALSE,Did not graduate from HS,FALSE,0,0,South,"NA",TRUE,metropolitan
+20120504121320,2012,37,female,white,75000,TRUE,Bachelors,TRUE,2,2,West,employed,FALSE,metropolitan
+20120504121322,2012,85,female,white,10000,FALSE,Did not graduate from HS,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120504121327,2012,64,male,black,10000,FALSE,Did not graduate from HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120504121346,2012,76,female,white,30000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120504121373,2012,50,male,white,50000,TRUE,HS,TRUE,1,14,South,employed,FALSE,non-metropolitan
+20120504121392,2012,33,male,white,30000,TRUE,Did not graduate from HS,TRUE,3,7,West,employed,FALSE,metropolitan
+20120504121414,2012,64,female,white,50000,TRUE,Bachelors,FALSE,0,0,West,not employed,FALSE,metropolitan
+20120504121416,2012,38,female,white,7500,FALSE,Did not graduate from HS,TRUE,3,6,South,"NA",FALSE,metropolitan
+20120504121419,2012,66,female,white,15000,FALSE,Some college,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120504121435,2012,55,female,white,60000,TRUE,Masters,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20120504121450,2012,54,male,white,25000,TRUE,HS,TRUE,1,14,Midwest,employed,FALSE,metropolitan
+20120504121452,2012,72,female,white,15000,TRUE,Bachelors,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20120504121453,2012,29,female,other,150000,TRUE,Masters,TRUE,1,1,South,employed,FALSE,metropolitan
+20120504121472,2012,19,female,black,75000,FALSE,Some college,FALSE,0,0,South,"NA",TRUE,metropolitan
+20120504121506,2012,47,male,white,30000,FALSE,Some college,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120504121510,2012,59,female,black,50000,TRUE,HS,FALSE,0,0,South,not employed,FALSE,metropolitan
+20120504121525,2012,58,female,white,75000,TRUE,HS,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20120504121527,2012,77,female,white,7500,FALSE,Bachelors,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120504121529,2012,80,female,white,7500,FALSE,Did not graduate from HS,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120504121532,2012,85,male,white,150000,TRUE,HS,FALSE,0,0,South,not employed,FALSE,non-metropolitan
+20120504121537,2012,50,female,white,50000,FALSE,Bachelors,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120504121544,2012,30,female,black,7500,FALSE,HS,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120504121556,2012,58,male,black,25000,FALSE,Bachelors,FALSE,0,0,South,"NA",TRUE,non-metropolitan
+20120504121590,2012,40,male,white,150000,TRUE,Bachelors,TRUE,2,0,South,employed,FALSE,metropolitan
+20120504121615,2012,70,male,white,60000,TRUE,Some college,FALSE,0,0,West,employed,FALSE,metropolitan
+20120504121624,2012,60,male,asian,75000,FALSE,Some college,TRUE,3,5,West,"NA",FALSE,metropolitan
+20120504121640,2012,31,female,white,35000,TRUE,Bachelors,FALSE,0,0,South,employed,FALSE,metropolitan
+20120504121655,2012,50,female,white,75000,TRUE,Masters,FALSE,0,0,Midwest,employed,FALSE,non-metropolitan
+20120504121658,2012,56,male,white,60000,TRUE,HS,TRUE,1,5,West,employed,FALSE,metropolitan
+20120504121659,2012,71,female,white,50000,TRUE,HS,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20120504121670,2012,41,male,black,150000,TRUE,HS,FALSE,0,0,South,employed,FALSE,metropolitan
+20120504121671,2012,56,male,white,35000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120504121688,2012,26,male,asian,150000,FALSE,Bachelors,FALSE,0,0,Northeast,"NA",TRUE,metropolitan
+20120504121691,2012,85,female,white,75000,TRUE,Masters,FALSE,0,0,Northeast,not employed,FALSE,non-metropolitan
+20120504121720,2012,51,female,asian,150000,TRUE,Masters,TRUE,1,14,West,employed,FALSE,metropolitan
+20120504121728,2012,38,female,white,100000,TRUE,Some college,TRUE,1,17,South,employed,FALSE,non-metropolitan
+20120504121756,2012,39,female,white,150000,TRUE,Doctoral,TRUE,3,6,South,employed,FALSE,metropolitan
+20120504121762,2012,35,female,white,50000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120504121766,2012,39,female,white,5000,FALSE,Did not graduate from HS,TRUE,3,5,South,"NA",FALSE,metropolitan
+20120504121770,2012,61,male,white,12500,FALSE,Some college,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120504121775,2012,38,male,asian,75000,TRUE,Bachelors,TRUE,1,3,South,not employed,FALSE,metropolitan
+20120504121779,2012,15,female,white,20000,FALSE,Did not graduate from HS,TRUE,1,15,South,"NA",TRUE,non-metropolitan
+20120504121791,2012,65,female,black,40000,FALSE,HS,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120504121818,2012,26,female,white,30000,TRUE,Some college,FALSE,0,0,South,employed,FALSE,metropolitan
+20120504121840,2012,48,female,white,60000,TRUE,HS,FALSE,0,0,South,employed,FALSE,metropolitan
+20120504121845,2012,46,male,white,100000,TRUE,Masters,TRUE,2,7,Midwest,employed,FALSE,metropolitan
+20120504121909,2012,37,female,white,75000,TRUE,Bachelors,TRUE,1,2,West,employed,FALSE,metropolitan
+20120504121929,2012,72,female,white,10000,FALSE,Bachelors,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120504121930,2012,80,female,white,35000,TRUE,Bachelors,FALSE,0,0,South,not employed,FALSE,metropolitan
+20120504121940,2012,48,male,white,60000,FALSE,Did not graduate from HS,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120504121944,2012,44,male,white,40000,FALSE,Some college,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20120504121970,2012,39,female,white,100000,TRUE,Masters,TRUE,2,0,Northeast,employed,FALSE,metropolitan
+20120504121983,2012,54,male,black,75000,TRUE,Some college,TRUE,4,8,West,not employed,FALSE,metropolitan
+20120504121985,2012,24,male,white,100000,TRUE,Bachelors,FALSE,0,0,West,not employed,FALSE,metropolitan
+20120504121997,2012,52,male,white,7500,FALSE,Did not graduate from HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120504122036,2012,74,female,white,20000,FALSE,HS,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120504122041,2012,59,female,white,15000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120504122052,2012,37,female,black,40000,FALSE,Some college,TRUE,4,10,Midwest,"NA",FALSE,metropolitan
+20120504122054,2012,78,male,white,75000,TRUE,Bachelors,FALSE,0,0,Midwest,not employed,FALSE,metropolitan
+20120504122056,2012,41,female,black,0,FALSE,HS,TRUE,1,8,Midwest,"NA",FALSE,metropolitan
+20120504122088,2012,16,male,white,150000,FALSE,Did not graduate from HS,TRUE,2,15,West,"NA",TRUE,metropolitan
+20120504122127,2012,37,female,white,100000,TRUE,Bachelors,TRUE,2,3,Midwest,employed,FALSE,metropolitan
+20120504122134,2012,61,female,white,150000,TRUE,Bachelors,FALSE,0,0,South,employed,FALSE,metropolitan
+20120504122142,2012,52,female,black,30000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120504122172,2012,51,male,white,75000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120504122175,2012,55,male,white,75000,TRUE,HS,TRUE,1,14,Northeast,employed,FALSE,non-metropolitan
+20120504122201,2012,78,female,white,40000,TRUE,Some college,FALSE,0,0,South,not employed,FALSE,metropolitan
+20120504122219,2012,70,male,white,150000,TRUE,Masters,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20120504122224,2012,63,female,white,60000,TRUE,HS,FALSE,0,0,West,employed,TRUE,metropolitan
+20120504122232,2012,63,female,black,25000,FALSE,HS,TRUE,1,12,Northeast,"NA",FALSE,metropolitan
+20120504122233,2012,72,male,black,35000,TRUE,Some college,FALSE,0,0,South,not employed,FALSE,non-metropolitan
+20120504122244,2012,52,male,black,60000,FALSE,Some college,FALSE,0,0,Northeast,"NA",TRUE,metropolitan
+20120504122269,2012,60,male,white,12500,FALSE,Bachelors,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120504122271,2012,19,female,asian,60000,FALSE,Some college,TRUE,2,10,West,"NA",TRUE,metropolitan
+20120504122320,2012,52,male,black,100000,TRUE,HS,FALSE,0,0,South,employed,FALSE,metropolitan
+20120504122321,2012,76,female,white,60000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120504122323,2012,44,male,white,75000,TRUE,Bachelors,TRUE,2,13,Midwest,employed,FALSE,non-metropolitan
+20120504122331,2012,72,female,black,15000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120504122332,2012,77,male,black,20000,FALSE,Did not graduate from HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120504122349,2012,29,male,white,50000,TRUE,Doctoral,TRUE,3,0,Midwest,not employed,FALSE,metropolitan
+20120504122368,2012,57,female,white,60000,TRUE,HS,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20120504122395,2012,31,female,white,50000,FALSE,Bachelors,FALSE,0,0,West,"NA",FALSE,non-metropolitan
+20120504122419,2012,19,male,white,75000,FALSE,Some college,TRUE,2,14,South,"NA",TRUE,metropolitan
+20120504122444,2012,30,male,white,25000,FALSE,Some college,TRUE,1,4,West,"NA",FALSE,metropolitan
+20120504122477,2012,72,male,white,15000,TRUE,Did not graduate from HS,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20120504122502,2012,67,male,white,60000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120504122508,2012,54,male,white,150000,TRUE,Bachelors,TRUE,1,15,South,employed,FALSE,metropolitan
+20120504122522,2012,37,female,asian,15000,TRUE,Did not graduate from HS,TRUE,3,8,West,employed,FALSE,metropolitan
+20120504122524,2012,31,male,white,60000,TRUE,Bachelors,FALSE,0,0,South,employed,FALSE,metropolitan
+20120504122545,2012,55,female,white,75000,TRUE,HS,FALSE,0,0,South,not employed,FALSE,non-metropolitan
+20120505120044,2012,47,female,white,20000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120505120079,2012,33,male,white,75000,TRUE,Bachelors,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20120505120102,2012,21,female,white,15000,FALSE,Some college,TRUE,3,10,Northeast,"NA",TRUE,metropolitan
+20120505120660,2012,64,female,white,75000,TRUE,Masters,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20120505120751,2012,31,female,black,0,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120505120797,2012,33,male,white,50000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120505120817,2012,42,female,asian,100000,TRUE,Some college,TRUE,1,8,Midwest,employed,TRUE,metropolitan
+20120505121096,2012,62,female,white,40000,TRUE,Did not graduate from HS,FALSE,0,0,Midwest,not employed,FALSE,metropolitan
+20120505121436,2012,62,female,black,15000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120505121520,2012,52,female,white,75000,FALSE,Some college,TRUE,1,17,South,"NA",FALSE,non-metropolitan
+20120505121614,2012,15,male,white,100000,FALSE,Did not graduate from HS,TRUE,2,15,South,"NA",TRUE,metropolitan
+20120505121702,2012,65,male,white,60000,TRUE,Some college,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20120505121860,2012,29,male,white,60000,TRUE,HS,TRUE,1,0,Midwest,employed,FALSE,metropolitan
+20120603122383,2012,30,female,white,100000,TRUE,Some college,TRUE,1,1,Midwest,employed,FALSE,metropolitan
+20120604120642,2012,48,male,white,75000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120604120650,2012,55,male,black,150000,FALSE,HS,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120604120848,2012,71,male,other,15000,TRUE,Did not graduate from HS,FALSE,0,0,South,not employed,FALSE,metropolitan
+20120604121004,2012,65,male,white,25000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20120604121014,2012,46,male,white,60000,TRUE,Masters,TRUE,2,6,Midwest,not employed,FALSE,non-metropolitan
+20120604121036,2012,35,male,white,75000,TRUE,Bachelors,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20120604121331,2012,61,female,asian,150000,TRUE,Bachelors,TRUE,2,1,Northeast,employed,FALSE,metropolitan
+20120604121436,2012,80,female,white,100000,FALSE,Did not graduate from HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120604121533,2012,77,male,black,10000,FALSE,Did not graduate from HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120604121748,2012,27,female,white,7500,FALSE,HS,TRUE,4,2,West,"NA",FALSE,metropolitan
+20120604121765,2012,56,female,black,30000,FALSE,Some college,TRUE,1,0,South,"NA",FALSE,metropolitan
+20120604121808,2012,74,female,asian,100000,FALSE,Some college,TRUE,3,9,West,"NA",FALSE,metropolitan
+20120604122109,2012,29,female,black,20000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120604122268,2012,43,female,black,40000,FALSE,Masters,TRUE,1,12,Northeast,"NA",FALSE,metropolitan
+20120604122318,2012,20,female,black,100000,FALSE,Some college,TRUE,2,14,Midwest,"NA",TRUE,metropolitan
+20120604122445,2012,31,male,white,30000,FALSE,HS,TRUE,1,9,West,"NA",TRUE,non-metropolitan
+20120604122503,2012,73,female,white,10000,TRUE,Some college,FALSE,0,0,South,not employed,FALSE,metropolitan
+20120605120022,2012,57,female,white,15000,TRUE,HS,TRUE,2,14,South,not employed,FALSE,metropolitan
+20120605120082,2012,36,male,white,75000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120605120085,2012,85,female,white,25000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120605120093,2012,24,female,white,20000,FALSE,HS,TRUE,2,2,South,"NA",FALSE,metropolitan
+20120605120120,2012,40,female,white,10000,FALSE,Some college,TRUE,2,11,Northeast,"NA",TRUE,metropolitan
+20120605120147,2012,26,female,white,35000,TRUE,Some college,TRUE,1,5,Midwest,employed,FALSE,metropolitan
+20120605120512,2012,67,female,white,75000,TRUE,Some college,FALSE,0,0,Midwest,not employed,FALSE,metropolitan
+20120605120524,2012,42,male,white,50000,TRUE,Some college,FALSE,0,0,Midwest,employed,FALSE,non-metropolitan
+20120605120525,2012,55,female,white,0,FALSE,HS,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120605120527,2012,51,female,white,100000,TRUE,Bachelors,FALSE,0,0,South,employed,FALSE,non-metropolitan
+20120605120529,2012,63,male,white,15000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120605120534,2012,61,male,black,35000,TRUE,Did not graduate from HS,TRUE,1,13,South,employed,FALSE,metropolitan
+20120605120541,2012,33,female,white,100000,TRUE,Masters,TRUE,2,13,Northeast,employed,FALSE,non-metropolitan
+20120605120550,2012,60,male,white,100000,TRUE,Bachelors,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20120605120609,2012,34,female,black,60000,TRUE,Some college,TRUE,5,0,South,employed,FALSE,metropolitan
+20120605120616,2012,52,male,white,30000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,non-metropolitan
+20120605120627,2012,27,female,white,50000,TRUE,Some college,TRUE,1,8,West,employed,FALSE,metropolitan
+20120605120636,2012,63,female,white,60000,TRUE,Some college,FALSE,0,0,South,employed,FALSE,metropolitan
+20120605120641,2012,78,male,white,100000,TRUE,Bachelors,FALSE,0,0,Midwest,not employed,FALSE,metropolitan
+20120605120663,2012,67,female,white,15000,FALSE,Some college,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120605120677,2012,36,female,white,50000,TRUE,HS,TRUE,3,7,Midwest,employed,FALSE,metropolitan
+20120605120706,2012,27,female,white,25000,TRUE,HS,FALSE,0,0,South,employed,FALSE,metropolitan
+20120605120714,2012,29,female,white,5000,FALSE,Did not graduate from HS,TRUE,1,3,West,"NA",FALSE,metropolitan
+20120605120730,2012,32,male,black,75000,FALSE,HS,FALSE,0,0,Midwest,"NA",TRUE,metropolitan
+20120605120734,2012,52,male,white,25000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120605120745,2012,85,female,other,10000,FALSE,Did not graduate from HS,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20120605120754,2012,74,male,white,20000,TRUE,Bachelors,FALSE,0,0,South,not employed,FALSE,metropolitan
+20120605120760,2012,16,male,white,100000,FALSE,Did not graduate from HS,TRUE,2,10,South,"NA",TRUE,metropolitan
+20120605120768,2012,55,female,white,60000,TRUE,Some college,FALSE,0,0,South,employed,FALSE,metropolitan
+20120605120779,2012,32,female,white,30000,TRUE,Bachelors,TRUE,1,3,South,not employed,FALSE,metropolitan
+20120605120786,2012,42,male,white,75000,TRUE,Some college,TRUE,1,2,Northeast,not employed,FALSE,metropolitan
+20120605120811,2012,55,female,black,100000,TRUE,Bachelors,FALSE,0,0,South,employed,FALSE,metropolitan
+20120605120826,2012,59,female,black,5000,FALSE,HS,TRUE,2,0,South,"NA",FALSE,non-metropolitan
+20120605120857,2012,59,female,white,40000,TRUE,Some college,FALSE,0,0,Midwest,not employed,TRUE,metropolitan
+20120605120868,2012,40,female,asian,30000,TRUE,Some college,TRUE,2,12,South,employed,TRUE,metropolitan
+20120605120869,2012,17,male,white,75000,FALSE,Did not graduate from HS,TRUE,2,14,Midwest,"NA",TRUE,metropolitan
+20120605120899,2012,30,male,white,20000,TRUE,Did not graduate from HS,TRUE,4,2,West,not employed,FALSE,metropolitan
+20120605120901,2012,22,male,white,60000,FALSE,Bachelors,FALSE,0,0,Northeast,"NA",TRUE,metropolitan
+20120605120908,2012,40,female,black,15000,TRUE,Masters,FALSE,0,0,South,employed,FALSE,metropolitan
+20120605120914,2012,59,male,white,60000,TRUE,HS,FALSE,0,0,West,employed,FALSE,non-metropolitan
+20120605120949,2012,63,male,black,12500,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120605120955,2012,18,female,white,75000,FALSE,HS,TRUE,1,17,Northeast,"NA",TRUE,metropolitan
+20120605120968,2012,74,male,white,20000,TRUE,Did not graduate from HS,FALSE,0,0,South,not employed,FALSE,metropolitan
+20120605120974,2012,65,male,white,100000,TRUE,Some college,FALSE,0,0,West,not employed,FALSE,non-metropolitan
+20120605121019,2012,56,male,asian,75000,TRUE,Some college,TRUE,2,13,West,employed,TRUE,metropolitan
+20120605121031,2012,26,male,black,75000,FALSE,Bachelors,TRUE,1,4,South,"NA",TRUE,metropolitan
+20120605121039,2012,33,female,black,60000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120605121053,2012,67,male,black,15000,TRUE,HS,TRUE,2,0,West,not employed,FALSE,metropolitan
+20120605121060,2012,85,female,white,10000,FALSE,HS,FALSE,0,0,Northeast,"NA",FALSE,non-metropolitan
+20120605121111,2012,63,female,white,35000,FALSE,Did not graduate from HS,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120605121118,2012,85,female,white,60000,TRUE,Some college,FALSE,0,0,South,not employed,FALSE,metropolitan
+20120605121135,2012,74,female,white,12500,TRUE,Some college,FALSE,0,0,Midwest,not employed,FALSE,non-metropolitan
+20120605121143,2012,58,female,white,50000,TRUE,HS,FALSE,0,0,Northeast,employed,FALSE,non-metropolitan
+20120605121196,2012,48,male,white,50000,TRUE,Masters,TRUE,1,3,Northeast,employed,FALSE,metropolitan
+20120605121207,2012,27,female,white,25000,TRUE,Did not graduate from HS,TRUE,5,3,Midwest,employed,FALSE,metropolitan
+20120605121218,2012,41,male,black,60000,FALSE,Bachelors,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120605121254,2012,76,female,white,25000,TRUE,Bachelors,FALSE,0,0,West,employed,FALSE,non-metropolitan
+20120605121266,2012,48,male,white,20000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120605121267,2012,69,female,white,50000,FALSE,HS,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120605121292,2012,60,female,white,12500,FALSE,Bachelors,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120605121295,2012,85,male,white,150000,FALSE,Bachelors,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120605121310,2012,16,male,white,25000,FALSE,Did not graduate from HS,TRUE,3,9,Midwest,"NA",TRUE,metropolitan
+20120605121315,2012,59,female,white,12500,TRUE,Bachelors,FALSE,0,0,Northeast,employed,TRUE,metropolitan
+20120605121353,2012,40,female,white,60000,TRUE,Some college,TRUE,2,7,South,employed,FALSE,non-metropolitan
+20120605121360,2012,50,female,white,50000,TRUE,Bachelors,TRUE,3,10,West,not employed,FALSE,metropolitan
+20120605121379,2012,59,female,black,100000,TRUE,Bachelors,FALSE,0,0,South,not employed,FALSE,metropolitan
+20120605121384,2012,59,female,black,25000,FALSE,Did not graduate from HS,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120605121398,2012,25,male,white,75000,TRUE,Some college,TRUE,1,7,Midwest,employed,FALSE,metropolitan
+20120605121412,2012,28,female,black,7500,FALSE,Some college,TRUE,1,4,South,"NA",FALSE,non-metropolitan
+20120605121437,2012,24,female,asian,0,TRUE,Masters,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20120605121446,2012,47,male,white,25000,TRUE,Did not graduate from HS,TRUE,1,5,South,not employed,FALSE,metropolitan
+20120605121447,2012,33,male,white,30000,FALSE,HS,TRUE,1,6,Midwest,"NA",FALSE,metropolitan
+20120605121475,2012,43,male,white,75000,TRUE,Some college,TRUE,3,11,Northeast,employed,FALSE,metropolitan
+20120605121478,2012,34,female,white,40000,TRUE,HS,TRUE,1,13,Midwest,employed,FALSE,metropolitan
+20120605121480,2012,42,male,white,100000,TRUE,Masters,TRUE,1,3,Midwest,employed,FALSE,metropolitan
+20120605121507,2012,34,female,white,40000,TRUE,Some college,TRUE,2,2,South,employed,FALSE,non-metropolitan
+20120605121551,2012,60,female,white,5000,FALSE,Did not graduate from HS,FALSE,0,0,Northeast,"NA",FALSE,non-metropolitan
+20120605121556,2012,61,female,black,100000,FALSE,Masters,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120605121568,2012,17,female,white,75000,FALSE,HS,TRUE,4,0,Midwest,"NA",TRUE,metropolitan
+20120605121602,2012,16,female,white,100000,FALSE,Did not graduate from HS,TRUE,1,16,West,"NA",TRUE,metropolitan
+20120605121611,2012,68,male,white,150000,TRUE,Bachelors,FALSE,0,0,West,employed,FALSE,metropolitan
+20120605121621,2012,45,female,white,40000,TRUE,HS,TRUE,1,12,West,employed,FALSE,metropolitan
+20120605121633,2012,85,female,white,12500,FALSE,HS,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120605121634,2012,40,female,white,0,TRUE,Some college,TRUE,2,2,Northeast,employed,FALSE,non-metropolitan
+20120605121639,2012,54,female,black,25000,FALSE,Bachelors,TRUE,1,16,Northeast,"NA",FALSE,metropolitan
+20120605121651,2012,23,female,white,50000,FALSE,HS,TRUE,5,1,West,"NA",TRUE,metropolitan
+20120605121667,2012,60,female,white,75000,FALSE,Masters,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120605121684,2012,31,male,asian,40000,TRUE,Masters,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20120605121714,2012,71,female,white,30000,TRUE,Some college,FALSE,0,0,West,employed,FALSE,metropolitan
+20120605121731,2012,33,male,white,75000,FALSE,Masters,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120605121783,2012,52,female,white,7500,TRUE,Some college,FALSE,0,0,Northeast,employed,FALSE,non-metropolitan
+20120605121794,2012,37,male,white,75000,TRUE,Bachelors,TRUE,1,0,Midwest,not employed,FALSE,non-metropolitan
+20120605121795,2012,57,female,white,60000,FALSE,Bachelors,TRUE,1,15,Northeast,"NA",FALSE,metropolitan
+20120605121802,2012,30,female,white,15000,TRUE,HS,TRUE,1,1,South,not employed,FALSE,non-metropolitan
+20120605121805,2012,51,female,white,150000,TRUE,Some college,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20120605121832,2012,85,female,white,12500,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120605121833,2012,32,male,other,60000,FALSE,Masters,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120605121877,2012,75,female,white,75000,FALSE,Did not graduate from HS,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120605121889,2012,78,female,white,12500,FALSE,Did not graduate from HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120605121895,2012,25,male,white,10000,TRUE,HS,TRUE,1,11,Midwest,not employed,FALSE,metropolitan
+20120605121907,2012,51,male,black,100000,TRUE,Some college,FALSE,0,0,South,employed,FALSE,metropolitan
+20120605121916,2012,36,female,white,0,FALSE,Some college,TRUE,2,5,Midwest,"NA",FALSE,metropolitan
+20120605121939,2012,44,female,white,100000,TRUE,Bachelors,TRUE,2,3,Midwest,not employed,FALSE,metropolitan
+20120605121944,2012,63,male,black,25000,FALSE,Did not graduate from HS,FALSE,0,0,South,"NA",TRUE,metropolitan
+20120605121952,2012,85,female,white,15000,FALSE,Bachelors,FALSE,0,0,West,"NA",FALSE,non-metropolitan
+20120605121965,2012,41,male,white,100000,TRUE,Masters,TRUE,1,9,West,employed,FALSE,metropolitan
+20120605121982,2012,32,female,white,12500,FALSE,Some college,TRUE,1,9,Midwest,"NA",FALSE,non-metropolitan
+20120605122015,2012,59,male,white,60000,TRUE,Some college,FALSE,0,0,South,not employed,FALSE,metropolitan
+20120605122019,2012,53,female,other,0,TRUE,Some college,TRUE,1,14,West,employed,FALSE,non-metropolitan
+20120605122028,2012,85,male,white,15000,TRUE,Masters,FALSE,0,0,West,not employed,FALSE,metropolitan
+20120605122029,2012,44,female,white,40000,TRUE,Masters,TRUE,1,8,West,employed,FALSE,metropolitan
+20120605122038,2012,57,male,white,50000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120605122054,2012,27,female,white,50000,FALSE,Some college,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120605122073,2012,30,female,white,50000,TRUE,Bachelors,TRUE,3,0,South,employed,FALSE,metropolitan
+20120605122074,2012,47,male,white,40000,FALSE,HS,FALSE,0,0,Midwest,"NA",TRUE,non-metropolitan
+20120605122110,2012,63,female,black,60000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120605122118,2012,51,male,white,15000,TRUE,Did not graduate from HS,FALSE,0,0,West,employed,FALSE,metropolitan
+20120605122127,2012,31,male,white,50000,TRUE,Bachelors,TRUE,3,1,Northeast,not employed,FALSE,metropolitan
+20120605122146,2012,37,male,white,100000,TRUE,Bachelors,TRUE,1,9,South,not employed,FALSE,metropolitan
+20120605122154,2012,61,female,white,60000,TRUE,Some college,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20120605122170,2012,69,male,white,10000,TRUE,HS,FALSE,0,0,South,not employed,FALSE,metropolitan
+20120605122174,2012,71,female,white,20000,FALSE,HS,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120605122179,2012,64,female,white,100000,FALSE,Some college,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120605122188,2012,85,female,white,12500,FALSE,Did not graduate from HS,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20120605122213,2012,47,male,white,7500,TRUE,Did not graduate from HS,TRUE,2,10,South,not employed,FALSE,non-metropolitan
+20120605122238,2012,40,female,white,100000,TRUE,Masters,TRUE,3,5,South,employed,FALSE,metropolitan
+20120605122255,2012,18,female,white,150000,FALSE,Did not graduate from HS,FALSE,0,0,Midwest,"NA",TRUE,metropolitan
+20120605122274,2012,24,male,black,25000,TRUE,Some college,TRUE,6,3,Midwest,not employed,FALSE,metropolitan
+20120605122279,2012,70,male,white,75000,FALSE,Masters,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120605122290,2012,67,female,white,25000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120605122291,2012,69,female,white,150000,TRUE,Bachelors,FALSE,0,0,South,employed,FALSE,metropolitan
+20120605122297,2012,57,female,black,40000,FALSE,Some college,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120605122316,2012,75,female,white,15000,FALSE,Some college,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20120605122319,2012,35,male,asian,150000,TRUE,Masters,TRUE,2,3,West,employed,FALSE,metropolitan
+20120605122327,2012,25,male,white,50000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120605122344,2012,85,female,white,15000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20120605122366,2012,55,female,white,75000,FALSE,Some college,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120605122374,2012,31,male,white,60000,FALSE,HS,TRUE,2,3,Northeast,"NA",TRUE,metropolitan
+20120605122375,2012,79,male,white,20000,TRUE,HS,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20120605122391,2012,74,female,black,15000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120605122414,2012,57,female,white,75000,TRUE,HS,FALSE,0,0,South,employed,FALSE,metropolitan
+20120605122416,2012,50,male,white,60000,TRUE,Some college,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20120605122423,2012,56,female,white,100000,TRUE,Masters,FALSE,0,0,West,employed,FALSE,metropolitan
+20120605122437,2012,41,female,black,20000,FALSE,Some college,TRUE,5,5,Northeast,"NA",FALSE,metropolitan
+20120605122438,2012,17,female,asian,60000,FALSE,Did not graduate from HS,TRUE,2,13,West,"NA",TRUE,metropolitan
+20120605122456,2012,26,female,other,75000,TRUE,Bachelors,TRUE,3,3,West,employed,TRUE,metropolitan
+20120605122461,2012,28,female,white,50000,FALSE,HS,FALSE,0,0,Midwest,"NA",TRUE,metropolitan
+20120605122476,2012,39,female,white,100000,TRUE,Bachelors,TRUE,1,1,Northeast,employed,FALSE,metropolitan
+20120605122480,2012,47,male,white,150000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120605122489,2012,66,female,white,10000,TRUE,HS,FALSE,0,0,Midwest,not employed,FALSE,non-metropolitan
+20120605122493,2012,32,female,white,150000,TRUE,Some college,TRUE,2,10,West,employed,FALSE,metropolitan
+20120605122509,2012,16,male,black,25000,FALSE,Did not graduate from HS,TRUE,6,6,South,"NA",TRUE,metropolitan
+20120605122532,2012,70,female,white,50000,TRUE,HS,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20120605122536,2012,64,female,white,50000,TRUE,Some college,FALSE,0,0,South,employed,FALSE,non-metropolitan
+20120606120610,2012,63,male,black,7500,FALSE,HS,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120606120857,2012,51,female,white,7500,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120606121033,2012,64,female,white,20000,FALSE,HS,FALSE,0,0,Northeast,"NA",FALSE,non-metropolitan
+20120606121039,2012,47,male,white,75000,TRUE,Bachelors,TRUE,1,6,West,employed,FALSE,metropolitan
+20120606121132,2012,39,female,white,20000,FALSE,Some college,TRUE,3,4,Midwest,"NA",FALSE,non-metropolitan
+20120606121270,2012,60,male,white,60000,TRUE,Masters,TRUE,1,17,Midwest,not employed,FALSE,metropolitan
+20120606121353,2012,56,female,white,100000,TRUE,Masters,FALSE,0,0,West,employed,FALSE,metropolitan
+20120606121651,2012,32,female,white,5000,FALSE,Some college,TRUE,4,5,Northeast,"NA",FALSE,metropolitan
+20120606121701,2012,30,male,white,20000,FALSE,Some college,FALSE,0,0,Northeast,"NA",FALSE,non-metropolitan
+20120606121776,2012,41,female,white,25000,FALSE,HS,TRUE,3,11,West,"NA",FALSE,metropolitan
+20120606121957,2012,50,male,white,40000,TRUE,Some college,TRUE,1,17,South,employed,FALSE,metropolitan
+20120606122062,2012,28,female,white,15000,TRUE,Some college,TRUE,3,7,Northeast,employed,FALSE,metropolitan
+20120606122167,2012,74,female,black,5000,FALSE,HS,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120606122337,2012,58,male,other,30000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120606122418,2012,54,female,white,75000,TRUE,HS,FALSE,0,0,South,employed,FALSE,metropolitan
+20120606122450,2012,29,female,white,60000,TRUE,Some college,TRUE,3,1,West,employed,FALSE,non-metropolitan
+20120606122468,2012,66,female,black,20000,TRUE,Masters,FALSE,0,0,South,not employed,FALSE,non-metropolitan
+20120704120766,2012,49,male,white,100000,TRUE,HS,TRUE,2,8,Northeast,employed,FALSE,metropolitan
+20120705120040,2012,30,male,white,30000,FALSE,Did not graduate from HS,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120705120134,2012,49,male,asian,75000,TRUE,Some college,TRUE,2,4,Midwest,employed,FALSE,metropolitan
+20120705120555,2012,18,female,black,30000,FALSE,Did not graduate from HS,TRUE,1,12,Northeast,"NA",TRUE,metropolitan
+20120705120590,2012,34,male,black,60000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120705120603,2012,30,male,white,40000,TRUE,Some college,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20120705120666,2012,30,female,white,60000,TRUE,Bachelors,TRUE,1,9,Northeast,employed,FALSE,non-metropolitan
+20120705120812,2012,61,male,white,40000,FALSE,Some college,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120705120938,2012,25,female,black,0,FALSE,HS,TRUE,4,0,South,"NA",FALSE,non-metropolitan
+20120705121044,2012,23,male,white,60000,TRUE,Some college,TRUE,1,0,Midwest,employed,FALSE,metropolitan
+20120705121062,2012,42,female,white,150000,TRUE,Bachelors,TRUE,2,9,Midwest,employed,FALSE,metropolitan
+20120705121127,2012,20,male,asian,100000,FALSE,Some college,FALSE,0,0,Northeast,"NA",TRUE,metropolitan
+20120705121282,2012,36,female,white,15000,TRUE,HS,TRUE,3,4,Midwest,employed,FALSE,metropolitan
+20120705121321,2012,54,female,white,150000,FALSE,HS,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120705121343,2012,38,female,white,30000,FALSE,HS,TRUE,1,14,South,"NA",FALSE,metropolitan
+20120705121424,2012,28,male,white,100000,TRUE,Some college,FALSE,0,0,West,not employed,FALSE,metropolitan
+20120705121608,2012,42,male,white,100000,FALSE,Some college,TRUE,1,13,South,"NA",FALSE,metropolitan
+20120705121630,2012,32,male,white,75000,TRUE,Bachelors,TRUE,2,0,Midwest,employed,FALSE,non-metropolitan
+20120705121644,2012,33,female,white,60000,FALSE,Bachelors,TRUE,1,2,South,"NA",FALSE,metropolitan
+20120705121656,2012,46,male,white,100000,TRUE,Some college,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20120705121718,2012,68,female,white,100000,TRUE,HS,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20120705121836,2012,48,male,white,40000,TRUE,Bachelors,TRUE,2,7,Northeast,employed,TRUE,metropolitan
+20120705121980,2012,64,male,white,25000,TRUE,Masters,FALSE,0,0,South,not employed,FALSE,metropolitan
+20120705121999,2012,38,female,asian,150000,TRUE,Masters,TRUE,2,5,Northeast,employed,TRUE,metropolitan
+20120705122007,2012,49,male,white,150000,TRUE,Bachelors,TRUE,1,10,South,employed,FALSE,metropolitan
+20120705122055,2012,37,female,white,7500,TRUE,Did not graduate from HS,TRUE,4,6,South,employed,FALSE,non-metropolitan
+20120705122060,2012,56,female,white,150000,TRUE,Doctoral,FALSE,0,0,West,employed,FALSE,metropolitan
+20120705122100,2012,16,female,white,75000,FALSE,Did not graduate from HS,TRUE,2,16,Northeast,"NA",TRUE,metropolitan
+20120705122156,2012,59,female,white,0,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120705122164,2012,80,female,white,20000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120705122214,2012,64,male,white,40000,TRUE,Masters,FALSE,0,0,Midwest,not employed,FALSE,metropolitan
+20120705122230,2012,58,female,black,25000,TRUE,HS,FALSE,0,0,South,not employed,FALSE,metropolitan
+20120705122343,2012,61,female,other,15000,FALSE,Did not graduate from HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120705122351,2012,63,female,white,25000,FALSE,HS,FALSE,0,0,Northeast,"NA",FALSE,non-metropolitan
+20120705122421,2012,17,female,white,75000,FALSE,Did not graduate from HS,TRUE,1,17,Midwest,"NA",TRUE,metropolitan
+20120705122459,2012,62,female,white,60000,FALSE,HS,TRUE,1,2,Northeast,"NA",FALSE,metropolitan
+20120705122502,2012,49,female,white,150000,TRUE,Doctoral,TRUE,3,11,South,employed,FALSE,metropolitan
+20120706120011,2012,34,male,black,60000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120706120050,2012,58,female,white,5000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120706120108,2012,65,female,white,0,FALSE,Masters,TRUE,1,0,Midwest,"NA",FALSE,metropolitan
+20120706120111,2012,61,female,white,50000,TRUE,Masters,FALSE,0,0,South,not employed,FALSE,metropolitan
+20120706120139,2012,22,female,black,20000,FALSE,Some college,FALSE,0,0,South,"NA",TRUE,non-metropolitan
+20120706120147,2012,80,female,white,20000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120706120507,2012,37,female,white,5000,FALSE,Bachelors,TRUE,2,7,West,"NA",FALSE,metropolitan
+20120706120525,2012,63,male,white,30000,TRUE,HS,FALSE,0,0,Midwest,not employed,FALSE,metropolitan
+20120706120528,2012,19,female,black,75000,FALSE,Some college,FALSE,0,0,West,"NA",TRUE,metropolitan
+20120706120541,2012,30,female,white,15000,FALSE,HS,TRUE,2,9,South,"NA",FALSE,non-metropolitan
+20120706120549,2012,40,male,white,30000,TRUE,Some college,TRUE,3,4,Midwest,not employed,FALSE,metropolitan
+20120706120565,2012,40,female,black,50000,FALSE,Bachelors,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120706120574,2012,57,female,white,40000,FALSE,Doctoral,FALSE,0,0,West,"NA",FALSE,non-metropolitan
+20120706120586,2012,16,female,white,100000,FALSE,Did not graduate from HS,TRUE,1,16,West,"NA",TRUE,non-metropolitan
+20120706120607,2012,53,male,white,15000,FALSE,Bachelors,FALSE,0,0,West,"NA",FALSE,non-metropolitan
+20120706120637,2012,57,male,white,150000,FALSE,HS,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120706120642,2012,77,male,white,7500,TRUE,Bachelors,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20120706120645,2012,19,female,white,150000,FALSE,Some college,TRUE,1,16,Midwest,"NA",TRUE,metropolitan
+20120706120646,2012,68,female,black,35000,FALSE,HS,FALSE,0,0,Midwest,"NA",TRUE,metropolitan
+20120706120651,2012,59,female,white,35000,TRUE,Some college,TRUE,2,16,West,employed,TRUE,metropolitan
+20120706120667,2012,27,female,white,15000,FALSE,Did not graduate from HS,FALSE,0,0,Midwest,"NA",TRUE,metropolitan
+20120706120670,2012,33,male,white,20000,TRUE,Did not graduate from HS,TRUE,2,6,South,employed,FALSE,metropolitan
+20120706120675,2012,60,male,white,40000,TRUE,HS,FALSE,0,0,Northeast,employed,FALSE,non-metropolitan
+20120706120680,2012,77,female,white,35000,TRUE,Some college,FALSE,0,0,South,not employed,FALSE,metropolitan
+20120706120690,2012,56,male,asian,75000,TRUE,HS,TRUE,2,0,West,not employed,TRUE,metropolitan
+20120706120714,2012,67,female,white,10000,FALSE,Masters,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120706120750,2012,68,male,white,20000,TRUE,Some college,FALSE,0,0,South,employed,FALSE,metropolitan
+20120706120752,2012,28,female,white,35000,TRUE,Some college,TRUE,3,2,West,employed,FALSE,metropolitan
+20120706120792,2012,61,male,white,150000,TRUE,Bachelors,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20120706120794,2012,39,male,white,25000,FALSE,HS,FALSE,0,0,Midwest,"NA",TRUE,non-metropolitan
+20120706120864,2012,15,female,white,150000,FALSE,Did not graduate from HS,TRUE,2,13,Midwest,"NA",TRUE,metropolitan
+20120706120873,2012,27,male,black,50000,FALSE,Bachelors,FALSE,0,0,South,"NA",TRUE,metropolitan
+20120706120908,2012,80,male,black,7500,FALSE,Did not graduate from HS,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120706120916,2012,55,male,white,35000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20120706120918,2012,61,female,white,30000,TRUE,HS,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20120706120934,2012,77,female,white,12500,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120706120935,2012,77,female,black,40000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120706120940,2012,59,female,black,20000,FALSE,Masters,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120706120967,2012,80,male,asian,15000,FALSE,Did not graduate from HS,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120706120983,2012,49,female,white,40000,TRUE,Did not graduate from HS,TRUE,2,16,South,employed,FALSE,non-metropolitan
+20120706121012,2012,35,male,white,75000,TRUE,Some college,TRUE,2,1,South,employed,FALSE,metropolitan
+20120706121044,2012,28,female,white,60000,TRUE,HS,FALSE,0,0,South,employed,FALSE,non-metropolitan
+20120706121048,2012,35,male,white,30000,TRUE,Some college,TRUE,4,1,Midwest,not employed,FALSE,metropolitan
+20120706121062,2012,24,female,black,0,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120706121063,2012,75,male,white,60000,TRUE,Bachelors,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20120706121083,2012,32,male,white,50000,FALSE,Masters,TRUE,1,4,Midwest,"NA",FALSE,metropolitan
+20120706121131,2012,19,male,asian,150000,FALSE,Some college,TRUE,1,16,West,"NA",TRUE,metropolitan
+20120706121143,2012,28,male,white,75000,TRUE,Some college,FALSE,0,0,West,employed,FALSE,metropolitan
+20120706121147,2012,29,male,white,150000,TRUE,Masters,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20120706121151,2012,51,male,white,150000,TRUE,Doctoral,TRUE,2,1,South,employed,FALSE,metropolitan
+20120706121170,2012,61,female,black,0,FALSE,Did not graduate from HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120706121222,2012,52,male,white,50000,FALSE,Some college,TRUE,1,13,South,"NA",FALSE,metropolitan
+20120706121225,2012,26,female,black,35000,FALSE,Bachelors,TRUE,1,1,South,"NA",FALSE,metropolitan
+20120706121252,2012,73,male,white,40000,FALSE,Did not graduate from HS,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120706121292,2012,24,female,white,35000,FALSE,Some college,FALSE,0,0,South,"NA",TRUE,metropolitan
+20120706121295,2012,39,male,white,100000,TRUE,Some college,TRUE,2,8,Midwest,employed,FALSE,metropolitan
+20120706121298,2012,31,male,white,75000,TRUE,Some college,TRUE,3,12,West,employed,FALSE,metropolitan
+20120706121343,2012,73,female,white,7500,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120706121354,2012,58,female,white,75000,TRUE,Masters,FALSE,0,0,South,employed,FALSE,metropolitan
+20120706121360,2012,31,male,white,50000,TRUE,Some college,TRUE,2,0,Midwest,not employed,FALSE,non-metropolitan
+20120706121377,2012,52,female,white,40000,FALSE,Masters,FALSE,0,0,West,"NA",FALSE,non-metropolitan
+20120706121395,2012,63,female,white,15000,FALSE,Some college,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120706121397,2012,18,female,black,10000,FALSE,Did not graduate from HS,TRUE,2,11,Northeast,"NA",TRUE,metropolitan
+20120706121406,2012,43,male,white,60000,TRUE,Did not graduate from HS,TRUE,1,17,South,employed,FALSE,metropolitan
+20120706121413,2012,38,female,black,150000,TRUE,Doctoral,TRUE,2,5,South,employed,FALSE,metropolitan
+20120706121419,2012,49,female,white,35000,FALSE,HS,TRUE,1,11,Midwest,"NA",TRUE,metropolitan
+20120706121421,2012,50,male,white,40000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120706121423,2012,61,male,white,60000,TRUE,Some college,FALSE,0,0,South,not employed,FALSE,non-metropolitan
+20120706121465,2012,80,female,white,35000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120706121479,2012,16,male,white,150000,FALSE,Did not graduate from HS,TRUE,2,12,Midwest,"NA",TRUE,metropolitan
+20120706121481,2012,32,male,asian,60000,TRUE,Did not graduate from HS,TRUE,1,1,West,employed,FALSE,metropolitan
+20120706121494,2012,50,female,black,40000,FALSE,Masters,FALSE,0,0,South,"NA",TRUE,metropolitan
+20120706121507,2012,36,male,white,10000,TRUE,Bachelors,TRUE,2,2,Northeast,not employed,FALSE,non-metropolitan
+20120706121526,2012,22,female,white,12500,TRUE,Bachelors,FALSE,0,0,West,employed,FALSE,metropolitan
+20120706121552,2012,59,male,white,40000,TRUE,Some college,TRUE,2,8,South,not employed,TRUE,metropolitan
+20120706121586,2012,40,male,white,100000,TRUE,HS,TRUE,3,12,West,employed,FALSE,metropolitan
+20120706121635,2012,64,female,asian,25000,TRUE,HS,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20120706121636,2012,62,female,white,15000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120706121675,2012,50,male,white,15000,TRUE,Did not graduate from HS,TRUE,1,2,South,not employed,FALSE,metropolitan
+20120706121696,2012,80,female,white,20000,TRUE,Some college,FALSE,0,0,South,not employed,FALSE,metropolitan
+20120706121708,2012,32,male,white,150000,TRUE,Bachelors,TRUE,1,3,Midwest,employed,FALSE,non-metropolitan
+20120706121712,2012,28,male,white,30000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20120706121746,2012,37,male,white,35000,TRUE,Some college,TRUE,5,2,South,not employed,TRUE,metropolitan
+20120706121751,2012,63,male,white,12500,TRUE,HS,TRUE,1,0,South,not employed,FALSE,metropolitan
+20120706121756,2012,60,female,white,100000,TRUE,Some college,TRUE,1,10,South,employed,FALSE,metropolitan
+20120706121767,2012,79,female,white,35000,FALSE,HS,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120706121791,2012,53,female,black,20000,FALSE,HS,TRUE,1,9,South,"NA",FALSE,metropolitan
+20120706121835,2012,65,male,white,30000,FALSE,Bachelors,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120706121850,2012,43,female,black,5000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120706121857,2012,56,male,white,50000,FALSE,Masters,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120706121865,2012,64,female,white,50000,TRUE,Bachelors,TRUE,1,8,Northeast,not employed,FALSE,metropolitan
+20120706121903,2012,33,female,white,150000,TRUE,Doctoral,FALSE,0,0,West,employed,FALSE,metropolitan
+20120706121906,2012,66,female,white,100000,TRUE,Some college,FALSE,0,0,South,not employed,FALSE,metropolitan
+20120706121930,2012,26,female,white,75000,TRUE,HS,TRUE,1,2,South,employed,TRUE,metropolitan
+20120706121949,2012,85,female,white,20000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120706121969,2012,18,male,white,60000,FALSE,Did not graduate from HS,TRUE,1,15,West,"NA",TRUE,metropolitan
+20120706121994,2012,29,female,white,25000,TRUE,Some college,TRUE,2,0,Midwest,employed,FALSE,metropolitan
+20120706122001,2012,49,female,white,30000,TRUE,Some college,TRUE,1,9,Northeast,employed,FALSE,metropolitan
+20120706122018,2012,38,female,white,50000,FALSE,Bachelors,TRUE,1,15,Midwest,"NA",FALSE,non-metropolitan
+20120706122022,2012,68,male,white,40000,TRUE,Did not graduate from HS,TRUE,1,11,South,not employed,FALSE,metropolitan
+20120706122037,2012,35,female,white,60000,TRUE,Some college,TRUE,2,0,Midwest,employed,FALSE,metropolitan
+20120706122051,2012,71,female,black,7500,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120706122055,2012,79,female,white,15000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120706122109,2012,29,male,white,75000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120706122119,2012,54,male,white,60000,TRUE,Bachelors,TRUE,1,6,Northeast,employed,FALSE,non-metropolitan
+20120706122120,2012,38,female,asian,20000,TRUE,HS,TRUE,2,10,Northeast,employed,FALSE,metropolitan
+20120706122163,2012,68,female,white,75000,FALSE,Bachelors,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120706122171,2012,41,male,white,50000,TRUE,Some college,FALSE,0,0,South,employed,FALSE,metropolitan
+20120706122176,2012,35,male,white,10000,FALSE,HS,TRUE,1,9,South,"NA",TRUE,non-metropolitan
+20120706122198,2012,51,male,white,30000,TRUE,Did not graduate from HS,FALSE,0,0,Midwest,not employed,TRUE,metropolitan
+20120706122205,2012,31,female,white,20000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,non-metropolitan
+20120706122224,2012,35,female,white,150000,FALSE,Bachelors,TRUE,1,13,South,"NA",FALSE,metropolitan
+20120706122225,2012,65,female,black,7500,FALSE,HS,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120706122251,2012,67,male,white,35000,TRUE,Did not graduate from HS,FALSE,0,0,Northeast,not employed,FALSE,non-metropolitan
+20120706122258,2012,69,male,white,100000,TRUE,Masters,TRUE,1,16,West,employed,FALSE,non-metropolitan
+20120706122317,2012,50,male,white,100000,TRUE,HS,TRUE,2,13,Northeast,employed,FALSE,metropolitan
+20120706122320,2012,65,male,black,30000,FALSE,Did not graduate from HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120706122335,2012,46,female,white,150000,TRUE,HS,TRUE,2,8,South,employed,FALSE,non-metropolitan
+20120706122343,2012,41,female,white,5000,TRUE,HS,TRUE,4,3,West,employed,FALSE,metropolitan
+20120706122377,2012,80,female,white,35000,TRUE,HS,FALSE,0,0,West,not employed,FALSE,metropolitan
+20120706122392,2012,56,female,white,20000,TRUE,Some college,TRUE,1,17,Midwest,not employed,FALSE,metropolitan
+20120706122421,2012,47,male,asian,100000,TRUE,Masters,TRUE,1,4,West,not employed,FALSE,metropolitan
+20120706122428,2012,34,male,white,75000,TRUE,Bachelors,TRUE,2,4,South,employed,FALSE,metropolitan
+20120706122444,2012,38,female,white,100000,TRUE,Some college,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20120706122461,2012,59,female,white,60000,TRUE,Masters,FALSE,0,0,West,employed,FALSE,metropolitan
+20120706122462,2012,43,female,white,12500,FALSE,Did not graduate from HS,TRUE,1,17,Northeast,"NA",FALSE,metropolitan
+20120706122466,2012,49,female,white,75000,TRUE,Masters,TRUE,4,10,South,employed,FALSE,metropolitan
+20120706122471,2012,40,male,white,25000,TRUE,Did not graduate from HS,TRUE,3,0,Midwest,not employed,FALSE,non-metropolitan
+20120706122487,2012,59,female,white,15000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120706122502,2012,46,male,white,30000,TRUE,HS,TRUE,2,14,Midwest,employed,FALSE,metropolitan
+20120707120009,2012,28,female,black,0,TRUE,HS,FALSE,0,0,South,not employed,FALSE,non-metropolitan
+20120707120032,2012,72,male,white,100000,TRUE,Bachelors,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20120707120130,2012,19,male,white,10000,FALSE,Did not graduate from HS,TRUE,1,10,Northeast,"NA",TRUE,metropolitan
+20120707120575,2012,42,female,white,100000,FALSE,Masters,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120707120627,2012,25,male,black,15000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120707120943,2012,73,female,white,25000,TRUE,Some college,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20120707120964,2012,85,male,white,30000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120707121011,2012,65,female,white,150000,TRUE,HS,FALSE,0,0,West,employed,FALSE,non-metropolitan
+20120707121026,2012,77,male,other,25000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20120707121087,2012,40,male,white,35000,TRUE,Did not graduate from HS,TRUE,1,1,West,employed,FALSE,metropolitan
+20120707121154,2012,67,female,white,5000,FALSE,Did not graduate from HS,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20120707121196,2012,37,male,white,150000,TRUE,HS,TRUE,1,1,Midwest,employed,FALSE,metropolitan
+20120707121365,2012,36,female,white,20000,FALSE,Bachelors,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120707121379,2012,59,male,white,75000,TRUE,Some college,FALSE,0,0,West,employed,FALSE,non-metropolitan
+20120707121455,2012,33,male,white,75000,TRUE,Some college,TRUE,1,15,West,employed,FALSE,metropolitan
+20120707121560,2012,45,female,white,0,TRUE,Bachelors,TRUE,3,5,Northeast,employed,FALSE,metropolitan
+20120707121567,2012,39,male,white,40000,TRUE,Masters,TRUE,2,1,South,not employed,FALSE,non-metropolitan
+20120707121576,2012,37,male,white,75000,TRUE,Some college,TRUE,2,4,South,employed,FALSE,non-metropolitan
+20120707121588,2012,40,male,asian,100000,TRUE,Masters,TRUE,3,6,Midwest,not employed,TRUE,metropolitan
+20120707121605,2012,66,male,white,7500,FALSE,Did not graduate from HS,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120707121606,2012,43,female,white,50000,FALSE,Bachelors,FALSE,0,0,South,"NA",TRUE,metropolitan
+20120707121681,2012,59,female,white,10000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120707121720,2012,70,male,white,15000,TRUE,HS,TRUE,1,6,Midwest,not employed,FALSE,non-metropolitan
+20120707121906,2012,58,female,white,20000,FALSE,Some college,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120707121961,2012,50,female,white,100000,FALSE,Masters,TRUE,1,7,South,"NA",FALSE,metropolitan
+20120707121970,2012,26,female,white,10000,TRUE,HS,TRUE,1,16,Midwest,employed,FALSE,non-metropolitan
+20120707122037,2012,71,female,black,10000,FALSE,Some college,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120707122076,2012,68,male,white,40000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120707122094,2012,45,female,white,150000,TRUE,Bachelors,TRUE,3,7,South,employed,TRUE,non-metropolitan
+20120707122124,2012,85,female,white,10000,FALSE,Did not graduate from HS,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120707122209,2012,64,female,white,60000,TRUE,HS,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20120707122238,2012,49,male,white,15000,FALSE,HS,FALSE,0,0,West,"NA",FALSE,non-metropolitan
+20120707122269,2012,25,male,asian,75000,FALSE,Masters,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120707122328,2012,70,female,white,30000,FALSE,HS,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120707122366,2012,28,male,white,60000,FALSE,HS,TRUE,2,7,South,"NA",FALSE,metropolitan
+20120707122411,2012,76,female,white,12500,TRUE,Some college,FALSE,0,0,Midwest,not employed,FALSE,metropolitan
+20120707122446,2012,69,male,white,35000,TRUE,Did not graduate from HS,TRUE,2,3,West,not employed,FALSE,metropolitan
+20120805122182,2012,54,male,white,150000,TRUE,Doctoral,TRUE,1,11,South,employed,FALSE,metropolitan
+20120805122488,2012,50,male,white,30000,FALSE,Some college,TRUE,1,1,South,"NA",FALSE,metropolitan
+20120806120092,2012,39,male,white,60000,FALSE,HS,TRUE,1,9,South,"NA",FALSE,metropolitan
+20120806120832,2012,32,male,white,100000,FALSE,Bachelors,TRUE,3,0,Northeast,"NA",TRUE,metropolitan
+20120806120902,2012,27,male,white,0,FALSE,Bachelors,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120806120979,2012,50,male,white,60000,TRUE,Bachelors,TRUE,3,9,Northeast,not employed,TRUE,metropolitan
+20120806121128,2012,22,male,asian,100000,FALSE,HS,FALSE,0,0,West,"NA",TRUE,metropolitan
+20120806121249,2012,37,female,black,75000,TRUE,Some college,TRUE,4,2,West,employed,FALSE,metropolitan
+20120806121256,2012,35,male,white,60000,TRUE,Some college,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20120806121356,2012,26,female,white,50000,TRUE,Some college,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20120806121412,2012,16,male,white,35000,FALSE,Did not graduate from HS,TRUE,2,16,Midwest,"NA",TRUE,metropolitan
+20120806121433,2012,80,male,white,15000,FALSE,HS,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120806121475,2012,28,female,white,15000,TRUE,Some college,TRUE,1,4,Midwest,employed,FALSE,metropolitan
+20120806121506,2012,31,female,black,12500,FALSE,Did not graduate from HS,TRUE,1,4,Northeast,"NA",TRUE,metropolitan
+20120806121528,2012,41,male,white,7500,FALSE,HS,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120806121581,2012,19,female,white,150000,FALSE,HS,TRUE,1,13,South,"NA",TRUE,metropolitan
+20120806121760,2012,53,female,white,60000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120806121768,2012,80,female,white,10000,FALSE,Did not graduate from HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120806121809,2012,40,male,white,35000,FALSE,HS,TRUE,1,14,South,"NA",FALSE,non-metropolitan
+20120806121862,2012,39,male,white,50000,TRUE,HS,TRUE,3,1,West,employed,FALSE,metropolitan
+20120806121891,2012,70,male,white,40000,TRUE,HS,FALSE,0,0,South,not employed,FALSE,metropolitan
+20120806121918,2012,31,male,white,75000,TRUE,HS,TRUE,1,8,West,employed,FALSE,non-metropolitan
+20120806121986,2012,60,male,white,100000,TRUE,Did not graduate from HS,FALSE,0,0,South,not employed,FALSE,non-metropolitan
+20120806122038,2012,59,male,white,0,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120806122091,2012,45,female,white,40000,TRUE,Masters,TRUE,1,14,Northeast,employed,FALSE,metropolitan
+20120806122165,2012,37,female,white,7500,FALSE,HS,TRUE,1,14,Midwest,"NA",FALSE,metropolitan
+20120806122173,2012,72,female,white,12500,FALSE,Did not graduate from HS,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20120806122189,2012,39,male,white,20000,FALSE,Bachelors,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120806122196,2012,53,male,white,15000,TRUE,HS,FALSE,0,0,South,not employed,FALSE,metropolitan
+20120806122201,2012,30,female,other,30000,FALSE,Bachelors,TRUE,1,3,West,"NA",FALSE,non-metropolitan
+20120806122336,2012,36,female,white,100000,TRUE,HS,TRUE,2,1,South,employed,FALSE,metropolitan
+20120806122340,2012,49,female,black,150000,TRUE,Masters,TRUE,1,5,South,employed,FALSE,metropolitan
+20120806122371,2012,60,male,white,40000,FALSE,HS,TRUE,1,17,West,"NA",FALSE,metropolitan
+20120806122386,2012,55,female,white,20000,FALSE,Some college,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120806122454,2012,36,female,white,0,TRUE,Bachelors,TRUE,2,1,Northeast,employed,FALSE,metropolitan
+20120807120004,2012,34,male,white,35000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120807120014,2012,33,male,white,40000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120807120082,2012,63,male,black,30000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120807120095,2012,71,male,white,12500,TRUE,Some college,FALSE,0,0,Northeast,not employed,FALSE,non-metropolitan
+20120807120122,2012,53,female,white,100000,TRUE,Some college,FALSE,0,0,South,employed,FALSE,metropolitan
+20120807120139,2012,34,female,black,0,FALSE,HS,TRUE,5,6,Midwest,"NA",FALSE,metropolitan
+20120807120158,2012,52,male,white,50000,FALSE,HS,FALSE,0,0,West,"NA",FALSE,non-metropolitan
+20120807120501,2012,55,male,white,25000,TRUE,Bachelors,FALSE,0,0,South,employed,FALSE,metropolitan
+20120807120506,2012,49,male,white,40000,TRUE,HS,TRUE,1,17,Midwest,employed,FALSE,non-metropolitan
+20120807120551,2012,36,male,white,100000,TRUE,Bachelors,TRUE,3,4,Midwest,employed,FALSE,metropolitan
+20120807120563,2012,56,female,white,20000,FALSE,HS,FALSE,0,0,West,"NA",FALSE,non-metropolitan
+20120807120591,2012,85,female,black,35000,FALSE,Masters,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120807120608,2012,17,female,other,35000,FALSE,Did not graduate from HS,TRUE,1,17,South,"NA",TRUE,metropolitan
+20120807120646,2012,32,female,white,60000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120807120652,2012,57,female,black,15000,TRUE,Did not graduate from HS,FALSE,0,0,South,not employed,FALSE,non-metropolitan
+20120807120654,2012,37,male,white,75000,TRUE,Bachelors,TRUE,3,7,Midwest,not employed,FALSE,non-metropolitan
+20120807120690,2012,66,female,white,15000,FALSE,Some college,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20120807120729,2012,42,female,white,60000,TRUE,Masters,TRUE,4,7,Northeast,employed,FALSE,metropolitan
+20120807120732,2012,48,male,white,10000,FALSE,Did not graduate from HS,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20120807120774,2012,53,female,white,150000,FALSE,Bachelors,TRUE,1,14,West,"NA",FALSE,metropolitan
+20120807120795,2012,47,female,white,50000,FALSE,Some college,FALSE,0,0,Northeast,"NA",FALSE,non-metropolitan
+20120807120838,2012,76,female,black,75000,FALSE,Masters,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120807120889,2012,40,female,white,25000,TRUE,HS,TRUE,1,12,Northeast,employed,TRUE,metropolitan
+20120807120908,2012,73,male,white,150000,TRUE,HS,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20120807120917,2012,50,male,white,75000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120807120932,2012,39,female,white,7500,FALSE,Did not graduate from HS,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120807120933,2012,59,male,black,30000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120807120959,2012,70,male,white,50000,FALSE,Masters,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120807120961,2012,52,male,white,50000,FALSE,Did not graduate from HS,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120807120967,2012,63,male,white,20000,FALSE,Some college,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20120807120970,2012,59,female,black,20000,TRUE,Bachelors,FALSE,0,0,South,employed,FALSE,metropolitan
+20120807120985,2012,76,male,white,50000,TRUE,Masters,FALSE,0,0,Northeast,employed,FALSE,non-metropolitan
+20120807121029,2012,23,female,white,40000,TRUE,Bachelors,FALSE,0,0,South,employed,FALSE,metropolitan
+20120807121038,2012,43,male,white,50000,TRUE,Did not graduate from HS,FALSE,0,0,West,not employed,TRUE,metropolitan
+20120807121057,2012,77,female,white,25000,TRUE,HS,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20120807121061,2012,20,male,white,12500,FALSE,Some college,FALSE,0,0,Midwest,"NA",TRUE,non-metropolitan
+20120807121063,2012,30,female,white,50000,TRUE,Bachelors,TRUE,1,1,West,employed,FALSE,metropolitan
+20120807121095,2012,33,male,white,100000,TRUE,Bachelors,TRUE,1,0,South,employed,FALSE,metropolitan
+20120807121107,2012,44,male,white,100000,TRUE,HS,TRUE,1,5,West,employed,FALSE,metropolitan
+20120807121152,2012,30,male,white,50000,FALSE,Bachelors,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120807121161,2012,39,male,white,50000,TRUE,Did not graduate from HS,TRUE,1,17,South,not employed,FALSE,metropolitan
+20120807121194,2012,85,male,white,35000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120807121308,2012,80,male,white,35000,TRUE,Some college,TRUE,1,6,South,not employed,FALSE,metropolitan
+20120807121318,2012,16,female,white,5000,FALSE,Did not graduate from HS,TRUE,3,15,West,"NA",TRUE,metropolitan
+20120807121331,2012,36,female,asian,150000,TRUE,Bachelors,TRUE,1,7,West,employed,FALSE,metropolitan
+20120807121342,2012,57,female,white,100000,TRUE,HS,FALSE,0,0,South,not employed,FALSE,non-metropolitan
+20120807121352,2012,80,female,white,35000,FALSE,Did not graduate from HS,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120807121357,2012,49,male,white,60000,TRUE,Masters,TRUE,2,14,Northeast,not employed,FALSE,metropolitan
+20120807121361,2012,79,female,black,60000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120807121362,2012,58,female,white,35000,TRUE,Did not graduate from HS,FALSE,0,0,West,employed,FALSE,metropolitan
+20120807121363,2012,61,male,white,100000,TRUE,Some college,TRUE,2,15,West,employed,FALSE,metropolitan
+20120807121369,2012,43,female,white,150000,TRUE,Bachelors,TRUE,2,5,West,employed,FALSE,metropolitan
+20120807121389,2012,62,female,white,10000,FALSE,Some college,TRUE,2,9,South,"NA",FALSE,metropolitan
+20120807121393,2012,36,female,white,20000,FALSE,HS,TRUE,1,7,Midwest,"NA",FALSE,non-metropolitan
+20120807121396,2012,42,female,white,100000,FALSE,Doctoral,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120807121425,2012,60,female,white,25000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120807121468,2012,45,male,white,40000,TRUE,Some college,FALSE,0,0,West,employed,FALSE,metropolitan
+20120807121469,2012,47,male,white,150000,TRUE,Some college,TRUE,1,12,Midwest,employed,FALSE,metropolitan
+20120807121492,2012,50,male,white,100000,TRUE,Some college,FALSE,0,0,West,not employed,FALSE,metropolitan
+20120807121521,2012,74,male,white,60000,TRUE,Bachelors,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20120807121571,2012,37,female,white,50000,TRUE,HS,TRUE,2,12,South,employed,FALSE,metropolitan
+20120807121593,2012,44,female,white,75000,FALSE,Some college,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120807121617,2012,26,female,white,40000,TRUE,Some college,TRUE,2,1,Midwest,employed,FALSE,non-metropolitan
+20120807121625,2012,80,female,black,10000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120807121638,2012,80,male,white,40000,TRUE,Bachelors,FALSE,0,0,Midwest,not employed,FALSE,metropolitan
+20120807121640,2012,41,male,white,7500,TRUE,Some college,TRUE,1,10,Northeast,not employed,FALSE,metropolitan
+20120807121644,2012,36,female,white,20000,FALSE,Bachelors,TRUE,2,6,Midwest,"NA",FALSE,metropolitan
+20120807121672,2012,33,female,white,75000,FALSE,HS,FALSE,0,0,Northeast,"NA",TRUE,metropolitan
+20120807121678,2012,50,male,white,40000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120807121696,2012,76,female,white,5000,FALSE,Bachelors,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120807121698,2012,74,female,asian,25000,TRUE,HS,FALSE,0,0,West,employed,FALSE,metropolitan
+20120807121715,2012,50,female,white,0,TRUE,Did not graduate from HS,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20120807121734,2012,80,female,white,60000,FALSE,Some college,TRUE,1,9,West,"NA",FALSE,metropolitan
+20120807121741,2012,48,male,white,100000,TRUE,HS,TRUE,2,8,Northeast,employed,FALSE,metropolitan
+20120807121788,2012,48,male,white,40000,FALSE,Bachelors,TRUE,1,8,South,"NA",FALSE,metropolitan
+20120807121794,2012,53,male,white,60000,TRUE,Some college,FALSE,0,0,Midwest,employed,FALSE,non-metropolitan
+20120807121805,2012,80,female,white,25000,FALSE,Did not graduate from HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120807121827,2012,46,female,white,0,TRUE,Masters,FALSE,0,0,South,employed,FALSE,non-metropolitan
+20120807121847,2012,27,female,black,12500,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120807121874,2012,31,female,black,10000,FALSE,HS,TRUE,4,2,Midwest,"NA",FALSE,metropolitan
+20120807121877,2012,52,female,other,15000,FALSE,Some college,TRUE,1,13,West,"NA",FALSE,metropolitan
+20120807121883,2012,55,female,white,60000,TRUE,HS,FALSE,0,0,South,employed,FALSE,metropolitan
+20120807121898,2012,38,female,white,75000,TRUE,Masters,TRUE,2,8,Midwest,employed,FALSE,non-metropolitan
+20120807121902,2012,77,male,white,60000,TRUE,Bachelors,FALSE,0,0,West,not employed,FALSE,metropolitan
+20120807121937,2012,38,male,asian,75000,TRUE,Some college,TRUE,2,6,Northeast,employed,TRUE,metropolitan
+20120807121953,2012,76,male,white,25000,FALSE,Did not graduate from HS,FALSE,0,0,West,"NA",FALSE,non-metropolitan
+20120807121960,2012,68,male,white,25000,TRUE,Bachelors,FALSE,0,0,West,not employed,FALSE,metropolitan
+20120807121964,2012,19,female,black,100000,FALSE,Some college,FALSE,0,0,South,"NA",TRUE,metropolitan
+20120807121973,2012,46,male,white,50000,FALSE,Masters,TRUE,3,10,West,"NA",FALSE,metropolitan
+20120807121982,2012,50,male,white,75000,TRUE,Masters,FALSE,0,0,Midwest,employed,FALSE,non-metropolitan
+20120807121985,2012,75,female,white,15000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120807122018,2012,62,female,black,10000,TRUE,Bachelors,FALSE,0,0,South,employed,FALSE,metropolitan
+20120807122039,2012,31,female,white,150000,TRUE,Masters,FALSE,0,0,South,employed,FALSE,metropolitan
+20120807122041,2012,39,male,white,100000,FALSE,Masters,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120807122052,2012,80,female,white,40000,TRUE,Bachelors,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20120807122075,2012,65,male,white,100000,TRUE,Bachelors,FALSE,0,0,South,employed,FALSE,non-metropolitan
+20120807122077,2012,60,female,white,100000,FALSE,Doctoral,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120807122090,2012,19,male,white,75000,FALSE,Some college,TRUE,1,15,South,"NA",TRUE,non-metropolitan
+20120807122091,2012,30,female,black,40000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120807122137,2012,52,female,white,40000,TRUE,HS,FALSE,0,0,South,employed,FALSE,metropolitan
+20120807122139,2012,58,female,white,20000,FALSE,Bachelors,FALSE,0,0,Northeast,"NA",FALSE,non-metropolitan
+20120807122157,2012,37,male,white,50000,FALSE,Did not graduate from HS,TRUE,1,14,South,"NA",FALSE,metropolitan
+20120807122165,2012,80,female,white,20000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120807122166,2012,48,male,asian,150000,TRUE,Bachelors,TRUE,2,10,West,not employed,FALSE,metropolitan
+20120807122168,2012,31,male,white,40000,FALSE,Bachelors,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120807122175,2012,19,female,white,30000,FALSE,Some college,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120807122196,2012,31,female,black,5000,FALSE,Did not graduate from HS,TRUE,1,1,South,"NA",FALSE,metropolitan
+20120807122203,2012,59,male,white,75000,TRUE,Bachelors,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20120807122217,2012,36,female,asian,30000,TRUE,HS,TRUE,2,14,South,employed,FALSE,metropolitan
+20120807122226,2012,22,male,white,25000,TRUE,HS,TRUE,2,2,South,not employed,FALSE,non-metropolitan
+20120807122241,2012,51,male,white,100000,TRUE,Masters,TRUE,2,14,South,employed,FALSE,metropolitan
+20120807122252,2012,39,female,black,60000,TRUE,Bachelors,TRUE,1,14,Midwest,employed,FALSE,metropolitan
+20120807122276,2012,53,male,white,10000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120807122282,2012,32,male,black,75000,FALSE,Masters,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120807122308,2012,76,male,white,150000,TRUE,Masters,TRUE,1,5,Northeast,not employed,FALSE,metropolitan
+20120807122332,2012,21,female,white,0,FALSE,HS,TRUE,1,1,West,"NA",FALSE,metropolitan
+20120807122342,2012,73,male,white,40000,FALSE,Doctoral,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120807122356,2012,33,female,black,40000,TRUE,Some college,TRUE,6,7,South,employed,FALSE,metropolitan
+20120807122362,2012,71,male,white,30000,TRUE,Some college,FALSE,0,0,Midwest,not employed,FALSE,metropolitan
+20120807122375,2012,42,male,white,7500,TRUE,HS,TRUE,3,8,West,employed,FALSE,metropolitan
+20120807122378,2012,43,female,white,100000,TRUE,Masters,FALSE,0,0,West,employed,FALSE,metropolitan
+20120807122385,2012,66,female,white,25000,TRUE,Did not graduate from HS,FALSE,0,0,South,not employed,FALSE,non-metropolitan
+20120807122386,2012,66,female,white,50000,FALSE,Masters,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120807122404,2012,39,male,asian,150000,TRUE,Masters,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20120807122407,2012,24,female,white,7500,FALSE,Did not graduate from HS,TRUE,4,1,West,"NA",FALSE,metropolitan
+20120807122408,2012,17,male,white,12500,FALSE,Did not graduate from HS,TRUE,2,14,South,"NA",TRUE,metropolitan
+20120807122427,2012,61,female,asian,30000,FALSE,Some college,TRUE,2,9,Northeast,"NA",FALSE,non-metropolitan
+20120807122465,2012,32,male,white,75000,TRUE,Bachelors,TRUE,1,0,Northeast,employed,FALSE,metropolitan
+20120807122518,2012,74,female,white,20000,TRUE,HS,FALSE,0,0,Northeast,not employed,FALSE,non-metropolitan
+20120807122519,2012,19,male,white,30000,FALSE,Some college,TRUE,1,10,South,"NA",TRUE,metropolitan
+20120808120114,2012,45,female,black,75000,FALSE,Masters,TRUE,1,13,Northeast,"NA",FALSE,metropolitan
+20120808120523,2012,32,female,white,35000,FALSE,Masters,TRUE,3,1,South,"NA",FALSE,metropolitan
+20120808120662,2012,15,female,white,50000,FALSE,Did not graduate from HS,TRUE,1,15,South,"NA",TRUE,non-metropolitan
+20120808120807,2012,38,male,white,75000,TRUE,Bachelors,TRUE,3,8,West,employed,FALSE,metropolitan
+20120808120976,2012,34,female,white,30000,TRUE,Some college,TRUE,2,2,South,employed,FALSE,metropolitan
+20120808121045,2012,80,female,white,30000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20120808121087,2012,36,female,white,40000,TRUE,Bachelors,TRUE,1,2,South,not employed,FALSE,metropolitan
+20120808121135,2012,80,female,white,75000,FALSE,Masters,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120808121157,2012,29,female,white,100000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120808121281,2012,34,male,white,15000,TRUE,Some college,TRUE,4,5,Midwest,employed,FALSE,non-metropolitan
+20120808121468,2012,71,female,white,0,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20120808121561,2012,43,male,white,20000,FALSE,Some college,FALSE,0,0,Midwest,"NA",TRUE,metropolitan
+20120808122029,2012,38,female,asian,150000,TRUE,Masters,TRUE,1,8,West,employed,FALSE,metropolitan
+20120808122058,2012,69,female,white,60000,TRUE,HS,TRUE,1,16,Northeast,employed,FALSE,non-metropolitan
+20120808122129,2012,59,male,white,50000,TRUE,HS,TRUE,3,1,South,not employed,FALSE,non-metropolitan
+20120808122170,2012,52,male,white,60000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20120808122181,2012,85,female,white,20000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120808122206,2012,69,female,black,25000,TRUE,HS,FALSE,0,0,South,employed,FALSE,metropolitan
+20120808122217,2012,51,male,white,10000,FALSE,Masters,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120808122330,2012,52,male,white,0,FALSE,Masters,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120808122488,2012,34,female,white,75000,TRUE,Masters,TRUE,1,2,West,employed,FALSE,metropolitan
+20120906121043,2012,56,male,white,150000,TRUE,Bachelors,TRUE,2,4,South,not employed,FALSE,metropolitan
+20120906121846,2012,39,female,black,15000,FALSE,HS,TRUE,2,0,Midwest,"NA",FALSE,metropolitan
+20120907120007,2012,27,female,white,100000,TRUE,Some college,TRUE,1,16,West,employed,FALSE,metropolitan
+20120907120604,2012,53,male,white,75000,TRUE,Some college,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20120907120708,2012,56,female,black,50000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120907120893,2012,29,female,white,150000,TRUE,Bachelors,TRUE,2,4,South,employed,TRUE,non-metropolitan
+20120907121067,2012,33,male,white,40000,TRUE,HS,TRUE,2,9,South,employed,TRUE,metropolitan
+20120907121077,2012,40,female,black,40000,FALSE,Masters,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120907121263,2012,25,female,white,75000,TRUE,Did not graduate from HS,TRUE,1,0,West,employed,FALSE,metropolitan
+20120907121324,2012,37,female,white,20000,FALSE,Some college,TRUE,1,13,South,"NA",FALSE,non-metropolitan
+20120907121338,2012,60,male,black,30000,TRUE,Did not graduate from HS,FALSE,0,0,South,employed,FALSE,non-metropolitan
+20120907121450,2012,60,female,white,35000,FALSE,Some college,FALSE,0,0,Midwest,"NA",TRUE,metropolitan
+20120907121457,2012,51,female,black,7500,FALSE,Did not graduate from HS,TRUE,3,4,South,"NA",FALSE,non-metropolitan
+20120907121470,2012,17,female,white,100000,FALSE,Did not graduate from HS,TRUE,1,17,South,"NA",TRUE,non-metropolitan
+20120907121750,2012,52,male,black,75000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120907121751,2012,33,male,white,30000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120907121817,2012,43,male,white,100000,TRUE,Masters,TRUE,3,8,Midwest,employed,FALSE,metropolitan
+20120907121839,2012,40,female,asian,35000,TRUE,HS,TRUE,2,13,Northeast,employed,FALSE,metropolitan
+20120907121860,2012,56,male,white,50000,TRUE,Bachelors,FALSE,0,0,South,not employed,FALSE,metropolitan
+20120907121914,2012,43,male,white,100000,TRUE,Some college,TRUE,1,7,Northeast,employed,FALSE,metropolitan
+20120907121987,2012,39,male,other,60000,FALSE,Did not graduate from HS,TRUE,1,12,West,"NA",TRUE,metropolitan
+20120907122004,2012,29,female,black,60000,TRUE,HS,TRUE,2,6,South,employed,FALSE,metropolitan
+20120907122107,2012,53,male,white,150000,TRUE,Bachelors,TRUE,1,7,West,employed,FALSE,metropolitan
+20120907122161,2012,34,male,white,75000,TRUE,HS,TRUE,1,11,Midwest,employed,FALSE,non-metropolitan
+20120907122348,2012,75,female,black,50000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120907122432,2012,58,female,white,75000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120907122464,2012,75,female,white,12500,TRUE,HS,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20120907122522,2012,56,female,white,75000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120908120102,2012,35,female,white,30000,TRUE,Did not graduate from HS,TRUE,4,2,West,not employed,FALSE,non-metropolitan
+20120908120107,2012,66,female,black,5000,FALSE,Did not graduate from HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120908120139,2012,21,female,white,20000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120908120157,2012,32,female,black,10000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120908120168,2012,23,female,black,50000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120908120503,2012,28,female,white,25000,TRUE,Some college,TRUE,4,4,Northeast,employed,FALSE,non-metropolitan
+20120908120526,2012,70,male,black,60000,TRUE,Bachelors,TRUE,1,10,South,not employed,FALSE,metropolitan
+20120908120541,2012,23,female,white,30000,FALSE,HS,TRUE,1,14,Midwest,"NA",FALSE,non-metropolitan
+20120908120561,2012,74,female,white,75000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20120908120569,2012,40,female,white,10000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120908120585,2012,71,female,white,25000,FALSE,Some college,TRUE,3,0,Midwest,"NA",FALSE,metropolitan
+20120908120603,2012,56,male,white,10000,FALSE,HS,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120908120606,2012,58,male,white,10000,FALSE,Some college,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20120908120623,2012,49,female,white,100000,TRUE,Bachelors,TRUE,2,9,South,employed,FALSE,metropolitan
+20120908120656,2012,80,male,white,35000,TRUE,HS,FALSE,0,0,Midwest,not employed,FALSE,non-metropolitan
+20120908120682,2012,75,male,white,15000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120908120698,2012,40,female,white,75000,TRUE,Some college,TRUE,4,6,West,employed,FALSE,metropolitan
+20120908120708,2012,29,female,white,50000,TRUE,Bachelors,TRUE,5,1,Northeast,employed,FALSE,metropolitan
+20120908120728,2012,47,female,white,100000,TRUE,Masters,TRUE,1,15,South,employed,FALSE,non-metropolitan
+20120908120760,2012,56,male,white,150000,TRUE,Doctoral,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20120908120801,2012,21,female,white,25000,FALSE,Some college,FALSE,0,0,Northeast,"NA",TRUE,metropolitan
+20120908120809,2012,85,female,white,100000,FALSE,Did not graduate from HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120908120823,2012,80,female,white,40000,TRUE,HS,FALSE,0,0,West,not employed,FALSE,metropolitan
+20120908120834,2012,38,male,white,100000,TRUE,Bachelors,FALSE,0,0,West,employed,FALSE,metropolitan
+20120908120843,2012,39,male,white,100000,TRUE,HS,TRUE,2,7,West,employed,FALSE,metropolitan
+20120908120877,2012,39,male,white,40000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120908120884,2012,58,female,asian,100000,TRUE,HS,TRUE,1,15,West,employed,TRUE,metropolitan
+20120908120897,2012,75,female,white,10000,FALSE,Bachelors,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20120908120959,2012,33,female,asian,50000,TRUE,Some college,FALSE,0,0,West,not employed,FALSE,metropolitan
+20120908120984,2012,49,female,white,35000,TRUE,Masters,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20120908120988,2012,67,female,white,60000,FALSE,Bachelors,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120908121011,2012,34,male,asian,100000,FALSE,HS,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120908121020,2012,73,female,white,40000,FALSE,Some college,TRUE,1,15,Northeast,"NA",FALSE,metropolitan
+20120908121022,2012,36,female,white,0,TRUE,HS,TRUE,1,14,Northeast,not employed,FALSE,non-metropolitan
+20120908121025,2012,62,female,white,150000,TRUE,Bachelors,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20120908121064,2012,25,male,white,15000,FALSE,Did not graduate from HS,FALSE,0,0,West,"NA",TRUE,metropolitan
+20120908121068,2012,26,female,white,20000,TRUE,Did not graduate from HS,TRUE,2,0,West,employed,FALSE,metropolitan
+20120908121080,2012,25,male,asian,7500,FALSE,Bachelors,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120908121086,2012,33,male,white,100000,TRUE,HS,TRUE,4,1,South,employed,FALSE,non-metropolitan
+20120908121088,2012,40,female,black,100000,TRUE,Some college,TRUE,3,1,West,employed,FALSE,metropolitan
+20120908121137,2012,28,female,white,40000,TRUE,Bachelors,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20120908121186,2012,39,male,asian,40000,TRUE,Bachelors,TRUE,3,7,South,not employed,FALSE,metropolitan
+20120908121201,2012,41,female,white,150000,TRUE,Bachelors,TRUE,1,3,West,employed,FALSE,metropolitan
+20120908121213,2012,69,female,white,30000,FALSE,Did not graduate from HS,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20120908121217,2012,35,male,white,50000,FALSE,Some college,TRUE,2,4,Midwest,"NA",FALSE,metropolitan
+20120908121230,2012,64,female,white,100000,TRUE,Some college,FALSE,0,0,Northeast,not employed,FALSE,non-metropolitan
+20120908121245,2012,46,male,white,20000,FALSE,HS,FALSE,0,0,Midwest,"NA",TRUE,metropolitan
+20120908121247,2012,65,male,white,40000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120908121251,2012,58,female,white,100000,TRUE,HS,FALSE,0,0,Midwest,employed,FALSE,non-metropolitan
+20120908121258,2012,45,female,white,150000,TRUE,Bachelors,TRUE,1,7,Midwest,employed,FALSE,metropolitan
+20120908121264,2012,78,female,white,5000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120908121269,2012,37,male,white,40000,FALSE,Some college,TRUE,1,12,South,"NA",FALSE,non-metropolitan
+20120908121288,2012,59,male,white,25000,TRUE,HS,FALSE,0,0,Northeast,employed,FALSE,non-metropolitan
+20120908121325,2012,28,female,white,150000,FALSE,Some college,TRUE,3,0,South,"NA",TRUE,metropolitan
+20120908121331,2012,50,male,white,100000,TRUE,Bachelors,TRUE,2,14,Northeast,employed,FALSE,metropolitan
+20120908121357,2012,16,male,white,100000,FALSE,Did not graduate from HS,TRUE,4,6,Midwest,"NA",TRUE,non-metropolitan
+20120908121375,2012,35,female,white,150000,TRUE,Bachelors,TRUE,2,0,West,employed,FALSE,metropolitan
+20120908121389,2012,25,female,white,30000,TRUE,Some college,TRUE,1,3,Midwest,not employed,FALSE,metropolitan
+20120908121419,2012,55,female,white,100000,TRUE,Masters,FALSE,0,0,South,employed,FALSE,non-metropolitan
+20120908121448,2012,42,female,white,150000,TRUE,Masters,TRUE,1,5,Midwest,employed,FALSE,metropolitan
+20120908121475,2012,36,female,white,100000,TRUE,Bachelors,TRUE,1,1,South,employed,FALSE,metropolitan
+20120908121485,2012,31,female,white,15000,TRUE,HS,TRUE,2,3,West,employed,FALSE,metropolitan
+20120908121502,2012,29,male,black,50000,TRUE,Some college,TRUE,3,1,Northeast,employed,FALSE,metropolitan
+20120908121516,2012,49,male,black,40000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120908121539,2012,36,male,white,35000,TRUE,HS,TRUE,1,7,West,not employed,FALSE,metropolitan
+20120908121541,2012,39,female,white,40000,FALSE,Some college,TRUE,1,15,Midwest,"NA",FALSE,metropolitan
+20120908121545,2012,43,female,white,100000,TRUE,Bachelors,TRUE,1,12,West,employed,FALSE,metropolitan
+20120908121572,2012,23,male,white,15000,TRUE,Some college,TRUE,1,1,Northeast,employed,FALSE,non-metropolitan
+20120908121573,2012,49,female,asian,100000,TRUE,Masters,TRUE,1,16,South,not employed,FALSE,metropolitan
+20120908121581,2012,15,female,white,150000,FALSE,Did not graduate from HS,TRUE,1,15,Midwest,"NA",TRUE,metropolitan
+20120908121599,2012,70,female,white,12500,FALSE,Did not graduate from HS,FALSE,0,0,West,"NA",FALSE,non-metropolitan
+20120908121617,2012,59,female,white,100000,TRUE,Some college,FALSE,0,0,West,employed,FALSE,metropolitan
+20120908121619,2012,41,male,white,150000,TRUE,Bachelors,TRUE,2,6,Midwest,employed,TRUE,metropolitan
+20120908121644,2012,39,female,white,150000,TRUE,Bachelors,TRUE,3,9,Midwest,employed,FALSE,metropolitan
+20120908121647,2012,70,male,white,15000,FALSE,HS,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120908121654,2012,54,male,white,60000,TRUE,Did not graduate from HS,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20120908121659,2012,41,female,white,100000,TRUE,Bachelors,TRUE,2,5,South,employed,FALSE,metropolitan
+20120908121759,2012,77,female,white,12500,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20120908121769,2012,19,male,white,60000,FALSE,Some college,FALSE,0,0,South,"NA",TRUE,metropolitan
+20120908121782,2012,29,female,white,40000,TRUE,Bachelors,TRUE,1,5,Midwest,employed,FALSE,non-metropolitan
+20120908121810,2012,76,male,white,100000,TRUE,Masters,FALSE,0,0,South,employed,FALSE,non-metropolitan
+20120908121823,2012,66,female,white,12500,FALSE,HS,FALSE,0,0,Northeast,"NA",FALSE,non-metropolitan
+20120908121828,2012,16,male,asian,10000,FALSE,Did not graduate from HS,TRUE,2,16,West,"NA",TRUE,metropolitan
+20120908121850,2012,33,female,white,150000,TRUE,Some college,TRUE,4,5,Midwest,employed,FALSE,metropolitan
+20120908121863,2012,38,female,white,40000,FALSE,Some college,TRUE,2,4,West,"NA",TRUE,metropolitan
+20120908121873,2012,57,female,white,100000,TRUE,Bachelors,FALSE,0,0,South,employed,FALSE,non-metropolitan
+20120908121882,2012,33,female,black,10000,FALSE,HS,TRUE,1,8,South,"NA",FALSE,non-metropolitan
+20120908121885,2012,33,male,white,100000,TRUE,Doctoral,TRUE,3,1,Midwest,employed,FALSE,metropolitan
+20120908121894,2012,31,female,black,10000,FALSE,HS,TRUE,5,0,South,"NA",FALSE,metropolitan
+20120908121909,2012,33,female,black,30000,FALSE,Some college,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120908121923,2012,68,male,black,25000,FALSE,Some college,TRUE,2,5,South,"NA",FALSE,metropolitan
+20120908121944,2012,67,female,white,100000,TRUE,HS,TRUE,2,5,Northeast,not employed,FALSE,metropolitan
+20120908121985,2012,43,male,white,150000,TRUE,Masters,TRUE,2,1,West,not employed,FALSE,metropolitan
+20120908122006,2012,16,male,white,150000,FALSE,Did not graduate from HS,TRUE,2,14,Northeast,"NA",TRUE,metropolitan
+20120908122019,2012,59,female,white,7500,FALSE,HS,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120908122030,2012,39,male,white,40000,TRUE,Some college,TRUE,1,10,Midwest,employed,FALSE,metropolitan
+20120908122033,2012,22,female,white,25000,TRUE,Some college,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20120908122048,2012,45,female,white,150000,TRUE,Masters,TRUE,2,14,South,employed,FALSE,metropolitan
+20120908122069,2012,15,female,white,150000,FALSE,Did not graduate from HS,TRUE,4,8,West,"NA",TRUE,metropolitan
+20120908122108,2012,39,male,white,7500,FALSE,HS,TRUE,1,16,Midwest,"NA",FALSE,non-metropolitan
+20120908122167,2012,18,female,white,30000,FALSE,Did not graduate from HS,TRUE,1,15,South,"NA",TRUE,metropolitan
+20120908122178,2012,47,female,other,7500,FALSE,Did not graduate from HS,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120908122185,2012,72,male,white,35000,TRUE,Some college,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20120908122194,2012,39,female,white,15000,FALSE,Did not graduate from HS,TRUE,3,10,West,"NA",FALSE,non-metropolitan
+20120908122211,2012,53,male,black,60000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120908122237,2012,46,male,white,20000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120908122271,2012,70,female,white,60000,TRUE,Some college,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20120908122295,2012,15,male,white,150000,FALSE,Did not graduate from HS,TRUE,4,0,West,"NA",TRUE,metropolitan
+20120908122297,2012,34,male,white,15000,FALSE,Some college,TRUE,1,10,South,"NA",FALSE,non-metropolitan
+20120908122323,2012,56,female,white,35000,TRUE,Some college,TRUE,1,11,Midwest,not employed,FALSE,non-metropolitan
+20120908122326,2012,29,female,asian,60000,TRUE,Bachelors,TRUE,1,0,West,employed,FALSE,metropolitan
+20120908122337,2012,69,male,white,40000,TRUE,Did not graduate from HS,TRUE,1,7,Northeast,employed,FALSE,metropolitan
+20120908122339,2012,36,female,white,5000,FALSE,HS,TRUE,1,1,South,"NA",FALSE,metropolitan
+20120908122376,2012,61,female,white,5000,FALSE,HS,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120908122397,2012,80,male,white,60000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120908122405,2012,64,male,white,60000,FALSE,Bachelors,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120908122415,2012,43,male,white,100000,TRUE,Bachelors,TRUE,1,12,Midwest,employed,FALSE,metropolitan
+20120908122423,2012,15,male,white,150000,FALSE,Did not graduate from HS,TRUE,3,15,Northeast,"NA",TRUE,metropolitan
+20120909120028,2012,34,male,asian,100000,TRUE,Bachelors,FALSE,0,0,South,not employed,FALSE,metropolitan
+20120909120049,2012,24,male,asian,0,TRUE,Did not graduate from HS,TRUE,4,1,West,not employed,FALSE,metropolitan
+20120909120127,2012,50,male,white,50000,FALSE,HS,TRUE,1,16,South,"NA",FALSE,metropolitan
+20120909120160,2012,47,female,black,15000,FALSE,Did not graduate from HS,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120909120568,2012,80,male,white,10000,TRUE,HS,FALSE,0,0,Midwest,not employed,FALSE,metropolitan
+20120909120635,2012,26,female,black,0,FALSE,Bachelors,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120909120787,2012,57,female,white,50000,TRUE,Some college,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20120909120882,2012,67,male,white,15000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120909120964,2012,85,female,white,40000,FALSE,Bachelors,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20120909120976,2012,31,male,white,50000,TRUE,Did not graduate from HS,TRUE,2,3,South,employed,FALSE,metropolitan
+20120909121089,2012,51,male,white,60000,TRUE,Some college,FALSE,0,0,Midwest,employed,FALSE,non-metropolitan
+20120909121132,2012,56,male,white,25000,FALSE,Bachelors,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120909121187,2012,59,female,white,7500,FALSE,HS,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120909121190,2012,37,female,white,150000,FALSE,Bachelors,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120909121227,2012,80,female,white,60000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20120909121246,2012,74,female,white,12500,TRUE,HS,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20120909121322,2012,58,male,white,75000,TRUE,Bachelors,TRUE,1,3,Midwest,employed,FALSE,metropolitan
+20120909121340,2012,85,male,other,50000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan
+20120909121451,2012,51,male,white,40000,TRUE,HS,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20120909121705,2012,46,male,white,100000,TRUE,HS,FALSE,0,0,Midwest,employed,TRUE,metropolitan
+20120909121801,2012,25,male,white,150000,FALSE,Bachelors,FALSE,0,0,West,"NA",TRUE,metropolitan
+20120909121877,2012,20,male,black,35000,FALSE,Some college,TRUE,2,8,Midwest,"NA",TRUE,metropolitan
+20120909122194,2012,47,female,other,30000,TRUE,Did not graduate from HS,FALSE,0,0,Midwest,employed,FALSE,non-metropolitan
+20120909122208,2012,85,female,white,0,TRUE,Some college,FALSE,0,0,Midwest,not employed,FALSE,metropolitan
+20120909122231,2012,16,female,white,150000,FALSE,Did not graduate from HS,TRUE,5,9,South,"NA",TRUE,metropolitan
+20120909122240,2012,63,male,white,40000,TRUE,Some college,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20120909122327,2012,27,male,white,35000,FALSE,Masters,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20120909122359,2012,33,male,white,35000,TRUE,Some college,TRUE,3,1,West,employed,FALSE,metropolitan
+20120909122372,2012,31,male,white,30000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121007120773,2012,28,female,white,30000,TRUE,HS,TRUE,1,2,West,employed,FALSE,metropolitan
+20121007120951,2012,80,male,white,60000,TRUE,Doctoral,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20121007121950,2012,33,male,white,20000,FALSE,HS,TRUE,1,2,Northeast,"NA",FALSE,metropolitan
+20121007122261,2012,37,male,white,25000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20121008120637,2012,42,male,white,50000,TRUE,HS,FALSE,0,0,West,employed,FALSE,metropolitan
+20121008120691,2012,67,male,black,20000,TRUE,Did not graduate from HS,FALSE,0,0,Midwest,not employed,FALSE,metropolitan
+20121008120781,2012,70,female,black,12500,TRUE,Did not graduate from HS,FALSE,0,0,South,not employed,FALSE,metropolitan
+20121008120787,2012,75,female,white,20000,TRUE,Some college,FALSE,0,0,West,not employed,FALSE,metropolitan
+20121008120789,2012,68,male,black,5000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20121008120857,2012,28,female,black,25000,FALSE,HS,TRUE,1,3,Midwest,"NA",FALSE,metropolitan
+20121008120901,2012,37,male,white,100000,TRUE,Bachelors,TRUE,1,2,West,not employed,FALSE,metropolitan
+20121008120994,2012,59,male,white,75000,TRUE,HS,FALSE,0,0,West,employed,FALSE,metropolitan
+20121008121003,2012,35,male,black,15000,TRUE,Some college,TRUE,3,8,Midwest,employed,FALSE,metropolitan
+20121008121023,2012,42,male,black,75000,FALSE,HS,TRUE,1,14,Northeast,"NA",FALSE,metropolitan
+20121008121307,2012,45,female,white,7500,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121008121320,2012,36,female,white,75000,TRUE,HS,TRUE,1,10,South,employed,FALSE,metropolitan
+20121008121324,2012,33,male,white,40000,TRUE,Did not graduate from HS,TRUE,2,0,South,employed,FALSE,metropolitan
+20121008121351,2012,58,female,white,20000,TRUE,HS,FALSE,0,0,Northeast,employed,FALSE,non-metropolitan
+20121008121432,2012,27,female,white,20000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121008121469,2012,44,male,white,150000,TRUE,Masters,TRUE,2,1,Northeast,not employed,FALSE,metropolitan
+20121008121510,2012,24,male,white,30000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121008121529,2012,58,female,white,75000,TRUE,HS,TRUE,2,7,South,employed,FALSE,metropolitan
+20121008121652,2012,62,male,white,60000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121008121657,2012,61,female,white,100000,FALSE,Some college,FALSE,0,0,West,"NA",TRUE,metropolitan
+20121008121711,2012,48,male,white,75000,TRUE,HS,TRUE,1,12,West,not employed,FALSE,metropolitan
+20121008121748,2012,26,female,white,0,FALSE,Did not graduate from HS,TRUE,2,6,Northeast,"NA",FALSE,metropolitan
+20121008121801,2012,42,male,asian,0,TRUE,Bachelors,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20121008121826,2012,48,male,white,75000,FALSE,Some college,TRUE,1,9,Midwest,"NA",FALSE,non-metropolitan
+20121008121836,2012,56,male,white,30000,TRUE,HS,TRUE,1,8,South,not employed,FALSE,non-metropolitan
+20121008121921,2012,36,female,other,20000,FALSE,HS,TRUE,3,5,West,"NA",FALSE,non-metropolitan
+20121008121964,2012,85,female,white,50000,FALSE,HS,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121008122138,2012,37,female,white,150000,TRUE,Bachelors,TRUE,2,2,South,employed,FALSE,metropolitan
+20121008122212,2012,54,female,white,50000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121008122277,2012,35,male,white,50000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121008122279,2012,43,female,asian,150000,TRUE,Doctoral,TRUE,3,2,South,employed,FALSE,metropolitan
+20121008122304,2012,43,female,white,50000,TRUE,Bachelors,TRUE,1,7,Midwest,not employed,FALSE,metropolitan
+20121008122353,2012,29,female,white,100000,FALSE,Masters,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121008122367,2012,46,male,black,40000,FALSE,Some college,FALSE,0,0,South,"NA",TRUE,metropolitan
+20121008122408,2012,64,female,white,60000,FALSE,Bachelors,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20121008122422,2012,41,female,white,60000,FALSE,Bachelors,TRUE,1,13,South,"NA",FALSE,metropolitan
+20121008122459,2012,32,male,white,150000,TRUE,Bachelors,TRUE,2,5,Midwest,employed,FALSE,metropolitan
+20121009120019,2012,27,female,white,12500,FALSE,HS,TRUE,2,4,Midwest,"NA",TRUE,non-metropolitan
+20121009120157,2012,47,female,white,0,FALSE,HS,TRUE,1,15,South,"NA",FALSE,metropolitan
+20121009120510,2012,66,female,white,30000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121009120515,2012,80,male,white,20000,TRUE,Some college,FALSE,0,0,South,not employed,FALSE,metropolitan
+20121009120525,2012,68,male,white,60000,TRUE,Bachelors,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20121009120526,2012,47,male,white,10000,FALSE,Masters,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121009120528,2012,55,female,white,30000,TRUE,Some college,FALSE,0,0,West,employed,FALSE,non-metropolitan
+20121009120551,2012,22,female,white,25000,FALSE,HS,TRUE,7,1,West,"NA",TRUE,metropolitan
+20121009120555,2012,73,female,white,12500,TRUE,Bachelors,FALSE,0,0,Midwest,not employed,FALSE,non-metropolitan
+20121009120573,2012,85,female,white,25000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121009120580,2012,60,male,black,40000,TRUE,Masters,FALSE,0,0,South,not employed,FALSE,metropolitan
+20121009120583,2012,85,female,white,40000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121009120674,2012,55,female,white,15000,TRUE,Did not graduate from HS,TRUE,1,15,South,not employed,FALSE,metropolitan
+20121009120677,2012,31,female,white,35000,TRUE,HS,FALSE,0,0,West,employed,FALSE,metropolitan
+20121009120678,2012,80,male,white,40000,TRUE,HS,FALSE,0,0,South,not employed,FALSE,metropolitan
+20121009120688,2012,41,female,white,0,TRUE,HS,TRUE,2,3,Northeast,employed,FALSE,metropolitan
+20121009120691,2012,36,male,white,25000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121009120703,2012,35,female,black,40000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121009120710,2012,29,female,white,60000,FALSE,Masters,TRUE,1,4,Midwest,"NA",FALSE,non-metropolitan
+20121009120728,2012,49,female,white,50000,TRUE,Bachelors,TRUE,1,14,Midwest,not employed,FALSE,metropolitan
+20121009120761,2012,78,female,white,100000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121009120779,2012,32,male,white,40000,FALSE,HS,TRUE,2,5,South,"NA",FALSE,metropolitan
+20121009120810,2012,57,female,white,100000,TRUE,Bachelors,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20121009120820,2012,68,female,black,25000,FALSE,Bachelors,TRUE,1,3,South,"NA",FALSE,metropolitan
+20121009120834,2012,54,male,white,60000,TRUE,Some college,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20121009120866,2012,57,female,asian,35000,TRUE,HS,FALSE,0,0,West,not employed,FALSE,metropolitan
+20121009120868,2012,71,female,white,30000,TRUE,Some college,FALSE,0,0,West,not employed,FALSE,metropolitan
+20121009120905,2012,70,female,white,75000,TRUE,Masters,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20121009120914,2012,42,male,white,60000,TRUE,Bachelors,FALSE,0,0,West,employed,FALSE,metropolitan
+20121009120928,2012,38,female,black,0,TRUE,HS,TRUE,2,5,South,not employed,FALSE,metropolitan
+20121009120930,2012,38,male,white,60000,FALSE,Masters,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20121009120955,2012,47,male,white,30000,TRUE,Bachelors,TRUE,1,15,Northeast,not employed,FALSE,metropolitan
+20121009120974,2012,80,male,white,60000,FALSE,HS,TRUE,1,14,Northeast,"NA",FALSE,non-metropolitan
+20121009121025,2012,56,female,white,50000,TRUE,Masters,TRUE,1,17,Midwest,employed,FALSE,metropolitan
+20121009121056,2012,16,male,white,100000,FALSE,Did not graduate from HS,TRUE,2,14,South,"NA",TRUE,metropolitan
+20121009121076,2012,30,male,white,75000,TRUE,Bachelors,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20121009121090,2012,49,male,white,75000,TRUE,Some college,TRUE,1,17,West,employed,FALSE,non-metropolitan
+20121009121095,2012,43,female,white,0,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121009121122,2012,75,female,white,25000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121009121124,2012,65,male,white,75000,FALSE,Some college,TRUE,1,17,West,"NA",FALSE,metropolitan
+20121009121135,2012,49,female,white,20000,FALSE,HS,FALSE,0,0,South,"NA",TRUE,metropolitan
+20121009121176,2012,19,female,black,40000,FALSE,Some college,TRUE,1,0,Northeast,"NA",TRUE,metropolitan
+20121009121193,2012,60,female,white,60000,TRUE,Bachelors,FALSE,0,0,West,not employed,FALSE,metropolitan
+20121009121198,2012,25,female,white,75000,TRUE,Some college,TRUE,1,3,South,employed,FALSE,metropolitan
+20121009121228,2012,33,male,white,100000,FALSE,Doctoral,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20121009121240,2012,58,male,white,50000,TRUE,Bachelors,FALSE,0,0,South,employed,FALSE,non-metropolitan
+20121009121241,2012,44,male,white,15000,FALSE,HS,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121009121255,2012,35,male,white,15000,TRUE,HS,TRUE,1,12,South,employed,FALSE,metropolitan
+20121009121308,2012,67,female,white,50000,TRUE,Some college,FALSE,0,0,South,not employed,FALSE,metropolitan
+20121009121312,2012,40,female,white,10000,TRUE,Bachelors,TRUE,2,4,South,not employed,FALSE,non-metropolitan
+20121009121314,2012,56,male,white,35000,TRUE,HS,FALSE,0,0,West,employed,FALSE,non-metropolitan
+20121009121318,2012,44,female,white,75000,TRUE,HS,TRUE,2,13,South,employed,FALSE,non-metropolitan
+20121009121328,2012,46,male,white,150000,TRUE,Masters,TRUE,3,12,Midwest,employed,FALSE,metropolitan
+20121009121334,2012,77,female,white,40000,TRUE,HS,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20121009121336,2012,33,male,white,20000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121009121351,2012,41,female,white,40000,TRUE,Bachelors,TRUE,3,9,Northeast,employed,FALSE,metropolitan
+20121009121362,2012,34,male,white,25000,TRUE,Some college,TRUE,3,0,Midwest,employed,FALSE,non-metropolitan
+20121009121412,2012,40,female,white,100000,TRUE,Bachelors,TRUE,2,6,Midwest,employed,FALSE,metropolitan
+20121009121436,2012,85,female,white,30000,FALSE,HS,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121009121439,2012,27,male,white,50000,TRUE,HS,TRUE,2,0,Northeast,employed,FALSE,non-metropolitan
+20121009121441,2012,39,female,white,75000,TRUE,HS,TRUE,3,0,South,employed,FALSE,metropolitan
+20121009121471,2012,27,female,white,100000,TRUE,Bachelors,TRUE,1,0,South,employed,FALSE,metropolitan
+20121009121484,2012,26,female,black,25000,FALSE,Masters,FALSE,0,0,Midwest,"NA",TRUE,metropolitan
+20121009121490,2012,53,male,white,100000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121009121513,2012,51,male,white,40000,TRUE,Masters,FALSE,0,0,South,employed,FALSE,metropolitan
+20121009121535,2012,25,male,asian,35000,FALSE,Masters,TRUE,1,16,Northeast,"NA",TRUE,metropolitan
+20121009121557,2012,35,male,black,7500,FALSE,Did not graduate from HS,TRUE,1,9,South,"NA",FALSE,non-metropolitan
+20121009121561,2012,18,female,white,50000,FALSE,HS,TRUE,1,1,South,"NA",TRUE,metropolitan
+20121009121570,2012,25,female,white,100000,FALSE,Masters,TRUE,1,16,Northeast,"NA",TRUE,metropolitan
+20121009121572,2012,29,female,black,40000,FALSE,HS,TRUE,1,8,Northeast,"NA",FALSE,metropolitan
+20121009121589,2012,54,male,white,50000,TRUE,HS,TRUE,1,1,South,employed,FALSE,metropolitan
+20121009121591,2012,41,male,black,20000,TRUE,Did not graduate from HS,TRUE,1,14,South,not employed,FALSE,metropolitan
+20121009121600,2012,48,male,black,75000,TRUE,Bachelors,FALSE,0,0,South,employed,FALSE,metropolitan
+20121009121607,2012,32,male,white,75000,TRUE,Bachelors,TRUE,3,1,Midwest,employed,FALSE,metropolitan
+20121009121619,2012,51,male,white,35000,FALSE,HS,FALSE,0,0,Northeast,"NA",FALSE,non-metropolitan
+20121009121622,2012,51,male,white,75000,TRUE,Bachelors,FALSE,0,0,South,employed,FALSE,metropolitan
+20121009121635,2012,78,male,black,60000,FALSE,Some college,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121009121640,2012,79,male,white,30000,TRUE,Bachelors,FALSE,0,0,South,not employed,FALSE,metropolitan
+20121009121641,2012,85,female,white,10000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,non-metropolitan
+20121009121668,2012,60,female,white,150000,TRUE,Some college,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20121009121672,2012,44,male,black,0,TRUE,Some college,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20121009121685,2012,67,female,white,7500,FALSE,HS,FALSE,0,0,Northeast,"NA",FALSE,non-metropolitan
+20121009121690,2012,33,female,white,100000,FALSE,Bachelors,TRUE,1,12,South,"NA",FALSE,non-metropolitan
+20121009121737,2012,55,female,white,40000,FALSE,Some college,TRUE,1,15,Midwest,"NA",FALSE,metropolitan
+20121009121781,2012,39,male,white,150000,TRUE,Bachelors,TRUE,1,4,Northeast,employed,FALSE,metropolitan
+20121009121783,2012,57,male,white,150000,TRUE,Some college,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20121009121788,2012,44,female,black,15000,TRUE,Some college,TRUE,3,9,South,employed,FALSE,metropolitan
+20121009121797,2012,37,female,white,100000,TRUE,HS,TRUE,3,6,South,employed,FALSE,non-metropolitan
+20121009121800,2012,49,female,white,40000,FALSE,Bachelors,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121009121808,2012,16,male,white,20000,FALSE,Did not graduate from HS,TRUE,2,14,Midwest,"NA",TRUE,metropolitan
+20121009121838,2012,60,male,white,7500,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121009121860,2012,37,female,white,150000,TRUE,Masters,TRUE,1,3,West,employed,FALSE,metropolitan
+20121009121862,2012,69,female,white,75000,TRUE,Masters,FALSE,0,0,West,employed,FALSE,metropolitan
+20121009121889,2012,71,female,white,15000,FALSE,HS,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20121009121909,2012,45,male,white,100000,TRUE,Bachelors,TRUE,2,9,Northeast,employed,FALSE,metropolitan
+20121009121919,2012,63,male,white,25000,FALSE,Bachelors,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20121009121947,2012,26,female,white,60000,TRUE,Bachelors,FALSE,0,0,South,employed,FALSE,metropolitan
+20121009121950,2012,65,female,black,150000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121009121960,2012,39,female,asian,25000,TRUE,HS,TRUE,2,7,West,not employed,TRUE,metropolitan
+20121009121970,2012,78,female,white,100000,TRUE,Masters,FALSE,0,0,South,not employed,FALSE,metropolitan
+20121009122004,2012,54,female,white,15000,TRUE,Some college,TRUE,1,8,South,not employed,TRUE,metropolitan
+20121009122023,2012,18,female,white,15000,FALSE,HS,TRUE,1,15,South,"NA",TRUE,metropolitan
+20121009122031,2012,43,female,white,12500,FALSE,Masters,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121009122032,2012,56,male,white,100000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20121009122055,2012,39,female,white,100000,TRUE,Some college,TRUE,2,8,South,employed,FALSE,metropolitan
+20121009122072,2012,29,female,white,150000,TRUE,Bachelors,TRUE,1,0,West,employed,FALSE,metropolitan
+20121009122078,2012,71,female,black,40000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121009122083,2012,56,female,white,15000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121009122115,2012,41,female,white,40000,TRUE,Bachelors,TRUE,1,9,South,employed,TRUE,metropolitan
+20121009122119,2012,71,female,white,150000,TRUE,Bachelors,FALSE,0,0,West,not employed,TRUE,metropolitan
+20121009122180,2012,27,female,black,50000,TRUE,Masters,TRUE,1,1,South,employed,FALSE,metropolitan
+20121009122201,2012,72,female,white,20000,FALSE,Bachelors,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121009122205,2012,19,female,black,0,FALSE,HS,TRUE,2,0,South,"NA",TRUE,metropolitan
+20121009122214,2012,51,female,black,30000,TRUE,Did not graduate from HS,FALSE,0,0,South,not employed,FALSE,non-metropolitan
+20121009122233,2012,58,male,black,60000,TRUE,Bachelors,FALSE,0,0,South,employed,TRUE,metropolitan
+20121009122251,2012,78,female,white,35000,TRUE,HS,FALSE,0,0,Midwest,not employed,FALSE,non-metropolitan
+20121009122292,2012,38,female,white,60000,TRUE,HS,TRUE,6,3,West,employed,FALSE,metropolitan
+20121009122300,2012,62,female,black,10000,FALSE,HS,TRUE,3,1,West,"NA",FALSE,metropolitan
+20121009122305,2012,74,female,white,50000,TRUE,Some college,FALSE,0,0,Midwest,not employed,FALSE,non-metropolitan
+20121009122322,2012,59,female,white,35000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121009122345,2012,32,female,white,0,FALSE,HS,TRUE,2,3,South,"NA",FALSE,non-metropolitan
+20121009122369,2012,40,female,white,100000,FALSE,Masters,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121009122395,2012,80,female,white,50000,TRUE,Bachelors,FALSE,0,0,South,not employed,FALSE,metropolitan
+20121009122418,2012,53,female,white,15000,TRUE,Did not graduate from HS,FALSE,0,0,South,not employed,FALSE,non-metropolitan
+20121009122430,2012,31,male,white,100000,TRUE,Some college,TRUE,3,1,South,not employed,FALSE,metropolitan
+20121009122446,2012,56,female,black,100000,TRUE,Bachelors,FALSE,0,0,South,employed,FALSE,metropolitan
+20121009122453,2012,51,female,white,7500,FALSE,HS,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121009122470,2012,70,female,black,15000,FALSE,HS,TRUE,3,2,South,"NA",FALSE,non-metropolitan
+20121009122510,2012,56,female,white,100000,TRUE,Doctoral,FALSE,0,0,West,not employed,FALSE,metropolitan
+20121010120013,2012,22,male,white,0,FALSE,Bachelors,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121010120617,2012,68,female,white,100000,TRUE,Bachelors,TRUE,1,17,West,not employed,FALSE,metropolitan
+20121010120635,2012,62,male,black,7500,FALSE,Did not graduate from HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121010120647,2012,66,female,white,150000,TRUE,HS,FALSE,0,0,West,not employed,FALSE,metropolitan
+20121010120816,2012,59,female,black,40000,FALSE,Bachelors,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121010120825,2012,62,male,white,25000,TRUE,Some college,FALSE,0,0,South,not employed,FALSE,metropolitan
+20121010120855,2012,62,female,white,150000,FALSE,Masters,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20121010120861,2012,43,female,black,7500,FALSE,Some college,TRUE,4,1,Midwest,"NA",FALSE,metropolitan
+20121010120867,2012,38,female,white,150000,TRUE,Bachelors,TRUE,1,7,West,employed,FALSE,metropolitan
+20121010120895,2012,27,male,white,75000,TRUE,Some college,FALSE,0,0,Midwest,not employed,FALSE,metropolitan
+20121010120967,2012,60,female,other,100000,FALSE,Masters,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20121010120970,2012,25,male,black,40000,TRUE,HS,FALSE,0,0,West,employed,FALSE,metropolitan
+20121010120996,2012,31,male,white,25000,TRUE,Some college,TRUE,1,2,Midwest,employed,FALSE,metropolitan
+20121010121013,2012,42,female,white,150000,TRUE,Bachelors,TRUE,2,10,West,employed,FALSE,metropolitan
+20121010121035,2012,54,female,white,50000,FALSE,HS,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20121010121037,2012,53,male,white,25000,TRUE,HS,TRUE,1,17,West,employed,TRUE,metropolitan
+20121010121047,2012,47,male,white,20000,FALSE,HS,TRUE,2,3,West,"NA",FALSE,metropolitan
+20121010121064,2012,37,male,white,30000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121010121136,2012,85,female,white,40000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,non-metropolitan
+20121010121203,2012,76,male,white,15000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20121010121243,2012,37,female,white,7500,TRUE,HS,FALSE,0,0,South,not employed,FALSE,non-metropolitan
+20121010121374,2012,63,female,white,25000,FALSE,Bachelors,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20121010121386,2012,52,male,white,75000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121010121458,2012,69,female,white,60000,TRUE,Some college,TRUE,1,15,South,not employed,FALSE,metropolitan
+20121010121477,2012,43,female,white,40000,FALSE,Bachelors,TRUE,2,10,Midwest,"NA",FALSE,metropolitan
+20121010121508,2012,32,male,white,25000,TRUE,Bachelors,TRUE,3,1,West,employed,FALSE,metropolitan
+20121010121559,2012,28,female,other,75000,FALSE,Bachelors,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121010121579,2012,40,female,white,35000,TRUE,HS,TRUE,2,5,South,employed,FALSE,non-metropolitan
+20121010121580,2012,49,female,white,100000,TRUE,HS,TRUE,8,2,Northeast,not employed,FALSE,metropolitan
+20121010121620,2012,64,male,white,50000,TRUE,Some college,FALSE,0,0,South,employed,FALSE,metropolitan
+20121010121638,2012,64,male,white,50000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20121010121666,2012,54,male,white,30000,TRUE,Bachelors,FALSE,0,0,South,not employed,FALSE,non-metropolitan
+20121010121722,2012,60,male,white,50000,FALSE,HS,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20121010121803,2012,41,female,white,30000,TRUE,Did not graduate from HS,TRUE,1,0,Midwest,not employed,FALSE,non-metropolitan
+20121010121810,2012,54,female,black,60000,TRUE,Some college,FALSE,0,0,South,not employed,TRUE,metropolitan
+20121010121862,2012,77,female,white,30000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121010121941,2012,77,male,white,12500,FALSE,HS,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20121010121976,2012,54,female,white,75000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121010122017,2012,41,male,black,75000,TRUE,Some college,TRUE,4,2,South,employed,FALSE,metropolitan
+20121010122058,2012,85,male,white,100000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20121010122089,2012,61,male,white,75000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20121010122201,2012,76,male,white,75000,TRUE,Bachelors,FALSE,0,0,West,not employed,FALSE,metropolitan
+20121010122206,2012,33,female,white,15000,TRUE,Did not graduate from HS,TRUE,2,3,Midwest,employed,FALSE,metropolitan
+20121010122213,2012,61,male,white,150000,TRUE,HS,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20121010122218,2012,66,female,white,15000,TRUE,Some college,FALSE,0,0,South,not employed,FALSE,metropolitan
+20121010122286,2012,60,female,white,75000,TRUE,Bachelors,FALSE,0,0,West,employed,FALSE,non-metropolitan
+20121010122329,2012,23,female,white,7500,FALSE,Some college,TRUE,3,1,Midwest,"NA",FALSE,metropolitan
+20121010122337,2012,74,male,white,25000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20121010122422,2012,47,male,black,75000,TRUE,Some college,FALSE,0,0,West,employed,FALSE,metropolitan
+20121010122450,2012,26,female,white,75000,TRUE,HS,TRUE,2,2,Northeast,not employed,FALSE,non-metropolitan
+20121010122467,2012,51,female,black,12500,TRUE,Did not graduate from HS,FALSE,0,0,Midwest,not employed,FALSE,metropolitan
+20121010122490,2012,50,male,white,60000,TRUE,Masters,FALSE,0,0,South,employed,FALSE,metropolitan
+20121010122501,2012,26,female,asian,40000,FALSE,HS,TRUE,4,2,West,"NA",FALSE,metropolitan
+20121108120673,2012,24,male,white,40000,TRUE,Some college,TRUE,1,2,Midwest,employed,FALSE,metropolitan
+20121108121039,2012,29,male,white,150000,TRUE,Bachelors,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20121108121623,2012,28,male,white,50000,TRUE,Bachelors,TRUE,1,1,South,employed,FALSE,metropolitan
+20121108122344,2012,25,female,asian,100000,FALSE,Bachelors,FALSE,0,0,West,"NA",TRUE,metropolitan
+20121109120617,2012,32,male,white,150000,TRUE,Bachelors,TRUE,2,0,Northeast,employed,FALSE,metropolitan
+20121109120623,2012,36,female,white,35000,FALSE,Bachelors,TRUE,2,7,South,"NA",FALSE,metropolitan
+20121109120692,2012,49,female,black,40000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20121109120802,2012,55,female,black,35000,TRUE,HS,TRUE,1,6,South,not employed,FALSE,metropolitan
+20121109120988,2012,29,female,white,60000,TRUE,HS,TRUE,1,3,South,not employed,FALSE,metropolitan
+20121109121007,2012,27,female,white,50000,TRUE,HS,TRUE,3,0,Midwest,employed,FALSE,non-metropolitan
+20121109121013,2012,54,male,black,7500,FALSE,Did not graduate from HS,TRUE,2,10,South,"NA",FALSE,metropolitan
+20121109121097,2012,61,male,white,75000,TRUE,HS,FALSE,0,0,South,employed,FALSE,metropolitan
+20121109121163,2012,43,male,black,40000,FALSE,Bachelors,TRUE,1,14,Midwest,"NA",FALSE,metropolitan
+20121109121231,2012,59,male,asian,20000,TRUE,Masters,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20121109121486,2012,47,female,black,20000,FALSE,HS,FALSE,0,0,South,"NA",TRUE,non-metropolitan
+20121109121651,2012,49,male,white,5000,FALSE,Did not graduate from HS,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121109121738,2012,16,male,white,150000,FALSE,Did not graduate from HS,TRUE,5,2,South,"NA",TRUE,metropolitan
+20121109121875,2012,46,male,white,25000,TRUE,HS,TRUE,5,0,Northeast,not employed,FALSE,non-metropolitan
+20121109121897,2012,43,female,white,100000,TRUE,Some college,TRUE,1,13,West,employed,FALSE,metropolitan
+20121109121902,2012,37,female,white,75000,TRUE,HS,FALSE,0,0,West,employed,FALSE,metropolitan
+20121109121915,2012,27,female,white,50000,TRUE,Some college,FALSE,0,0,West,employed,FALSE,metropolitan
+20121109122045,2012,38,female,white,30000,TRUE,HS,TRUE,3,1,Northeast,employed,FALSE,non-metropolitan
+20121109122121,2012,30,male,white,0,FALSE,HS,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121109122122,2012,63,male,white,150000,TRUE,Bachelors,FALSE,0,0,South,not employed,FALSE,metropolitan
+20121109122126,2012,45,female,black,0,FALSE,HS,TRUE,1,5,South,"NA",FALSE,metropolitan
+20121109122151,2012,24,female,white,15000,FALSE,Some college,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121109122223,2012,60,female,white,30000,FALSE,Bachelors,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121109122439,2012,34,female,white,60000,TRUE,Some college,TRUE,2,7,Midwest,not employed,FALSE,non-metropolitan
+20121109122452,2012,80,female,asian,60000,TRUE,HS,TRUE,1,14,South,employed,FALSE,metropolitan
+20121110120054,2012,60,female,black,10000,FALSE,Some college,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20121110120064,2012,27,male,black,12500,FALSE,Bachelors,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121110120072,2012,50,male,white,10000,FALSE,Did not graduate from HS,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20121110120074,2012,43,female,white,30000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121110120097,2012,15,male,white,100000,FALSE,Did not graduate from HS,TRUE,2,14,South,"NA",TRUE,metropolitan
+20121110120109,2012,60,female,black,20000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121110120152,2012,35,male,white,20000,FALSE,Did not graduate from HS,FALSE,0,0,Northeast,"NA",TRUE,metropolitan
+20121110120523,2012,65,male,white,7500,TRUE,Bachelors,FALSE,0,0,Midwest,not employed,FALSE,non-metropolitan
+20121110120548,2012,41,female,white,60000,TRUE,HS,TRUE,2,4,Northeast,not employed,FALSE,metropolitan
+20121110120551,2012,30,female,white,25000,TRUE,HS,TRUE,2,2,West,employed,FALSE,metropolitan
+20121110120568,2012,59,male,white,7500,FALSE,HS,FALSE,0,0,Northeast,"NA",FALSE,non-metropolitan
+20121110120600,2012,74,male,white,75000,FALSE,Bachelors,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121110120602,2012,72,male,other,25000,FALSE,HS,FALSE,0,0,West,"NA",FALSE,non-metropolitan
+20121110120627,2012,30,male,white,75000,TRUE,Some college,TRUE,1,17,Midwest,employed,FALSE,non-metropolitan
+20121110120661,2012,74,female,white,60000,TRUE,HS,FALSE,0,0,Northeast,not employed,FALSE,non-metropolitan
+20121110120663,2012,36,female,white,50000,TRUE,Masters,TRUE,1,2,South,employed,FALSE,metropolitan
+20121110120675,2012,29,male,white,100000,FALSE,Did not graduate from HS,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121110120684,2012,32,female,white,50000,TRUE,Some college,TRUE,2,6,South,employed,FALSE,metropolitan
+20121110120685,2012,78,female,white,35000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121110120690,2012,80,male,white,15000,FALSE,Bachelors,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121110120724,2012,19,female,black,100000,FALSE,HS,FALSE,0,0,West,"NA",TRUE,metropolitan
+20121110120730,2012,57,female,black,60000,FALSE,Bachelors,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121110120742,2012,70,female,black,20000,TRUE,Did not graduate from HS,FALSE,0,0,South,not employed,FALSE,metropolitan
+20121110120767,2012,63,female,white,40000,FALSE,Did not graduate from HS,TRUE,2,9,South,"NA",FALSE,non-metropolitan
+20121110120771,2012,40,female,white,100000,TRUE,Some college,TRUE,1,17,West,employed,FALSE,metropolitan
+20121110120779,2012,16,male,white,40000,FALSE,Did not graduate from HS,TRUE,2,15,Midwest,"NA",TRUE,metropolitan
+20121110120787,2012,60,female,white,50000,FALSE,Bachelors,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121110120802,2012,19,male,white,150000,FALSE,Some college,TRUE,3,15,Northeast,"NA",TRUE,metropolitan
+20121110120813,2012,69,female,white,100000,TRUE,Some college,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20121110120823,2012,29,male,black,60000,FALSE,Some college,TRUE,2,6,South,"NA",TRUE,metropolitan
+20121110120847,2012,37,female,white,10000,TRUE,HS,TRUE,1,6,South,employed,FALSE,metropolitan
+20121110120848,2012,70,female,black,10000,FALSE,Did not graduate from HS,TRUE,1,16,South,"NA",FALSE,non-metropolitan
+20121110120852,2012,19,male,white,75000,FALSE,Did not graduate from HS,TRUE,1,13,South,"NA",TRUE,metropolitan
+20121110120888,2012,22,female,white,25000,FALSE,Some college,TRUE,1,13,West,"NA",TRUE,metropolitan
+20121110120932,2012,51,male,black,30000,TRUE,HS,TRUE,2,2,South,employed,FALSE,metropolitan
+20121110120961,2012,59,male,white,60000,TRUE,Some college,FALSE,0,0,South,not employed,FALSE,metropolitan
+20121110120993,2012,80,female,white,20000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121110121016,2012,85,female,white,10000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121110121024,2012,41,female,white,75000,TRUE,Some college,TRUE,3,14,Midwest,employed,FALSE,non-metropolitan
+20121110121027,2012,48,female,white,75000,TRUE,Bachelors,TRUE,1,12,West,not employed,FALSE,metropolitan
+20121110121038,2012,26,male,white,40000,TRUE,Some college,TRUE,1,5,Midwest,employed,FALSE,metropolitan
+20121110121042,2012,85,female,white,7500,FALSE,Did not graduate from HS,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20121110121062,2012,40,male,black,10000,TRUE,HS,FALSE,0,0,Midwest,not employed,FALSE,metropolitan
+20121110121090,2012,40,female,white,50000,FALSE,Masters,TRUE,2,8,Northeast,"NA",FALSE,non-metropolitan
+20121110121129,2012,68,female,white,20000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121110121150,2012,32,female,white,0,TRUE,Some college,TRUE,3,0,Midwest,employed,FALSE,metropolitan
+20121110121193,2012,74,female,white,10000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121110121206,2012,41,male,white,50000,TRUE,HS,TRUE,2,1,Midwest,employed,FALSE,metropolitan
+20121110121234,2012,53,male,white,75000,TRUE,Bachelors,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20121110121275,2012,19,male,white,50000,FALSE,Some college,TRUE,1,1,Northeast,"NA",TRUE,metropolitan
+20121110121286,2012,37,male,white,100000,TRUE,Masters,TRUE,2,2,Northeast,employed,FALSE,metropolitan
+20121110121317,2012,40,male,white,150000,TRUE,Doctoral,TRUE,2,1,West,employed,FALSE,metropolitan
+20121110121323,2012,50,female,white,50000,FALSE,Masters,TRUE,1,5,South,"NA",FALSE,metropolitan
+20121110121341,2012,45,female,white,75000,TRUE,Some college,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20121110121354,2012,77,male,white,15000,TRUE,Some college,FALSE,0,0,Midwest,not employed,FALSE,metropolitan
+20121110121361,2012,45,male,white,150000,TRUE,Bachelors,TRUE,5,2,West,not employed,FALSE,non-metropolitan
+20121110121380,2012,32,male,white,40000,TRUE,Bachelors,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20121110121383,2012,37,female,white,0,FALSE,Some college,TRUE,1,5,West,"NA",FALSE,metropolitan
+20121110121413,2012,59,female,white,15000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121110121417,2012,45,male,white,60000,TRUE,Some college,TRUE,1,15,West,not employed,FALSE,metropolitan
+20121110121425,2012,65,male,white,40000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,non-metropolitan
+20121110121441,2012,32,female,white,10000,FALSE,Bachelors,TRUE,2,11,South,"NA",FALSE,metropolitan
+20121110121471,2012,33,female,black,100000,TRUE,Bachelors,FALSE,0,0,South,employed,FALSE,non-metropolitan
+20121110121472,2012,54,male,black,40000,FALSE,Bachelors,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20121110121473,2012,31,male,white,150000,TRUE,Bachelors,TRUE,1,0,Northeast,not employed,FALSE,metropolitan
+20121110121479,2012,35,male,white,20000,TRUE,HS,TRUE,2,1,South,not employed,FALSE,metropolitan
+20121110121483,2012,36,female,white,75000,FALSE,Bachelors,TRUE,3,7,Midwest,"NA",FALSE,metropolitan
+20121110121490,2012,24,female,white,50000,TRUE,Some college,TRUE,1,2,South,employed,FALSE,metropolitan
+20121110121519,2012,53,female,black,50000,FALSE,Some college,FALSE,0,0,Midwest,"NA",TRUE,metropolitan
+20121110121525,2012,53,male,black,30000,FALSE,Did not graduate from HS,FALSE,0,0,West,"NA",TRUE,metropolitan
+20121110121535,2012,53,female,white,60000,TRUE,HS,FALSE,0,0,West,employed,FALSE,non-metropolitan
+20121110121554,2012,62,female,black,60000,TRUE,Some college,FALSE,0,0,South,not employed,FALSE,metropolitan
+20121110121605,2012,49,male,black,10000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121110121634,2012,80,male,white,20000,FALSE,HS,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20121110121637,2012,61,male,white,60000,TRUE,Some college,FALSE,0,0,South,employed,FALSE,metropolitan
+20121110121644,2012,69,female,white,40000,FALSE,Did not graduate from HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121110121655,2012,64,female,white,20000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121110121658,2012,28,male,other,75000,TRUE,Bachelors,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20121110121670,2012,69,female,white,25000,FALSE,Some college,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20121110121698,2012,77,female,white,12500,FALSE,Did not graduate from HS,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20121110121702,2012,73,female,black,10000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121110121718,2012,51,female,white,12500,TRUE,Did not graduate from HS,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20121110121719,2012,52,female,white,150000,TRUE,Doctoral,TRUE,2,10,Northeast,employed,FALSE,metropolitan
+20121110121724,2012,49,male,white,50000,FALSE,Some college,TRUE,1,12,Midwest,"NA",FALSE,metropolitan
+20121110121751,2012,32,male,white,50000,FALSE,Some college,TRUE,1,9,South,"NA",FALSE,metropolitan
+20121110121760,2012,85,female,white,35000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121110121767,2012,73,female,white,20000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121110121771,2012,45,female,white,75000,FALSE,HS,TRUE,1,15,West,"NA",FALSE,metropolitan
+20121110121784,2012,35,male,white,100000,TRUE,Bachelors,TRUE,3,3,West,employed,FALSE,metropolitan
+20121110121795,2012,33,female,white,15000,TRUE,Bachelors,TRUE,5,3,Northeast,not employed,FALSE,non-metropolitan
+20121110121805,2012,79,female,white,50000,TRUE,Doctoral,FALSE,0,0,West,not employed,FALSE,metropolitan
+20121110121833,2012,66,female,white,50000,TRUE,HS,FALSE,0,0,South,not employed,FALSE,metropolitan
+20121110121905,2012,50,female,black,50000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121110121919,2012,46,female,white,150000,TRUE,Bachelors,TRUE,2,11,South,not employed,FALSE,metropolitan
+20121110121937,2012,72,female,white,30000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121110121959,2012,15,female,white,150000,FALSE,Did not graduate from HS,TRUE,2,15,Northeast,"NA",TRUE,metropolitan
+20121110121981,2012,42,female,black,150000,FALSE,Some college,TRUE,3,6,Midwest,"NA",FALSE,metropolitan
+20121110121985,2012,53,male,white,75000,TRUE,Some college,TRUE,3,9,Midwest,employed,FALSE,non-metropolitan
+20121110121996,2012,65,female,asian,100000,TRUE,Some college,FALSE,0,0,South,not employed,FALSE,metropolitan
+20121110122010,2012,54,female,white,100000,TRUE,Some college,FALSE,0,0,South,employed,FALSE,metropolitan
+20121110122019,2012,43,female,white,100000,TRUE,Bachelors,TRUE,2,13,Midwest,employed,FALSE,metropolitan
+20121110122022,2012,41,male,black,75000,TRUE,Some college,TRUE,3,10,Midwest,employed,FALSE,metropolitan
+20121110122025,2012,48,female,white,75000,TRUE,Masters,TRUE,1,10,South,employed,FALSE,metropolitan
+20121110122050,2012,45,female,white,25000,TRUE,HS,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20121110122054,2012,40,female,black,75000,FALSE,Masters,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20121110122063,2012,38,female,white,30000,TRUE,HS,TRUE,2,12,West,employed,FALSE,metropolitan
+20121110122066,2012,59,male,white,40000,TRUE,Some college,FALSE,0,0,South,not employed,FALSE,metropolitan
+20121110122085,2012,46,female,asian,150000,TRUE,Some college,TRUE,2,6,West,employed,FALSE,metropolitan
+20121110122095,2012,74,female,asian,15000,TRUE,Bachelors,FALSE,0,0,West,not employed,FALSE,metropolitan
+20121110122128,2012,25,male,white,7500,FALSE,Bachelors,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20121110122142,2012,47,female,white,15000,TRUE,Did not graduate from HS,TRUE,1,5,Midwest,employed,FALSE,non-metropolitan
+20121110122148,2012,68,male,white,40000,TRUE,Did not graduate from HS,FALSE,0,0,Northeast,employed,FALSE,non-metropolitan
+20121110122150,2012,28,male,white,10000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121110122164,2012,25,male,white,60000,TRUE,Masters,FALSE,0,0,West,employed,FALSE,metropolitan
+20121110122173,2012,17,male,white,50000,FALSE,Did not graduate from HS,TRUE,4,11,Midwest,"NA",TRUE,metropolitan
+20121110122175,2012,80,female,white,75000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121110122177,2012,80,male,white,20000,FALSE,HS,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20121110122189,2012,79,male,black,20000,TRUE,Did not graduate from HS,FALSE,0,0,South,not employed,FALSE,metropolitan
+20121110122210,2012,57,male,white,50000,TRUE,Some college,TRUE,1,17,Midwest,employed,FALSE,non-metropolitan
+20121110122215,2012,41,female,black,60000,TRUE,HS,TRUE,2,10,West,employed,FALSE,metropolitan
+20121110122228,2012,72,male,black,15000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20121110122229,2012,65,male,black,50000,TRUE,Some college,TRUE,1,8,South,employed,FALSE,metropolitan
+20121110122231,2012,51,female,black,60000,FALSE,Bachelors,FALSE,0,0,Midwest,"NA",TRUE,metropolitan
+20121110122252,2012,80,female,white,40000,TRUE,Some college,FALSE,0,0,West,not employed,FALSE,metropolitan
+20121110122253,2012,58,female,white,15000,TRUE,HS,TRUE,2,10,Midwest,not employed,FALSE,non-metropolitan
+20121110122263,2012,36,male,white,100000,TRUE,Masters,TRUE,2,6,Midwest,not employed,FALSE,metropolitan
+20121110122266,2012,45,female,white,25000,TRUE,Did not graduate from HS,TRUE,2,12,Midwest,employed,FALSE,metropolitan
+20121110122270,2012,75,female,other,25000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121110122275,2012,76,female,black,35000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121110122291,2012,33,male,white,50000,TRUE,HS,TRUE,1,3,Northeast,employed,FALSE,non-metropolitan
+20121110122295,2012,28,female,white,0,FALSE,HS,TRUE,1,4,Midwest,"NA",FALSE,metropolitan
+20121110122321,2012,56,female,white,50000,TRUE,HS,FALSE,0,0,South,employed,FALSE,non-metropolitan
+20121110122333,2012,50,female,white,60000,FALSE,Some college,FALSE,0,0,Midwest,"NA",TRUE,metropolitan
+20121110122346,2012,71,female,white,15000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121110122353,2012,61,female,white,40000,FALSE,Masters,FALSE,0,0,West,"NA",FALSE,non-metropolitan
+20121110122359,2012,63,male,black,50000,TRUE,Did not graduate from HS,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20121110122364,2012,70,female,white,7500,FALSE,HS,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20121110122385,2012,50,female,other,75000,TRUE,Some college,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20121110122388,2012,58,female,white,35000,TRUE,Did not graduate from HS,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20121110122389,2012,69,female,white,150000,TRUE,Bachelors,FALSE,0,0,South,not employed,FALSE,metropolitan
+20121110122394,2012,24,male,white,0,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121110122417,2012,42,male,asian,40000,TRUE,Some college,TRUE,4,7,Midwest,employed,FALSE,non-metropolitan
+20121110122433,2012,66,male,white,35000,TRUE,Did not graduate from HS,TRUE,2,9,South,not employed,FALSE,metropolitan
+20121110122453,2012,38,male,white,150000,TRUE,Bachelors,TRUE,2,3,Northeast,employed,FALSE,metropolitan
+20121110122461,2012,80,female,white,100000,TRUE,Some college,FALSE,0,0,South,not employed,FALSE,metropolitan
+20121110122529,2012,52,male,black,40000,FALSE,Some college,FALSE,0,0,South,"NA",TRUE,non-metropolitan
+20121111120030,2012,37,female,other,20000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20121111120073,2012,46,male,white,100000,TRUE,Some college,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20121111120524,2012,40,male,white,75000,TRUE,Masters,TRUE,3,4,Midwest,employed,FALSE,metropolitan
+20121111120540,2012,69,female,white,25000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121111120548,2012,48,female,white,40000,TRUE,HS,TRUE,1,2,West,employed,FALSE,metropolitan
+20121111120683,2012,57,female,white,50000,TRUE,Masters,FALSE,0,0,West,employed,FALSE,non-metropolitan
+20121111120715,2012,80,male,black,50000,FALSE,Bachelors,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121111120807,2012,71,male,white,60000,TRUE,Bachelors,FALSE,0,0,Midwest,not employed,FALSE,non-metropolitan
+20121111120833,2012,25,male,white,60000,FALSE,HS,FALSE,0,0,Northeast,"NA",TRUE,metropolitan
+20121111120852,2012,32,female,white,50000,TRUE,Bachelors,TRUE,2,1,Northeast,employed,FALSE,non-metropolitan
+20121111120882,2012,56,female,white,75000,TRUE,Some college,FALSE,0,0,Northeast,not employed,FALSE,non-metropolitan
+20121111121023,2012,55,male,white,50000,TRUE,HS,FALSE,0,0,Midwest,not employed,FALSE,metropolitan
+20121111121025,2012,58,male,white,12500,FALSE,Did not graduate from HS,TRUE,1,10,Midwest,"NA",FALSE,non-metropolitan
+20121111121096,2012,39,female,white,75000,TRUE,Masters,TRUE,3,3,Midwest,employed,FALSE,non-metropolitan
+20121111121119,2012,40,female,white,25000,TRUE,Did not graduate from HS,TRUE,6,3,South,employed,FALSE,metropolitan
+20121111121161,2012,76,female,white,12500,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121111121210,2012,59,male,white,60000,TRUE,HS,TRUE,1,6,South,employed,FALSE,non-metropolitan
+20121111121227,2012,66,female,white,20000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121111121228,2012,55,male,other,30000,FALSE,Masters,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121111121506,2012,71,female,white,10000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121111121528,2012,25,female,white,35000,TRUE,Some college,FALSE,0,0,West,employed,FALSE,metropolitan
+20121111121552,2012,76,female,white,25000,TRUE,Did not graduate from HS,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20121111121886,2012,28,male,white,60000,TRUE,Bachelors,TRUE,1,0,Northeast,employed,FALSE,metropolitan
+20121111121942,2012,39,female,white,100000,TRUE,Some college,TRUE,1,6,Midwest,employed,FALSE,metropolitan
+20121111121944,2012,50,female,asian,100000,TRUE,Masters,TRUE,1,15,West,employed,FALSE,metropolitan
+20121111121966,2012,59,male,other,25000,TRUE,Did not graduate from HS,FALSE,0,0,South,employed,FALSE,non-metropolitan
+20121111122009,2012,55,female,black,35000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121111122011,2012,42,female,white,40000,TRUE,HS,TRUE,3,11,West,employed,FALSE,metropolitan
+20121111122034,2012,51,female,white,150000,FALSE,Bachelors,TRUE,2,15,Northeast,"NA",FALSE,metropolitan
+20121111122093,2012,42,male,white,60000,TRUE,HS,TRUE,3,7,Midwest,employed,FALSE,non-metropolitan
+20121111122207,2012,80,female,white,25000,TRUE,Bachelors,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20121111122250,2012,17,female,white,60000,FALSE,Did not graduate from HS,TRUE,2,9,South,"NA",TRUE,metropolitan
+20121111122318,2012,43,female,white,150000,TRUE,Some college,TRUE,1,12,Northeast,employed,FALSE,metropolitan
+20121111122410,2012,56,female,white,15000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121111122434,2012,57,female,white,100000,TRUE,Some college,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20121111122461,2012,45,female,black,100000,TRUE,Masters,FALSE,0,0,South,not employed,FALSE,metropolitan
+20121210120660,2012,43,female,white,100000,FALSE,Masters,TRUE,1,17,Northeast,"NA",FALSE,non-metropolitan
+20121210120750,2012,75,male,white,150000,TRUE,Doctoral,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20121210120908,2012,33,female,white,150000,TRUE,Masters,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20121210120959,2012,39,male,asian,12500,TRUE,HS,TRUE,3,6,West,employed,FALSE,metropolitan
+20121210121102,2012,63,female,white,25000,TRUE,Did not graduate from HS,FALSE,0,0,South,not employed,FALSE,non-metropolitan
+20121210121104,2012,35,female,other,40000,TRUE,Masters,TRUE,2,5,South,employed,FALSE,non-metropolitan
+20121210121124,2012,32,female,white,25000,FALSE,HS,TRUE,4,1,West,"NA",FALSE,non-metropolitan
+20121210121187,2012,38,female,asian,75000,TRUE,Masters,TRUE,1,12,South,employed,FALSE,metropolitan
+20121210121329,2012,55,female,white,5000,FALSE,Did not graduate from HS,TRUE,5,7,West,"NA",FALSE,metropolitan
+20121210121357,2012,71,female,black,40000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121210121452,2012,24,female,white,150000,FALSE,Bachelors,FALSE,0,0,Northeast,"NA",TRUE,metropolitan
+20121210121501,2012,30,female,white,12500,TRUE,Some college,TRUE,4,9,Midwest,not employed,FALSE,metropolitan
+20121210121750,2012,42,female,white,15000,FALSE,Did not graduate from HS,TRUE,1,15,West,"NA",TRUE,metropolitan
+20121210121753,2012,15,male,white,12500,FALSE,Did not graduate from HS,TRUE,2,13,Midwest,"NA",TRUE,metropolitan
+20121210121774,2012,62,female,white,40000,FALSE,Some college,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121210121796,2012,19,male,white,100000,FALSE,Some college,TRUE,2,9,South,"NA",TRUE,metropolitan
+20121210121846,2012,32,female,black,10000,FALSE,Some college,TRUE,3,11,South,"NA",FALSE,non-metropolitan
+20121210121895,2012,20,female,white,100000,FALSE,Some college,TRUE,1,16,West,"NA",TRUE,metropolitan
+20121210122003,2012,27,male,white,35000,FALSE,Bachelors,FALSE,0,0,West,"NA",TRUE,metropolitan
+20121210122023,2012,32,male,other,35000,FALSE,Bachelors,TRUE,2,8,West,"NA",FALSE,non-metropolitan
+20121210122120,2012,36,female,white,50000,TRUE,Some college,TRUE,2,3,Midwest,employed,FALSE,non-metropolitan
+20121210122174,2012,23,male,white,20000,FALSE,Some college,FALSE,0,0,Northeast,"NA",TRUE,metropolitan
+20121210122340,2012,42,male,white,40000,TRUE,Some college,TRUE,2,6,Northeast,not employed,FALSE,metropolitan
+20121210122360,2012,64,female,white,50000,FALSE,Bachelors,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20121210122368,2012,31,male,black,15000,TRUE,HS,TRUE,4,6,South,not employed,FALSE,metropolitan
+20121210122419,2012,32,female,white,100000,TRUE,Some college,TRUE,1,0,West,employed,FALSE,metropolitan
+20121210122435,2012,42,female,white,100000,TRUE,Doctoral,TRUE,2,12,West,employed,TRUE,metropolitan
+20121211120013,2012,53,male,white,7500,TRUE,HS,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20121211120038,2012,32,female,white,0,FALSE,HS,TRUE,2,6,Midwest,"NA",FALSE,non-metropolitan
+20121211120039,2012,54,female,black,7500,FALSE,HS,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20121211120058,2012,42,female,white,150000,TRUE,Some college,FALSE,0,0,South,employed,FALSE,metropolitan
+20121211120086,2012,32,male,white,30000,TRUE,HS,TRUE,1,1,South,employed,FALSE,metropolitan
+20121211120150,2012,40,male,white,40000,FALSE,Some college,FALSE,0,0,Northeast,"NA",FALSE,non-metropolitan
+20121211120157,2012,76,female,white,30000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121211120162,2012,38,female,black,40000,FALSE,HS,TRUE,1,15,South,"NA",FALSE,metropolitan
+20121211120500,2012,61,female,black,60000,TRUE,HS,FALSE,0,0,South,not employed,FALSE,metropolitan
+20121211120507,2012,49,male,white,150000,TRUE,Bachelors,TRUE,1,8,Northeast,employed,FALSE,metropolitan
+20121211120526,2012,53,female,white,7500,FALSE,Did not graduate from HS,FALSE,0,0,Northeast,"NA",FALSE,non-metropolitan
+20121211120535,2012,37,male,white,60000,TRUE,Some college,TRUE,4,11,West,employed,FALSE,metropolitan
+20121211120551,2012,63,female,black,15000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121211120557,2012,60,female,white,25000,TRUE,Bachelors,FALSE,0,0,South,employed,FALSE,metropolitan
+20121211120563,2012,54,male,white,50000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121211120603,2012,55,female,white,12500,FALSE,Masters,FALSE,0,0,West,"NA",FALSE,non-metropolitan
+20121211120610,2012,85,female,white,20000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121211120626,2012,28,female,white,20000,TRUE,Bachelors,TRUE,2,0,West,employed,FALSE,metropolitan
+20121211120658,2012,60,female,white,150000,TRUE,Some college,TRUE,3,12,West,employed,FALSE,metropolitan
+20121211120667,2012,72,male,white,75000,TRUE,Some college,FALSE,0,0,West,employed,FALSE,metropolitan
+20121211120673,2012,16,female,other,25000,FALSE,Did not graduate from HS,TRUE,1,16,South,"NA",TRUE,metropolitan
+20121211120695,2012,42,female,white,100000,TRUE,Doctoral,TRUE,4,7,Midwest,not employed,FALSE,metropolitan
+20121211120725,2012,80,female,white,15000,FALSE,Bachelors,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20121211120736,2012,45,male,white,15000,FALSE,Did not graduate from HS,TRUE,1,12,West,"NA",FALSE,metropolitan
+20121211120771,2012,70,male,black,30000,TRUE,Did not graduate from HS,FALSE,0,0,South,employed,FALSE,metropolitan
+20121211120811,2012,39,female,white,75000,TRUE,Masters,TRUE,3,7,South,employed,FALSE,metropolitan
+20121211120820,2012,80,male,white,30000,TRUE,Some college,FALSE,0,0,Midwest,not employed,FALSE,metropolitan
+20121211120830,2012,24,female,white,20000,FALSE,HS,TRUE,4,0,Midwest,"NA",FALSE,non-metropolitan
+20121211120849,2012,63,male,white,100000,TRUE,Some college,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20121211120885,2012,79,male,white,60000,TRUE,HS,TRUE,1,16,South,employed,FALSE,metropolitan
+20121211120904,2012,40,female,white,100000,TRUE,Doctoral,TRUE,2,7,South,employed,FALSE,metropolitan
+20121211120915,2012,67,female,white,60000,TRUE,Some college,FALSE,0,0,Midwest,employed,FALSE,non-metropolitan
+20121211120921,2012,36,male,white,25000,FALSE,Bachelors,FALSE,0,0,West,"NA",FALSE,non-metropolitan
+20121211120923,2012,66,male,white,75000,TRUE,Bachelors,FALSE,0,0,West,not employed,FALSE,metropolitan
+20121211120947,2012,29,female,black,50000,FALSE,Some college,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20121211120949,2012,67,male,other,100000,TRUE,Masters,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20121211120965,2012,50,female,white,150000,TRUE,Bachelors,TRUE,1,15,West,employed,FALSE,metropolitan
+20121211121013,2012,37,female,white,150000,TRUE,Masters,TRUE,4,0,West,employed,FALSE,metropolitan
+20121211121029,2012,85,female,white,20000,FALSE,Did not graduate from HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121211121032,2012,38,female,white,35000,FALSE,Bachelors,TRUE,1,16,Midwest,"NA",FALSE,metropolitan
+20121211121034,2012,58,female,white,150000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121211121036,2012,65,female,white,150000,TRUE,HS,FALSE,0,0,South,employed,FALSE,metropolitan
+20121211121043,2012,37,male,white,75000,TRUE,Did not graduate from HS,TRUE,1,15,West,not employed,FALSE,metropolitan
+20121211121044,2012,28,female,white,15000,TRUE,Some college,TRUE,5,3,South,not employed,FALSE,non-metropolitan
+20121211121046,2012,15,female,white,150000,FALSE,Did not graduate from HS,TRUE,3,10,Midwest,"NA",TRUE,metropolitan
+20121211121047,2012,65,female,white,100000,FALSE,Masters,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121211121052,2012,24,female,white,60000,FALSE,Some college,TRUE,1,1,South,"NA",TRUE,non-metropolitan
+20121211121059,2012,75,male,white,20000,TRUE,Bachelors,FALSE,0,0,South,employed,TRUE,metropolitan
+20121211121076,2012,47,female,white,150000,TRUE,Bachelors,TRUE,3,9,South,employed,FALSE,metropolitan
+20121211121094,2012,37,male,white,100000,FALSE,Bachelors,FALSE,0,0,South,"NA",TRUE,metropolitan
+20121211121126,2012,54,male,white,100000,TRUE,HS,FALSE,0,0,Midwest,employed,FALSE,non-metropolitan
+20121211121156,2012,26,female,white,10000,TRUE,Did not graduate from HS,TRUE,4,3,Midwest,employed,FALSE,metropolitan
+20121211121193,2012,48,male,black,100000,TRUE,Some college,FALSE,0,0,West,employed,FALSE,metropolitan
+20121211121241,2012,68,female,white,20000,FALSE,Masters,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121211121246,2012,59,female,white,50000,FALSE,Some college,FALSE,0,0,South,"NA",TRUE,metropolitan
+20121211121313,2012,30,male,white,0,TRUE,Did not graduate from HS,FALSE,0,0,South,not employed,FALSE,metropolitan
+20121211121333,2012,52,male,white,75000,TRUE,HS,TRUE,1,1,South,not employed,FALSE,non-metropolitan
+20121211121345,2012,57,female,asian,60000,TRUE,HS,FALSE,0,0,South,employed,FALSE,metropolitan
+20121211121356,2012,51,male,white,75000,TRUE,Masters,TRUE,4,0,South,not employed,FALSE,non-metropolitan
+20121211121358,2012,53,female,white,40000,TRUE,HS,FALSE,0,0,Northeast,not employed,FALSE,non-metropolitan
+20121211121364,2012,48,male,white,75000,TRUE,Some college,TRUE,3,8,Midwest,employed,TRUE,non-metropolitan
+20121211121370,2012,19,female,black,35000,FALSE,Did not graduate from HS,TRUE,3,12,Northeast,"NA",TRUE,metropolitan
+20121211121374,2012,29,male,white,40000,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121211121396,2012,34,female,white,50000,FALSE,Masters,TRUE,3,5,Midwest,"NA",FALSE,metropolitan
+20121211121400,2012,38,female,black,15000,FALSE,Bachelors,TRUE,2,3,Midwest,"NA",FALSE,metropolitan
+20121211121401,2012,65,female,white,35000,FALSE,Masters,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20121211121411,2012,54,male,white,75000,TRUE,HS,FALSE,0,0,Northeast,employed,FALSE,non-metropolitan
+20121211121416,2012,36,male,white,100000,TRUE,Some college,TRUE,4,3,West,employed,TRUE,metropolitan
+20121211121420,2012,62,female,white,60000,FALSE,Some college,FALSE,0,0,Northeast,"NA",FALSE,metropolitan
+20121211121426,2012,73,female,white,20000,FALSE,Bachelors,FALSE,0,0,West,"NA",FALSE,non-metropolitan
+20121211121438,2012,36,female,white,75000,TRUE,HS,TRUE,1,2,South,employed,FALSE,metropolitan
+20121211121474,2012,26,female,white,30000,FALSE,Bachelors,TRUE,2,1,West,"NA",FALSE,metropolitan
+20121211121510,2012,80,female,white,5000,FALSE,Did not graduate from HS,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20121211121512,2012,29,male,white,150000,TRUE,Bachelors,FALSE,0,0,South,employed,FALSE,metropolitan
+20121211121516,2012,85,female,white,20000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121211121520,2012,40,female,white,35000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121211121532,2012,20,female,white,150000,FALSE,Some college,FALSE,0,0,Northeast,"NA",TRUE,metropolitan
+20121211121538,2012,63,female,black,12500,FALSE,HS,TRUE,1,7,South,"NA",FALSE,metropolitan
+20121211121549,2012,54,male,black,50000,TRUE,Masters,TRUE,4,3,South,employed,FALSE,metropolitan
+20121211121565,2012,42,male,white,75000,TRUE,Bachelors,TRUE,3,10,South,employed,FALSE,metropolitan
+20121211121596,2012,39,male,white,100000,TRUE,Some college,TRUE,2,5,West,not employed,FALSE,metropolitan
+20121211121633,2012,48,male,black,100000,FALSE,Did not graduate from HS,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20121211121648,2012,80,female,white,15000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20121211121671,2012,72,male,white,40000,TRUE,Some college,FALSE,0,0,Midwest,not employed,FALSE,non-metropolitan
+20121211121699,2012,65,female,black,25000,TRUE,Some college,FALSE,0,0,South,not employed,FALSE,non-metropolitan
+20121211121704,2012,53,male,white,150000,TRUE,Bachelors,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20121211121715,2012,77,male,white,50000,TRUE,Masters,FALSE,0,0,West,not employed,FALSE,metropolitan
+20121211121720,2012,30,male,white,60000,TRUE,Bachelors,TRUE,1,0,West,employed,FALSE,metropolitan
+20121211121735,2012,28,female,white,150000,FALSE,Some college,TRUE,1,13,South,"NA",TRUE,metropolitan
+20121211121744,2012,65,female,black,30000,FALSE,Did not graduate from HS,TRUE,2,1,South,"NA",FALSE,metropolitan
+20121211121756,2012,64,male,white,12500,FALSE,Some college,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121211121761,2012,60,female,white,40000,FALSE,HS,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121211121767,2012,31,male,black,5000,FALSE,Masters,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121211121780,2012,58,female,white,50000,TRUE,Some college,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20121211121785,2012,40,female,black,100000,TRUE,Bachelors,TRUE,1,17,Northeast,not employed,FALSE,metropolitan
+20121211121809,2012,72,female,white,7500,FALSE,Doctoral,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121211121823,2012,42,female,white,40000,TRUE,HS,TRUE,2,11,Midwest,employed,FALSE,metropolitan
+20121211121850,2012,85,female,white,30000,FALSE,HS,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121211121861,2012,32,male,white,100000,FALSE,Some college,TRUE,2,3,West,"NA",FALSE,metropolitan
+20121211121882,2012,15,female,black,60000,FALSE,Did not graduate from HS,TRUE,2,9,Northeast,"NA",TRUE,metropolitan
+20121211121908,2012,20,female,white,60000,FALSE,Some college,TRUE,4,8,Northeast,"NA",TRUE,metropolitan
+20121211121914,2012,65,male,white,150000,TRUE,Bachelors,FALSE,0,0,South,employed,FALSE,metropolitan
+20121211121921,2012,62,male,white,150000,TRUE,Some college,TRUE,1,5,South,employed,FALSE,metropolitan
+20121211121986,2012,43,male,white,40000,TRUE,Bachelors,TRUE,2,1,Northeast,employed,FALSE,non-metropolitan
+20121211121998,2012,63,female,white,100000,TRUE,Bachelors,FALSE,0,0,Northeast,not employed,FALSE,non-metropolitan
+20121211122016,2012,61,male,black,40000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121211122019,2012,70,male,white,60000,FALSE,Masters,FALSE,0,0,Northeast,"NA",FALSE,non-metropolitan
+20121211122026,2012,80,male,black,15000,TRUE,Did not graduate from HS,FALSE,0,0,South,not employed,FALSE,metropolitan
+20121211122038,2012,72,female,white,25000,TRUE,Bachelors,FALSE,0,0,Midwest,not employed,FALSE,non-metropolitan
+20121211122040,2012,37,female,white,100000,TRUE,HS,TRUE,3,8,South,employed,FALSE,metropolitan
+20121211122100,2012,78,female,white,0,FALSE,Did not graduate from HS,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20121211122108,2012,32,female,white,75000,TRUE,Masters,TRUE,2,1,Midwest,not employed,FALSE,metropolitan
+20121211122117,2012,30,female,white,40000,TRUE,Some college,FALSE,0,0,Midwest,employed,FALSE,non-metropolitan
+20121211122130,2012,46,male,white,100000,TRUE,Some college,TRUE,1,14,West,employed,FALSE,metropolitan
+20121211122138,2012,80,female,white,25000,TRUE,Bachelors,FALSE,0,0,South,not employed,FALSE,metropolitan
+20121211122166,2012,64,female,white,60000,TRUE,Bachelors,FALSE,0,0,West,not employed,FALSE,metropolitan
+20121211122182,2012,38,male,white,50000,TRUE,Bachelors,TRUE,3,0,South,employed,FALSE,metropolitan
+20121211122183,2012,57,female,white,75000,FALSE,Some college,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121211122204,2012,34,female,white,25000,TRUE,Did not graduate from HS,TRUE,6,4,Midwest,not employed,FALSE,non-metropolitan
+20121211122274,2012,26,female,white,50000,TRUE,Masters,FALSE,0,0,Midwest,employed,FALSE,non-metropolitan
+20121211122277,2012,66,male,white,25000,TRUE,HS,FALSE,0,0,Northeast,employed,FALSE,non-metropolitan
+20121211122285,2012,43,male,white,100000,TRUE,Bachelors,TRUE,2,0,South,employed,FALSE,metropolitan
+20121211122314,2012,49,male,white,60000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20121211122325,2012,49,male,white,40000,TRUE,Bachelors,FALSE,0,0,South,employed,FALSE,metropolitan
+20121211122328,2012,65,female,white,150000,FALSE,Some college,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121211122362,2012,43,male,white,30000,FALSE,Some college,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20121211122374,2012,23,male,white,150000,FALSE,Some college,FALSE,0,0,Midwest,"NA",TRUE,metropolitan
+20121211122395,2012,34,male,white,12500,TRUE,Did not graduate from HS,TRUE,5,3,West,not employed,FALSE,metropolitan
+20121211122401,2012,53,female,white,40000,TRUE,HS,FALSE,0,0,South,employed,FALSE,non-metropolitan
+20121211122408,2012,66,male,black,60000,TRUE,Some college,FALSE,0,0,Northeast,not employed,FALSE,metropolitan
+20121211122424,2012,33,female,white,25000,TRUE,Bachelors,TRUE,1,6,South,employed,FALSE,metropolitan
+20121211122437,2012,78,male,white,25000,TRUE,Did not graduate from HS,FALSE,0,0,Midwest,not employed,FALSE,metropolitan
+20121211122447,2012,32,male,white,75000,TRUE,Bachelors,TRUE,2,1,Midwest,employed,FALSE,non-metropolitan
+20121211122448,2012,35,female,white,35000,TRUE,Some college,TRUE,2,1,Northeast,employed,FALSE,non-metropolitan
+20121211122458,2012,51,female,white,75000,TRUE,HS,TRUE,1,17,West,employed,FALSE,metropolitan
+20121211122477,2012,39,female,white,75000,TRUE,Some college,FALSE,0,0,Midwest,employed,FALSE,non-metropolitan
+20121211122482,2012,80,female,white,40000,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20121211122500,2012,51,female,black,40000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121211122503,2012,39,female,asian,150000,TRUE,Masters,FALSE,0,0,West,employed,FALSE,metropolitan
+20121212120075,2012,67,female,black,60000,FALSE,HS,FALSE,0,0,Northeast,"NA",TRUE,metropolitan
+20121212120702,2012,18,male,white,100000,FALSE,Did not graduate from HS,TRUE,2,4,South,"NA",TRUE,metropolitan
+20121212120853,2012,80,female,white,60000,TRUE,HS,TRUE,2,1,West,employed,FALSE,metropolitan
+20121212120885,2012,42,female,white,40000,TRUE,HS,FALSE,0,0,Northeast,employed,FALSE,metropolitan
+20121212121017,2012,25,male,white,0,FALSE,HS,FALSE,0,0,Midwest,"NA",FALSE,non-metropolitan
+20121212121031,2012,17,female,white,60000,FALSE,Did not graduate from HS,TRUE,1,17,Midwest,"NA",TRUE,metropolitan
+20121212121032,2012,25,male,white,0,FALSE,Bachelors,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121212121193,2012,29,male,white,35000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,metropolitan
+20121212121195,2012,54,male,white,15000,TRUE,Bachelors,FALSE,0,0,Midwest,employed,FALSE,non-metropolitan
+20121212121196,2012,72,female,white,15000,FALSE,Some college,FALSE,0,0,South,"NA",FALSE,non-metropolitan
+20121212121270,2012,48,male,white,40000,TRUE,Masters,TRUE,1,10,South,employed,TRUE,metropolitan
+20121212121292,2012,61,male,white,75000,TRUE,Some college,FALSE,0,0,West,employed,FALSE,non-metropolitan
+20121212121347,2012,49,female,white,150000,FALSE,Masters,FALSE,0,0,West,"NA",FALSE,metropolitan
+20121212121502,2012,28,male,white,40000,TRUE,Bachelors,TRUE,2,2,South,employed,FALSE,metropolitan
+20121212121564,2012,20,female,white,50000,FALSE,Some college,FALSE,0,0,South,"NA",TRUE,metropolitan
+20121212121645,2012,27,male,black,30000,FALSE,Some college,FALSE,0,0,Midwest,"NA",FALSE,metropolitan
+20121212121807,2012,55,male,white,100000,TRUE,Bachelors,FALSE,0,0,West,not employed,FALSE,metropolitan
+20121212121855,2012,41,male,white,50000,TRUE,Some college,TRUE,3,0,Midwest,employed,FALSE,metropolitan
+20121212121873,2012,25,female,white,20000,FALSE,Some college,TRUE,2,0,South,"NA",FALSE,non-metropolitan
+20121212122138,2012,23,female,white,15000,FALSE,HS,TRUE,3,1,Midwest,"NA",FALSE,non-metropolitan
+20121212122168,2012,36,male,white,0,TRUE,Did not graduate from HS,FALSE,0,0,South,employed,FALSE,non-metropolitan
+20121212122256,2012,69,female,white,75000,TRUE,Masters,FALSE,0,0,Midwest,employed,FALSE,metropolitan
+20121212122320,2012,15,female,black,100000,FALSE,Did not graduate from HS,TRUE,2,15,South,"NA",TRUE,metropolitan
+20121212122340,2012,65,male,white,60000,FALSE,Bachelors,FALSE,0,0,West,"NA",FALSE,metropolitan
