@@ -23,7 +23,7 @@ ATUS <- atusact_0320 %>%
     'No SCC'),
     activity = paste0("t", TRCODEP)) %>% 
   fuzzyjoin::regex_left_join(y = curated.codes, by = 'activity') %>%
-  mutate(description = paste0(description, ' - ', secondary_childcare)) %>% 
+  mutate(description = paste0(description, ' : ', secondary_childcare)) %>% 
   select(TUCASEID, TUSTARTTIM, TUSTOPTIME, activity = activity.x, description)
 
 baseline_time <- function(x_minutes){

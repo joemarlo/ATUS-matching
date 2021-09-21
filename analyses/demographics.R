@@ -108,7 +108,10 @@ matching_vars <- c('age', 'sex', 'race', 'fam_income', 'has_partner',
                    'partner_working', 'elder_in_HH', 'metropolitan', 'labor_force_status')
 demographics <- demographics[, c('ID', 'year', matching_vars)]
 
-# remove NAs b/c income/metropolitan unknown for 13%
+# NAs by column
+# skimr::skim(demographics)
+
+# remove NAs b/c education, region, and/or metropolitan unknown for 5%
 demographics <- na.omit(demographics)
 
 

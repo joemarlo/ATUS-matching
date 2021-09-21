@@ -77,8 +77,8 @@ atus_seq_t2 <- seqdef(
 
 # calculate substitution cost from time1
 TRATE_cost <- seqsubm(atus_seq_t1, method = 'TRATE') #, time.varying = TRUE
-TRATE_cost_t2 <- TRATE_cost # default
-# TRATE_cost_t2 <- seqsubm(atus_seq_t2, method = 'TRATE') # only use when clustering separately
+# TRATE_cost_t2 <- TRATE_cost # default
+TRATE_cost_t2 <- seqsubm(atus_seq_t2, method = 'TRATE') # only use when clustering separately
 # TODO: do levenshtein difference as well
 
 # compute distances
@@ -241,16 +241,17 @@ clusters_t2_relabeled <- swap_labels(clusters_t1_numeric,
 # table(new = clusters_t2_relabeled, old = clusters_t2_numeric)
 
 # add label back
-clusters_t2_relabeled <- paste0("Cluster ", clusters_t2_relabeled)
+# clusters_t2_relabeled <- paste0("Cluster ", clusters_t2_relabeled)
 
 # add "n =" label back
-# clusters_t2_relabeled <- tibble(old = clusters_t2_numeric_relabeled) %>% 
-#   group_by(old) %>% 
-#   add_tally() %>% 
-#   ungroup() %>% 
-#   mutate(new = paste0("Cluster ", old, "  |  n = ", n)) %>% 
-#   pull(new)
-# clusters_t2_relabeled <- factor(clusters_t2_relabeled, levels = sort(unique(clusters_t2_relabeled)))
+# TODO: fix this
+clusters_t2_relabeled <- tibble(old = clusters_t2_relabeled) %>%
+  group_by(old) %>%
+  add_tally() %>%
+  ungroup() %>%
+  mutate(new = paste0("Cluster ", old, "  |  n = ", n)) %>%
+  pull(new)
+clusters_t2_relabeled <- factor(clusters_t2_relabeled, levels = sort(unique(clusters_t2_relabeled)))
 
 
 # demographics by cluster -------------------------------------------------
