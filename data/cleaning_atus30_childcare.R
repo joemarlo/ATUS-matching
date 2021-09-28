@@ -50,7 +50,7 @@ split_ATUS <- ATUS %>%
   select(TUCASEID, start_time, end_time, description) %>% 
   group_split(TUCASEID)
 
-# throw out ~14 respondents who's responses don't capture the whole day
+# throw out ~16 respondents who's responses don't capture the whole day
 whole_day <- parallel::mclapply(split_ATUS, FUN = function(tbl){
   max(tbl$end_time)
 }) %>% unlist() == 1440

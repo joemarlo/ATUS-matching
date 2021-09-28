@@ -7,7 +7,7 @@ source('analyses/plots/ggplot_settings.R')
 # atus_raw <- read_tsv(file.path("data", "atus_30min.tsv"))
 atus_raw <- readr::read_tsv(file.path("data", "atus_30min_SSC.tsv")) # tokens with supplemental child care
 
-# read in cluster memberships
+# read in cluster memberships (unmatched)
 clusters <- readr::read_csv("outputs/final_clusters/default/2019_2020/data/cluster_pairs.csv")
 dirs <- paste0(2004:2019, "_", 2005:2020)
 clusters_all <- purrr::map_dfr(dirs, function(year){
@@ -19,6 +19,21 @@ clusters_all <- purrr::map_dfr(dirs, function(year){
 
 # read in activity file
 atusact_0320 <- readr::read_csv("inputs/ATUS-2003-2020/atusact_0320.dat")
+
+# read in the demographics data
+demographics <- readr::read_delim(
+  file = file.path("data", "demographic.tsv"),
+  delim = "\t",
+  escape_double = FALSE,
+  trim_ws = TRUE,
+  col_types = readr::cols(metropolitan = readr::col_character())
+)
+
+# set labels for SeqI x axis
+labels_x <- as.character(seq(2, 24, by = 2))
+labels_x <- c(labels_x[2:12], labels_x[1:2])
+labels_x[1] <- "4am"
+breaks_x <- seq(0, 48, by = 4)
 
 
 # traminer ----------------------------------------------------------------
@@ -58,9 +73,13 @@ unique_states <- sort(unique(atus_raw$description))
 color_mapping <- viridis::viridis_pal()(length(unique_states))
 names(color_mapping) <- unique_states
 
+# create second color mapping with extraneous tokens greyed out
+color_mapping_grey <- c('grey20', '#d9d955', '#db324b', 'grey55')
+names(color_mapping_grey) <- c('Sleep', 'Work w/o SCC', 'Work with SCC', 'Other activities')
+
 # seqI plot sorted amount of work
 yellow_labels <- c('Work : No SCC', 'Work : SCC')
-atus_raw %>% 
+seqI_groups <- atus_raw %>% 
   right_join(clusters, by = 'ID') %>% 
   group_by(ID) %>% 
   mutate(entropy = sum(description %in% yellow_labels),
@@ -68,17 +87,106 @@ atus_raw %>%
                           time == 't2' ~ '2020',
                           TRUE ~ 'NA')) %>% 
   ungroup() %>% 
+  mutate(description = case_when(
+    description == 'Sleep : No SCC' ~ 'Sleep',
+    description == 'Work : No SCC' ~ 'Work w/o SCC',
+    description == 'Work : SCC' ~ 'Work with SCC',
+    TRUE ~ 'Other activities'))
+seqI_groups %>% 
   ggplot(aes(x = period, 
              y = stats::reorder(ID, entropy), 
              fill = description)) + 
   geom_tile() + 
-  scale_fill_manual(values = color_mapping) +
+  # scale_fill_manual(values = color_mapping) +
+  scale_fill_manual(values = color_mapping_grey) +
+  scale_x_continuous(breaks = breaks_x, labels = labels_x) +
   scale_y_discrete(labels = NULL, breaks = NULL) + 
   facet_wrap(year~cluster, scales = "free_y", ncol = 3) + 
   labs(title = "All sequences by cluster sorted by count of work activities", 
-       x = "Period", 
+       x = NULL, 
        y = "Sequence", 
-       fill = NULL)
+       fill = NULL) +
+  theme(axis.text.x = element_text(size = 7))
+
+# same seqI plot but split by sex
+year_ <- 2019
+seqI_groups %>% 
+  filter(year == year_) %>% 
+  left_join(select(demographics, ID, sex), by = 'ID') %>%
+  group_by(cluster, sex) %>% 
+  mutate(n = n_distinct(ID)) %>% 
+  ungroup() %>%
+  mutate(sex = if_else(sex == 1, 'Male', 'Female'),
+         cluster = paste0(stringr::str_sub(cluster, 1, 9),
+                          ' | n = ',
+                          n)
+         ) %>% 
+  ggplot(aes(x = period, 
+             y = stats::reorder(ID, entropy), 
+             fill = description)) + 
+  geom_tile() + 
+  scale_fill_manual(values = color_mapping_grey) +
+  scale_x_continuous(breaks = breaks_x, labels = labels_x) +
+  scale_y_discrete(labels = NULL, breaks = NULL) + 
+  facet_wrap(sex~cluster, scales = "free_y", ncol = 3) + 
+  labs(title = "All sequences by cluster sorted by count of work activities", 
+       subtitle = paste0(year_, ' only'),
+       x = NULL, 
+       y = "Sequence", 
+       fill = NULL) +
+  theme(axis.text.x = element_text(size = 7))
+
+
+# take one at resampling
+resampled <- seqI_groups %>% 
+  distinct(ID, cluster, year) %>% 
+  left_join(select(demographics, ID, survey_weight), by = 'ID') %>% 
+  group_by(year, cluster) %>% 
+  slice_sample(n = 1000, weight_by = survey_weight, replace = TRUE) %>% 
+  ungroup() %>% 
+  transmute(ID, ID_resampled = row_number())
+resampled %>% 
+  left_join(seqI_groups, by = 'ID') %>% 
+  mutate(cluster = stringr::str_sub(cluster, 1, 9)) %>% 
+  ggplot(aes(x = period, 
+             y = stats::reorder(ID_resampled, entropy), 
+             fill = description)) + 
+  geom_tile() + 
+  # scale_fill_manual(values = color_mapping) +
+  scale_fill_manual(values = color_mapping_grey) +
+  scale_x_continuous(breaks = breaks_x, labels = labels_x) +
+  scale_y_discrete(labels = NULL, breaks = NULL) + 
+  facet_wrap(year~cluster, scales = "free_y", ncol = 3) + 
+  labs(title = "Secondary child care increases substantially in 2020", 
+       x = NULL, 
+       y = "Respondent", 
+       fill = NULL,
+       caption = 'Each cluster resampled with n = 1,000') +
+  theme(axis.text.x = element_text(size = 7))
+# ggsave(file.path('outputs', 'plots', "seqi_grey_1920.png"), height = 6, width = 9)
+
+# applying weights to get proportion of population
+clusters %>% 
+  transmute(ID, 
+            cluster = stringr::str_sub(cluster, 1, 9),
+            year = case_when(time == 't1' ~ '2019',
+                             time == 't2' ~ '2020',
+                             TRUE ~ 'NA')) %>% 
+  left_join(select(demographics, ID, survey_weight), by = 'ID') %>% 
+  group_by(cluster, year) %>% 
+  summarize(cluster_weight = sum(survey_weight),
+            .groups = 'drop') %>% 
+  group_by(year) %>% 
+  mutate(prop = cluster_weight / sum(cluster_weight)) %>% 
+  ggplot(aes(x = cluster, y = prop)) +
+  geom_col() + 
+  facet_wrap(~year) +
+  geom_text(aes(label = round(prop, 2)), 
+            nudge_y = -0.03, color = 'white', fontface = 'bold') +
+  labs(title = 'Re-weighted cluster proportions by year',
+       x = NULL,
+       y = NULL)
+  
 
 
 # turbulence --------------------------------------------------------------
@@ -98,14 +206,16 @@ turbulence_t %>%
                           time == 't2' ~ '2020',
                           TRUE ~ 'NA'),
          cluster = stringr::str_extract(cluster, "Cluster .")) %>% 
-  group_by(cluster, year) %>%
+  left_join(select(demographics, ID, sex), by = 'ID') %>% 
+  mutate(sex = if_else(sex == 1, 'Male', 'Female')) %>% 
+  group_by(cluster, year, sex) %>%
   mutate(group_mean = mean(turbulence)) %>% 
   ggplot(aes(x = turbulence, color = cluster)) +
   geom_density(size = 1.5, alpha = 0.85) +
   geom_vline(aes(xintercept = group_mean, color = cluster),
              linetype = 'dashed') +
   ggplot2::scale_color_discrete() +
-  facet_wrap(~year, ncol = 1) +
+  facet_wrap(sex~year, ncol = 1) +
   labs(title = 'Turbulence by cluster',
        subtitle = 'Unweighted',
        x = 'Turbulence',

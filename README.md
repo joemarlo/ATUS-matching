@@ -1,5 +1,13 @@
 # Clustering and matching sequence data
 
+Reproducible code for working paper on matching clustered sequence data and understanding secondary childcare via time use data.
+
+<br>
+<p align="center">
+<img src="outputs/plots/seqi_grey_1920.png" width=80%>
+</p>
+
+
 ### Folder structure
     .
     ├── analyses          # Clustering, matching, demographic vars, etc.
@@ -10,26 +18,9 @@
     │   └── supporting    # Supporting analyses
     ├── data              # Cleaned data and cleaning scripts
     ├── inputs            # Raw input data
-    ├── outputs           # Formal write-ups
+    ├── outputs           # Formal write-ups and final clusters
     ├── tests             # Unit tests
     └── README.md
-
-### Status results
-
-<br>
-<p align="center">
-<img src="analyses/backtest/batch_20210725_190501/plots/mean_transition_rate_simulated.png" width=80%>
-</p>
-
-<br>
-<p align="center">
-<img src="analyses/plots/noise/match_rate_at_k.png" width=80%>
-</p>
-
-<br>
-<p align="center">
-<img src="analyses/plots/perfect_matches_mahalanobis.png" width=80%>
-</p>
 
 <br>
 
@@ -44,7 +35,7 @@ To reproduce, run the scripts in the following order:
     - Single year:  
         1. `analyses/matching/matching_mahalanobis.R`  
         2. `analyses/clustering.R`  
-    - Back test:  
+    - Backtest:  
         1. `analyses/backtest/batch_backtest.R`  
 
 <br>
