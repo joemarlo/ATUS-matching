@@ -2,6 +2,7 @@ library(dplyr)
 library(ggplot2)
 library(TraMineR)
 source('analyses/plots/ggplot_settings.R')
+set.seed(44)
 
 # read in ATUS data
 # atus_raw <- read_tsv(file.path("data", "atus_30min.tsv"))
@@ -29,7 +30,7 @@ demographics <- readr::read_delim(
   col_types = readr::cols(metropolitan = readr::col_character())
 )
 
-# set labels for SeqI x axis
+# set labels for SeqI x axis: formated as time
 labels_x <- as.character(seq(2, 24, by = 2))
 labels_x <- c(labels_x[2:12], labels_x[1:2])
 labels_x[1] <- "4am"
@@ -109,8 +110,8 @@ seqI_groups %>%
   theme(axis.text.x = element_text(size = 7))
 
 # same seqI plot but split by sex
-year_ <- 2019
-seqI_groups %>% 
+year_ <- 2020
+seqI_groups_year <- seqI_groups %>% 
   filter(year == year_) %>% 
   left_join(select(demographics, ID, sex), by = 'ID') %>%
   group_by(cluster, sex) %>% 
@@ -120,7 +121,8 @@ seqI_groups %>%
          cluster = paste0(stringr::str_sub(cluster, 1, 9),
                           ' | n = ',
                           n)
-         ) %>% 
+         )
+seqI_groups_year %>% 
   ggplot(aes(x = period, 
              y = stats::reorder(ID, entropy), 
              fill = description)) + 
@@ -147,6 +149,7 @@ resampled <- seqI_groups %>%
   transmute(ID, ID_resampled = row_number())
 resampled %>% 
   left_join(seqI_groups, by = 'ID') %>% 
+  # filter(year == year_) %>% 
   mutate(cluster = stringr::str_sub(cluster, 1, 9)) %>% 
   ggplot(aes(x = period, 
              y = stats::reorder(ID_resampled, entropy), 
@@ -156,14 +159,90 @@ resampled %>%
   scale_fill_manual(values = color_mapping_grey) +
   scale_x_continuous(breaks = breaks_x, labels = labels_x) +
   scale_y_discrete(labels = NULL, breaks = NULL) + 
-  facet_wrap(year~cluster, scales = "free_y", ncol = 3) + 
-  labs(title = "Secondary child care increases substantially in 2020", 
+  facet_wrap(~cluster, scales = "free_y", ncol = 3) + 
+  labs(title = "TBD title", 
        x = NULL, 
        y = "Respondent", 
        fill = NULL,
        caption = 'Each cluster resampled with n = 1,000') +
   theme(axis.text.x = element_text(size = 7))
 # ggsave(file.path('outputs', 'plots', "seqi_grey_1920.png"), height = 6, width = 9)
+
+# take two at resampling: 
+# resample within each group but maintain group-to-group proportions
+# this maintains within cluster gender split
+resampled_prop <- seqI_groups_year %>%
+  distinct(ID, cluster, sex, n, entropy) %>% 
+  mutate(cluster = stringr::str_sub(cluster, 1, 9)) %>% 
+  left_join(select(demographics, ID, survey_weight), by = 'ID') %>% 
+  group_by(cluster, sex) %>% 
+  group_modify(~ {
+    .n <- .x$n[1] * 5
+    slice_sample(.x, n = .n, weight_by = survey_weight, replace = TRUE)
+    }) %>% 
+  group_by(cluster, sex) %>% 
+  arrange(desc(entropy)) %>% 
+  mutate(ID_resampled = row_number()) %>% 
+  ungroup() %>% 
+  arrange(cluster, sex, entropy) %>% 
+  select(ID, ID_resampled)
+resampled_prop %>% 
+  left_join(seqI_groups_year, by = 'ID') %>%
+  mutate(cluster = stringr::str_sub(cluster, 1, 9)) %>% 
+  ggplot(aes(x = period, 
+             y = -ID_resampled, 
+             fill = description)) + 
+  geom_tile() + 
+  # scale_fill_manual(values = color_mapping) +
+  scale_fill_manual(values = color_mapping_grey) +
+  scale_x_continuous(breaks = breaks_x, labels = labels_x) +
+  scale_y_discrete(labels = NULL, breaks = NULL) + 
+  facet_grid(sex~cluster) + 
+  labs(title = "TBD title", 
+       x = NULL, 
+       y = "Respondent", 
+       fill = NULL,
+       caption = 'Each cluster resampled') +
+  theme(axis.text.x = element_text(size = 7),
+        legend.position = 'bottom')
+
+# this more closely honors survey weights and does not maintain within cluster gender split 
+resampled_prop_sex <- seqI_groups_year %>%
+  distinct(ID, cluster, sex, entropy) %>% 
+  mutate(cluster = stringr::str_sub(cluster, 1, 9)) %>% 
+  left_join(select(demographics, ID, survey_weight), by = 'ID') %>% 
+  group_by(cluster) %>% 
+  mutate(n = n()) %>% 
+  group_modify(~ {
+    .n <- .x$n[1] * 5
+    slice_sample(.x, n = .n, weight_by = survey_weight, replace = TRUE)
+  }) %>% 
+  group_by(cluster, sex) %>% 
+  arrange(desc(entropy)) %>% 
+  mutate(ID_resampled = row_number()) %>% 
+  ungroup() %>% 
+  arrange(cluster, sex, entropy) %>% 
+  select(ID, ID_resampled)
+resampled_prop_sex %>% 
+  left_join(seqI_groups_year, by = 'ID') %>%
+  mutate(cluster = stringr::str_sub(cluster, 1, 9)) %>% 
+  ggplot(aes(x = period, 
+             y = -ID_resampled, 
+             fill = description)) + 
+  geom_tile() + 
+  # scale_fill_manual(values = color_mapping) +
+  scale_fill_manual(values = color_mapping_grey) +
+  scale_x_continuous(breaks = breaks_x, labels = labels_x) +
+  scale_y_discrete(labels = NULL, breaks = NULL) + 
+  facet_grid(sex~cluster) + 
+  labs(title = "TBD title", 
+       x = NULL, 
+       y = "Respondent", 
+       fill = NULL,
+       caption = 'Each cluster resampled') +
+  theme(axis.text.x = element_text(size = 7),
+        legend.position = 'bottom')
+
 
 # applying weights to get proportion of population
 clusters %>% 

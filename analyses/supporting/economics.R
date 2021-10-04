@@ -16,14 +16,16 @@ lfp_men <- fredr(
 
 bind_rows(lfp_women, lfp_men) %>% 
   filter(date > as.Date('2015-01-01')) %>%
+  mutate(value = value / 100) %>% 
   ggplot(aes(x = date, y = value, color = sex)) +
   geom_line() +
   scale_x_date(date_breaks = '1 year',
                date_label = '%Y') +
+  scale_y_continuous(labels = scales::percent_format(1)) +
   labs(title = 'Labor force participation by sex',
        caption = 'Data: Bureau of Labor Statistics via FRED API',
        x = NULL,
-       y = "Percent",
+       y = NULL,
        color = NULL) +
   theme(axis.text.x = element_text(angle = -30, hjust = 0),
         legend.position = 'bottom')
