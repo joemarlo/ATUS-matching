@@ -16,26 +16,169 @@ demographics$sex <- recode(demographics$sex,
                            '1' = 'Male',
                            '2' = 'Female')
 
+# create notin function
+`%notin%` <- negate(`%in%`)
 
-# population --------------------------------------------------------------
+# create function to format minutes to hour:min
+format_HM <- function(min){
+  H <- floor(min / 60)
+  H <- ifelse(nchar(H) == 1, paste0('0', H), as.character(H))
+  M <- min %% 60
+  M <- ifelse(nchar(M) == 1, paste0('0', M), as.character(M))
+  formatted <- paste0(H, ":", M)
+  return(formatted)
+}
 
-# mean (unweighted) minutes per day for respondents with children
-respondents_with_children <- demographics %>% 
-  filter(age_youngest >= 0,
-         n_child >= 1) %>% 
-  left_join(select(atusresp_0320, ID = TUCASEID, secondary_childcare = TRTHH, TUDIARYDATE),
-            by = 'ID') %>% 
-  mutate(diary_date = lubridate::ymd(TUDIARYDATE),
-         diary_month = lubridate::month(diary_date))
-
-
-# secondary childcare -----------------------------------------------------
+# childcare definitions ---------------------------------------------------
 
 # household children under 13 -- all day
 # respondent file
 # Total time spent during diary day providing secondary childcare for household children < 13 (in minutes)
 'TRTHH'
 
+# household children under 13 -- within a certain activity
+# activity file
+#Total time spent during activity providing secondary childcare for household children < 13 (in minutes)
+'TRTHH_LN'
+
+# all children under 13
+# activity file
+# Total time spent during activity providing secondary childcare for all children < 13 (in minutes)
+'TRTCCTOT_LN'
+
+# time spent with family
+# Respondent File
+# Total nonwork-related time respondent spent with household family members (in minutes
+'TRTHHFAMILY'
+
+
+
+# count household children under 13 ----------------------------------------
+
+# create var of household children  (own or not) under the age of 13
+household_children <- atusrost_0320 %>% 
+  group_by(ID = TUCASEID) %>% 
+  summarize(n_child_13 = sum(TEAGE < 13 & TERRP != 40))
+
+# add to demographics data
+demographics <- left_join(demographics, household_children, by = 'ID')
+
+
+# population --------------------------------------------------------------
+
+# add secondary childcare (household children only) to demographics data
+# remove 1Q and 2Q 2020
+respondents <- demographics %>% 
+  filter(year != 2003) %>% 
+  left_join(select(atusresp_0320, ID = TUCASEID, secondary_childcare = TRTHH, TUDIARYDATE),
+            by = 'ID') %>% 
+  mutate(diary_date = lubridate::ymd(TUDIARYDATE),
+         diary_month = lubridate::month(diary_date),
+         quarter = ceiling(diary_month / 3),
+         quarter = as.Date(paste0(year, '-', quarter * 3, '-01')),
+         quarter = quarter + months(1) - 1,
+         is_covid_era = quarter > as.Date('2020-03-31')) %>% 
+  filter(quarter %notin% as.Date(c('2020-03-31', '2020-06-30')))
+
+# filter to only respondents with children
+respondents_with_children <- filter(respondents, n_child_13 > 0)
+
+
+# secondary childcare -----------------------------------------------------
+
+# time series by quarter
+# add index for regression
+SSC_by_quarter <- respondents_with_children %>% 
+  group_by(quarter, is_covid_era) %>% 
+  summarize(mean_secondary_childcare = mean(secondary_childcare, na.rm = TRUE),
+            weighted_secondary_childcare = sum(survey_weight * secondary_childcare) / sum(survey_weight),
+            .groups = 'drop') %>% 
+  arrange(quarter) %>% 
+  mutate(index = round(as.numeric(((quarter - min(quarter)) / 92) + 1)))
+  
+# plot it
+y_min <- 4.25*60
+y_max <- 5.75*60
+SSC_by_quarter %>% 
+  mutate(is_covid_era = if_else(is_covid_era, 'Covid era', 'Pre Covid'),
+         is_covid_era = factor(is_covid_era, levels = c('Pre Covid', 'Covid era'))) %>% 
+  ggplot(aes(x = quarter, y = weighted_secondary_childcare)) +
+  geom_rect(aes(xmin = as.Date('2020-01-01'),
+                xmax = as.Date('2020-09-30'),
+                ymin = y_min,
+                ymax = y_max),
+            fill = 'grey90') +
+  geom_line(data = filter(SSC_by_quarter, quarter %in% as.Date(c('2019-12-31', '2020-09-30'))),
+            color = 'grey50', linetype = 'dashed') +
+  geom_line(aes(color = is_covid_era)) +
+  geom_point(aes(color = is_covid_era)) +
+  annotate('text', x = as.Date('2020-06-30'), y = 275, label = 'No data collection', 
+           color = 'grey30', angle = -90, size = 4) +
+  ggplot2::scale_color_discrete() +
+  scale_x_date(date_breaks = '1 year', date_labels = "'%y") +
+  scale_y_continuous(limits = c(y_min, y_max),
+                     breaks = seq(y_min, y_max, by = 15),
+                     labels = format_HM) +
+  labs(title = 'Mean daily time spent on secondary childcare for household children under 13',
+       subtitle = paste0('Only includes respondents with household children under 13\nn = ', 
+                         scales::comma_format()(nrow(respondents_with_children))),
+       x = NULL,
+       y = 'Hour:minutes on secondary childcare',
+       color = NULL) +
+  theme(legend.position = 'bottom')
+# ggsave
+
+
+
+# repeat but split by sex -------------------------------------------------
+
+# time series by quarter
+# add index for regression
+SSC_by_quarter_sex <- respondents_with_children %>% 
+  group_by(quarter, sex, is_covid_era) %>% 
+  summarize(mean_secondary_childcare = mean(secondary_childcare, na.rm = TRUE),
+            weighted_secondary_childcare = sum(survey_weight * secondary_childcare) / sum(survey_weight),
+            .groups = 'drop') %>% 
+  arrange(quarter) %>% 
+  mutate(index = round(as.numeric(((quarter - min(quarter)) / 92) + 1)))
+
+# plot it
+y_min <- 4.25*60
+y_max <- 5.75*60
+SSC_by_quarter_sex %>% 
+  mutate(is_covid_era = if_else(is_covid_era, 'Covid era', 'Pre Covid'),
+         is_covid_era = factor(is_covid_era, levels = c('Pre Covid', 'Covid era'))) %>% 
+  ggplot(aes(x = quarter, y = weighted_secondary_childcare)) +
+  # geom_rect(aes(xmin = as.Date('2020-01-01'),
+  #               xmax = as.Date('2020-09-30'),
+  #               ymin = y_min,
+  #               ymax = y_max),
+  #           fill = 'grey90') +
+  # geom_line(data = filter(SSC_by_quarter_sex, quarter %in% as.Date(c('2019-12-31', '2020-09-30'))),
+  #           color = 'grey50', linetype = 'dashed') +
+  geom_line(aes(color = is_covid_era)) +
+  geom_point(aes(color = is_covid_era)) +
+  # annotate('text', x = as.Date('2020-06-30'), y = 275, label = 'No data collection', 
+  #          color = 'grey30', angle = -90, size = 4) +
+  ggplot2::scale_color_discrete() +
+  scale_x_date(date_breaks = '1 year', date_labels = "'%y") +
+  # scale_y_continuous(limits = c(y_min, y_max),
+  #                    breaks = seq(y_min, y_max, by = 15),
+  #                    labels = format_HM) +
+  facet_wrap(~sex, ncol = 2) +
+  labs(title = 'Mean daily time spent on secondary childcare for household children under 13',
+       subtitle = paste0('Only includes respondents with household children under 13\nn = ', 
+                         scales::comma_format()(nrow(respondents_with_children))),
+       x = NULL,
+       y = 'Hour:minutes on secondary childcare',
+       color = NULL) +
+  theme(legend.position = 'bottom')
+# ggsave
+
+
+
+
+# previous work -----------------------------------------------------------
 
 respondents_with_children %>% 
   filter(diary_month >= 5,
@@ -195,39 +338,3 @@ respondents_with_children %>%
        y = NULL,
        color = NULL) +
   theme(legend.position = 'bottom')
-
-
-# model it
-model <- rdrobust(
-  y = tweet_tally$proportion,
-  x = tweet_tally$index,
-  c = cutpoint,
-  p = 1,
-  bwselect = 'msetwo'
-)
-
-# extract bandwidths
-bandwidths <- model$bws['h', ]
-
-# household children under 13 -- within a certain activity
-# activity file
-#Total time spent during activity providing secondary childcare for household children < 13 (in minutes)
-'TRTHH_LN'
-
-# all children under 13
-# activity file
-# Total time spent during activity providing secondary childcare for all children < 13 (in minutes)
-'TRTCCTOT_LN'
-
-# time spent with family
-# Respondent File
-# Total nonwork-related time respondent spent with household family members (in minutes
-'TRTHHFAMILY'
-
-
-
-
-# matching ----------------------------------------------------------------
-
-# do matching here or functionize matching script?
-

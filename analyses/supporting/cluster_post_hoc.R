@@ -149,7 +149,7 @@ resampled <- seqI_groups %>%
   transmute(ID, ID_resampled = row_number())
 resampled %>% 
   left_join(seqI_groups, by = 'ID') %>% 
-  # filter(year == year_) %>% 
+  filter(year == year_) %>%
   mutate(cluster = stringr::str_sub(cluster, 1, 9)) %>% 
   ggplot(aes(x = period, 
              y = stats::reorder(ID_resampled, entropy), 
@@ -167,6 +167,42 @@ resampled %>%
        caption = 'Each cluster resampled with n = 1,000') +
   theme(axis.text.x = element_text(size = 7))
 # ggsave(file.path('outputs', 'plots', "seqi_grey_1920.png"), height = 6, width = 9)
+
+# take one.five: resample with n = proportions between clusters
+resampled_prop <- seqI_groups %>% 
+  distinct(ID, cluster, year, entropy) %>% 
+  mutate(cluster = stringr::str_sub(cluster, 1, 9)) %>% 
+  filter(year == year_) %>%
+  left_join(select(demographics, ID, survey_weight), by = 'ID') %>% 
+  group_by(cluster) %>%
+  mutate(n = n()) %>% 
+  group_modify(~ {
+    .n <- .x$n[1] * 5
+    slice_sample(.x, n = .n, weight_by = survey_weight, replace = TRUE)
+  }) %>% 
+  arrange(desc(entropy)) %>% 
+  mutate(ID_resampled = row_number()) %>% 
+  ungroup() %>% 
+  select(ID, ID_resampled)
+resampled_prop %>% 
+  left_join(seqI_groups, by = 'ID') %>% 
+  mutate(cluster = stringr::str_sub(cluster, 1, 9)) %>% 
+  ggplot(aes(x = period, 
+             y = -ID_resampled, 
+             fill = description)) + 
+  geom_tile() + 
+  # scale_fill_manual(values = color_mapping) +
+  scale_fill_manual(values = color_mapping_grey) +
+  scale_x_continuous(breaks = breaks_x, labels = labels_x) +
+  scale_y_discrete(labels = NULL, breaks = NULL) + 
+  facet_wrap(~cluster, ncol = 3) + 
+  labs(title = "TBD title", 
+       x = NULL, 
+       y = "Respondent", 
+       fill = NULL,
+       caption = 'Each cluster resampled with n = 1,000') +
+  theme(axis.text.x = element_text(size = 7))
+
 
 # take two at resampling: 
 # resample within each group but maintain group-to-group proportions
