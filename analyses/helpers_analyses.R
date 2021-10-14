@@ -466,13 +466,13 @@ get_min_per_part <- function(df, groups = NULL, activities = NULL, simplify = NU
 #' @examples
 #' format_hour_minute(230)
 format_hour_minute <- function(min) {
-  hours <- floor(min / 60)
-  minutes <- min %% 60
-  hours <- stringr::str_sub(paste0('0', hours), -2)
-  minutes <- stringr::str_sub(paste0('0', minutes), -2)
-  formatted_time <- paste0(hours, ":", minutes)
-  return(formatted_time)
+  H <- floor(min / 60)
+  M <- min %% 60
+  M <- ifelse(nchar(M) == 1, paste0('0', M), as.character(M))
+  formatted <- paste0(H, ":", M)
+  return(formatted)
 }
+
 
 
 # global vars -------------------------------------------------------------

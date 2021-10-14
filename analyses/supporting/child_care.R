@@ -16,18 +16,6 @@ demographics$sex <- recode(demographics$sex,
                            '1' = 'Male',
                            '2' = 'Female')
 
-# create notin function
-`%notin%` <- negate(`%in%`)
-
-# create function to format minutes to hour:min
-format_HM <- function(min){
-  H <- floor(min / 60)
-  H <- ifelse(nchar(H) == 1, paste0('0', H), as.character(H))
-  M <- min %% 60
-  M <- ifelse(nchar(M) == 1, paste0('0', M), as.character(M))
-  formatted <- paste0(H, ":", M)
-  return(formatted)
-}
 
 # childcare definitions ---------------------------------------------------
 
@@ -50,7 +38,6 @@ format_HM <- function(min){
 # Respondent File
 # Total nonwork-related time respondent spent with household family members (in minutes
 'TRTHHFAMILY'
-
 
 
 # count household children under 13 ----------------------------------------
@@ -82,6 +69,59 @@ respondents <- demographics %>%
 
 # filter to only respondents with children
 respondents_with_children <- filter(respondents, n_child_13 > 0)
+
+
+# primary childcare -------------------------------------------------------
+
+childcare_cols <- c('Caring For Household Member', 'Caring For Nonhousehold Members') 
+childcare_cols <- descriptions[descriptions$description %in% childcare_cols,]
+
+# build dataframe that summarizes care by the ID
+childcare_summary <- atussum_0320 %>% 
+  select(ID = TUCASEID, all_of(childcare_cols$activity)) %>% 
+  pivot_longer(-ID) %>% 
+  left_join(childcare_cols, by = c('name' = 'activity')) %>% 
+  group_by(ID, description) %>% 
+  summarize(minutes = sum(value),
+            .groups = 'drop')
+
+# calculate weighted childcare by quarter
+PCC_by_quarter <- respondents_with_children %>% 
+  select(ID, survey_weight, quarter, is_covid_era) %>% 
+  left_join(childcare_summary, by = "ID") %>% 
+  group_by(description, quarter, is_covid_era) %>% 
+  summarize(mean_secondary_childcare = mean(minutes, na.rm = TRUE),
+            weighted_secondary_childcare = sum(survey_weight * minutes) / sum(survey_weight),
+            .groups = 'drop') %>% 
+  arrange(quarter) %>% 
+  mutate(index = round(as.numeric(((quarter - min(quarter)) / 92) + 1)),
+         is_covid_era = if_else(is_covid_era, 'Covid era', 'Pre Covid'),
+         is_covid_era = factor(is_covid_era, levels = c('Pre Covid', 'Covid era')))
+ 
+# plot it
+# y_min <- 4.25*60
+# y_max <- 5.75*60
+PCC_by_quarter %>% 
+  ggplot(aes(x = quarter, y = weighted_secondary_childcare)) +
+  geom_line(data = filter(PCC_by_quarter, quarter %in% as.Date(c('2019-12-31', '2020-09-30'))),
+            color = 'grey50', linetype = 'dashed') +
+  geom_line(aes(color = is_covid_era)) +
+  geom_point(aes(color = is_covid_era)) +
+  facet_wrap(~description, ncol = 2, scales = 'free_y') +
+  ggplot2::scale_color_discrete() +
+  scale_x_date(date_breaks = '1 year', date_labels = "'%y") +
+  scale_y_continuous(#limits = c(y_min, y_max),
+                     #breaks = seq(y_min, y_max, by = 15),
+                     labels = format_hour_minute) +
+  labs(title = 'Mean daily time spent on primary childcare', # confirm age group
+       subtitle = paste0('Only includes respondents with household children under 13\nn = ', 
+                         scales::comma_format()(nrow(respondents_with_children))),
+       x = NULL,
+       y = 'Hour:minutes on primary childcare',
+       color = NULL) +
+  theme(legend.position = 'bottom') 
+# ggsave(file.path('analyses', 'supporting', 'plots', "childcare_primary_timeseries.png"),
+#        height = 6, width = 10)
 
 
 # secondary childcare -----------------------------------------------------
@@ -118,7 +158,7 @@ SSC_by_quarter %>%
   scale_x_date(date_breaks = '1 year', date_labels = "'%y") +
   scale_y_continuous(limits = c(y_min, y_max),
                      breaks = seq(y_min, y_max, by = 15),
-                     labels = format_HM) +
+                     labels = format_hour_minute) +
   labs(title = 'Mean daily time spent on secondary childcare for household children under 13',
        subtitle = paste0('Only includes respondents with household children under 13\nn = ', 
                          scales::comma_format()(nrow(respondents_with_children))),
@@ -143,8 +183,8 @@ SSC_by_quarter_sex <- respondents_with_children %>%
   mutate(index = round(as.numeric(((quarter - min(quarter)) / 92) + 1)))
 
 # plot it
-y_min <- 4.25*60
-y_max <- 5.75*60
+y_min <- 3*60
+y_max <- 6.5*60
 SSC_by_quarter_sex %>% 
   mutate(is_covid_era = if_else(is_covid_era, 'Covid era', 'Pre Covid'),
          is_covid_era = factor(is_covid_era, levels = c('Pre Covid', 'Covid era'))) %>% 
@@ -161,10 +201,10 @@ SSC_by_quarter_sex %>%
   # annotate('text', x = as.Date('2020-06-30'), y = 275, label = 'No data collection', 
   #          color = 'grey30', angle = -90, size = 4) +
   ggplot2::scale_color_discrete() +
-  scale_x_date(date_breaks = '1 year', date_labels = "'%y") +
-  # scale_y_continuous(limits = c(y_min, y_max),
-  #                    breaks = seq(y_min, y_max, by = 15),
-  #                    labels = format_HM) +
+  scale_x_date(date_breaks = '2 years', date_labels = "'%y") +
+  scale_y_continuous(limits = c(y_min, y_max),
+                     breaks = seq(y_min, y_max, by = 30),
+                     labels = format_hour_minute) +
   facet_wrap(~sex, ncol = 2) +
   labs(title = 'Mean daily time spent on secondary childcare for household children under 13',
        subtitle = paste0('Only includes respondents with household children under 13\nn = ', 
