@@ -415,20 +415,11 @@ if (cluster_algo == 'hclust'){
 } else if (cluster_algo == 'pam'){
   ## cluster using PAM
   
-  # fit model and calculate mean silhouette width
-  mean_sil_width <- function(diss, k){
-    cluster_model <- cluster::pam(as.dist(diss), k = k)
-    s_width_mean <- cluster_model$silinfo$avg.width
-    # s_width <- cluster::silhouette(cluster_model)
-    # s_width_mean <- mean(s_width[,'sil_width'])
-    return(s_width_mean)
-  }
-  
-  # calculate the mean widths
+  # calculate the mean silhouette widths per each k value
   k_seq <- k_range[1]:k_range[2]
   mean_widths <- map_dfr(k_seq, function(k){
-    mean_width_t1 <- mean_sil_width(dist_t1, k = k)
-    mean_width_t2 <- mean_sil_width(dist_t2, k = k)
+    mean_width_t1 <- cluster::pam(as.dist(dist_t1), k = k)$silinfo$avg.width
+    mean_width_t2 <- cluster::pam(as.dist(dist_t2), k = k)$silinfo$avg.width
     return(tibble(k = k, mean_width_t1 = mean_width_t1, mean_width_t2 = mean_width_t2))
   })
   
