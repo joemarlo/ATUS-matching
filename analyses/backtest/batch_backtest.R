@@ -8,6 +8,9 @@ years <- 2004:2019
 # set lag between time1 and time2
 lag_years <- 1
 
+# set clustering method
+cluster_algo <- 'pam' # hclust # pam
+
 # create subfolder
 date_time <- paste0("batch_", gsub(" ", "_", gsub("-|:", "", Sys.time())))
 path_to_batch <- file.path('analyses', 'backtest', date_time)
@@ -17,7 +20,7 @@ dir.create(path_to_batch)
 for (time1 in years){
   
   # remove global variables created in previous loop
-  rm(list = setdiff(ls(), c("years", "lag_years", "time1", 'path_to_batch', 'in_batch_mode', 'date_time')))
+  rm(list = setdiff(ls(), c("years", "lag_years", "time1", 'path_to_batch', 'in_batch_mode', 'cluster_algo', 'date_time')))
   
   try({
     # set time2 based on lag
@@ -46,7 +49,7 @@ if (length(years) != length(created_dirs)) warning("At least one year did not su
 
 # create the summary stats
 dir.create(file.path(path_to_batch, 'plots'))
-source(file.path('analyses', 'backtest', 'backtest_summary_statistics.R'))
+if (cluster_algo == 'hclust') source(file.path('analyses', 'backtest', 'backtest_summary_statistics.R'))
 
 # create readme with any relevant notes
 notes <- paste0('This batch was run at ', Sys.time(), ' with the following specifications:',
@@ -55,7 +58,7 @@ notes <- paste0('This batch was run at ', Sys.time(), ' with the following speci
                 '  \nk values: float across t1 and t2',
                 '  \nk search range: ', paste0(k_seq, collapse = ', '),
                 '  \nDistance method: TRATE', #levenshtein
-                '  \nClustering algorithm: hclust, ward.D2', #agnes, PAM
+                '  \nClustering algorithm: PAM, ward.D2', #agnes, PAM, hclust
                 # '  \nNo matching',
                 '  \nMatching method:',
                 '  \n\t-Mahalanobis distance on ', paste0(matching_vars, collapse = ', '),
@@ -65,3 +68,6 @@ notes <- paste0('This batch was run at ', Sys.time(), ' with the following speci
 file_connection <- file(file.path(path_to_batch, "README.md"))
 writeLines(notes, file_connection)
 close(file_connection)
+
+# bash to copy elbow plots to main /plots directory
+# for f in * ; do cp $f/plots/clustering/cluster_validity_pam.png plots/$f.png ; done

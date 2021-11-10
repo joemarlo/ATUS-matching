@@ -56,7 +56,7 @@ demographics <- left_join(demographics, household_children, by = 'ID')
 # add secondary childcare (household children only) to demographics data
 # remove 1Q and 2Q 2020
 respondents <- demographics %>% 
-  filter(year != 2003) %>% 
+  filter(year %notin% c(2003, 2004)) %>% 
   left_join(select(atusresp_0320, ID = TUCASEID, secondary_childcare = TRTHH, TUDIARYDATE),
             by = 'ID') %>% 
   mutate(diary_date = lubridate::ymd(TUDIARYDATE),
@@ -73,15 +73,26 @@ respondents_with_children <- filter(respondents, n_child_13 > 0)
 
 # primary childcare -------------------------------------------------------
 
+# TODO: filter these activities to just childcare --> check specific codes
+# i think childcare defined as under 18 but we can filter to households with only children < 13 CONFIRM
+# probably have to replace this with the activity file detail
+c("hh children", "nonhh children")
+childcare_cols <- specific.codes
 childcare_cols <- c('Caring For Household Member', 'Caring For Nonhousehold Members') 
 childcare_cols <- descriptions[descriptions$description %in% childcare_cols,]
 
+childcare_cols <- specific.codes %>%
+  filter(str_detect(Description, 'hh children'), 
+         !str_detect(Description, 'nonhh children')) %>% 
+  transmute(activity = paste0('t', Code), description = Description)
+  
+
 # build dataframe that summarizes care by the ID
 childcare_summary <- atussum_0320 %>% 
-  select(ID = TUCASEID, all_of(childcare_cols$activity)) %>% 
+  select(ID = TUCASEID, any_of(childcare_cols$activity)) %>% 
   pivot_longer(-ID) %>% 
   left_join(childcare_cols, by = c('name' = 'activity')) %>% 
-  group_by(ID, description) %>% 
+  group_by(ID) %>% #, description) %>% 
   summarize(minutes = sum(value),
             .groups = 'drop')
 
@@ -89,41 +100,52 @@ childcare_summary <- atussum_0320 %>%
 PCC_by_quarter <- respondents_with_children %>% 
   select(ID, survey_weight, quarter, is_covid_era) %>% 
   left_join(childcare_summary, by = "ID") %>% 
-  group_by(description, quarter, is_covid_era) %>% 
-  summarize(mean_secondary_childcare = mean(minutes, na.rm = TRUE),
-            weighted_secondary_childcare = sum(survey_weight * minutes) / sum(survey_weight),
+  group_by(quarter, is_covid_era) %>% 
+  summarize(mean_childcare = mean(minutes, na.rm = TRUE),
+            weighted_childcare = sum(survey_weight * minutes) / sum(survey_weight),
             .groups = 'drop') %>% 
   arrange(quarter) %>% 
   mutate(index = round(as.numeric(((quarter - min(quarter)) / 92) + 1)),
          is_covid_era = if_else(is_covid_era, 'Covid era', 'Pre Covid'),
-         is_covid_era = factor(is_covid_era, levels = c('Pre Covid', 'Covid era')))
+         is_covid_era = factor(is_covid_era, levels = c('Pre Covid', 'Covid era')),
+         quarter_ex_year = str_sub(quarter, 6)) %>% 
+  rowwise() %>% 
+  mutate(quarter_ex_year = which(quarter_ex_year == c('03-31', '06-30', '09-30', '12-31'))) %>% 
+  ungroup()
  
 # plot it
 # y_min <- 4.25*60
 # y_max <- 5.75*60
 PCC_by_quarter %>% 
-  ggplot(aes(x = quarter, y = weighted_secondary_childcare)) +
+  ggplot(aes(x = quarter, y = weighted_childcare)) +
   geom_line(data = filter(PCC_by_quarter, quarter %in% as.Date(c('2019-12-31', '2020-09-30'))),
             color = 'grey50', linetype = 'dashed') +
   geom_line(aes(color = is_covid_era)) +
   geom_point(aes(color = is_covid_era)) +
-  facet_wrap(~description, ncol = 2, scales = 'free_y') +
+  # facet_wrap(~description, ncol = 2, scales = 'free_y') +
   ggplot2::scale_color_discrete() +
   scale_x_date(date_breaks = '1 year', date_labels = "'%y") +
   scale_y_continuous(#limits = c(y_min, y_max),
                      #breaks = seq(y_min, y_max, by = 15),
                      labels = format_hour_minute) +
-  labs(title = 'Mean daily time spent on primary childcare', # confirm age group
+  labs(title = 'Mean daily time spent on primary childcare for household children', # confirm age group
        subtitle = paste0('Only includes respondents with household children under 13\nn = ', 
                          scales::comma_format()(nrow(respondents_with_children))),
        x = NULL,
        y = 'Hour:minutes on primary childcare',
        color = NULL) +
-  theme(legend.position = 'bottom') 
+  theme(legend.position = 'bottom')
 # ggsave(file.path('analyses', 'supporting', 'plots', "childcare_primary_timeseries.png"),
 #        height = 6, width = 10)
 
+# fit generalized least squares with dummy for quarter
+model_primary_childcare <- nlme::gls(
+  weighted_childcare ~ quarter + is_covid_era + quarter_ex_year,
+  data = PCC_by_quarter,
+  corr = nlme::corAR1(form = ~ quarter)) #form = ~ quarter | sex)) # TODO corr = corAR1(0.5, form = ~ Quarter|Sex) 
+summary(model_primary_childcare)
 
+ 
 # secondary childcare -----------------------------------------------------
 
 # time series by quarter
