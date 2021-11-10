@@ -69,6 +69,14 @@ atus_seq_t2 <- seqdef(
 
 # sequenchr::launch_sequenchr(atus_seq_t1)
 
+# tidy the data
+atus_tidy_t1 <- sequenchr::tidy_sequence_data(atus_seq_t1)
+atus_tidy_t2 <- sequenchr::tidy_sequence_data(atus_seq_t2)
+
+# establish color mapping for plots
+color_mapping <- viridis::viridis_pal()(length(alphabet(atus_seq_t1)))
+names(color_mapping) <- TraMineR::alphabet(atus_seq_t1)
+
 
 # clustering --------------------------------------------------------------
 
@@ -86,7 +94,7 @@ dist_t1 <- seqdist(atus_seq_t1, method = "OM", sm = TRATE_cost)
 dist_t2 <- seqdist(atus_seq_t2, method = "OM", sm = TRATE_cost_t2)
 
 # cluster the data and create summary metrics
-k_range <- c(3, 10)
+k_range <- c(2, 10)
 cluster_algo <- get0('cluster_algo')
 if (is.null(cluster_algo)) cluster_algo <- 'hclust'
 if (cluster_algo == 'hclust'){
@@ -165,14 +173,6 @@ if (cluster_algo == 'hclust'){
   
   
   # cluster descriptions ----------------------------------------------------
-  
-  # tidy the data
-  atus_tidy_t1 <- sequenchr::tidy_sequence_data(atus_seq_t1)
-  atus_tidy_t2 <- sequenchr::tidy_sequence_data(atus_seq_t2)
-  
-  # establish color mapping
-  color_mapping <- viridis::viridis_pal()(length(alphabet(atus_seq_t1)))
-  names(color_mapping) <- TraMineR::alphabet(atus_seq_t1)
   
   # plot seqI
   sequenchr::plot_sequence_index(atus_tidy_t1, color_mapping, clusters_t1) + labs(subtitle = paste0("Time 1: ", time1))
@@ -432,7 +432,7 @@ if (cluster_algo == 'hclust'){
     geom_line() +
     scale_x_continuous(breaks = k_range[1]:k_range[2]) +
     labs(title = "Cluster validity: mean silhouette width for PAM",
-         subtitle = paste0("Lower is better\n", time1, "/", time2),
+         subtitle = paste0("Higher is better\n", time1, "/", time2),
          x = 'n clusters',
          y = 'Mean silhouette width',
          color = NULL,
@@ -440,13 +440,63 @@ if (cluster_algo == 'hclust'){
     theme(legend.position = 'bottom')
   ggsave(file.path(file_path, "plots", 'clustering', "cluster_validity_pam.png"), height = 6, width = 9)
   
-  # # best k value is minimum silhouette width
-  # k_t1 <- k_seq[which.min(mean_widths$mean_width_t1)]
-  # k_t2 <- k_seq[which.min(mean_widths$mean_width_t2)]
-  # 
-  # # fit cluster models with this widths
-  # clusters_t1 <- cluster::pam(as.dist(dist_t1), k = k_t1, cluster.only = TRUE)
-  # clusters_t2 <- cluster::pam(as.dist(dist_t2), k = k_t2, cluster.only = TRUE)
+  # best k value is minimum silhouette width
+  k_t1 <- k_seq[which.max(mean_widths$mean_width_t1)]
+  k_t2 <- k_seq[which.max(mean_widths$mean_width_t2)]
+
+  # fit cluster models with these final ks
+  label_clusters_ <- function(clusters) clusters$clustering %>% as_tibble() %>% group_by(value) %>% mutate(label = paste0('Cluster ', value, '  |  n = ', n())) %>% pull(label)
+  clusters_t1_model <- cluster::pam(as.dist(dist_t1), k = k_t1)
+  clusters_t1 <- label_clusters_(clusters_t1_model)
+  clusters_t2_model <- cluster::pam(as.dist(dist_t2), k = k_t2)
+  clusters_t2 <- label_clusters_(clusters_t2_model)
+  
+  # silhouette width
+  clusters_t1_model$silinfo$widths %>%
+    as_tibble() %>%
+    mutate(time = 't1') %>% 
+    bind_rows(clusters_t2_model$silinfo$widths %>% as_tibble() %>% mutate(time = 't2')) %>% 
+    group_by(time, cluster) %>%
+    arrange(-sil_width) %>%
+    mutate(index = row_number(),
+           cluster = paste0('Cluster ', cluster)) %>%
+    ggplot(aes(x = index, y = sil_width)) +
+    geom_hline(yintercept = 0, color = 'grey30', linetype = 'dashed') +
+    geom_col() +
+    facet_wrap(time~cluster, scales = 'free_y') +
+    coord_flip() +
+    labs(title = 'Silhouette width of final cluster solution',
+         subtitle = paste0("Higher is better\n", time1, "/", time2),
+         x = NULL,
+         y = 'Silhouette width')
+  ggsave(file.path(file_path, "plots", 'clustering', "silhouette_width_pam.png"), height = 6, width = 9)
+  
+  ## make plots
+  # plot seqI
+  sequenchr::plot_sequence_index(atus_tidy_t1, color_mapping, clusters_t1) + labs(subtitle = paste0("Time 1: ", time1))
+  ggsave(file.path(file_path, "plots", 'clustering', "seqI_time1.png"), height = 9, width = 12)
+  sequenchr::plot_sequence_index(atus_tidy_t2, color_mapping, clusters_t2) + labs(subtitle = paste0("Time 2: ", time2))
+  ggsave(file.path(file_path, "plots", 'clustering', "seqI_time2.png"), height = 9, width = 12)
+  
+  # plot seqD
+  sequenchr::plot_state(atus_tidy_t1, color_mapping, clusters_t1) + labs(subtitle = paste0("Time 1: ", time1))
+  ggsave(file.path(file_path, "plots", 'clustering', "seqD_time1.png"), height = 9, width = 12)
+  sequenchr::plot_state(atus_tidy_t2, color_mapping, clusters_t2) + labs(subtitle = paste0("Time 2: ", time2))
+  ggsave(file.path(file_path, "plots", 'clustering', "seqD_time2.png"), height = 9, width = 12)
+  
+  # plot modals
+  sequenchr::plot_modal(atus_tidy_t1, color_mapping, clusters_t1) + labs(subtitle = paste0("Time 1: ", time1))
+  ggsave(file.path(file_path, "plots", 'clustering', "modals_time1.png"), height = 9, width = 12)
+  sequenchr::plot_modal(atus_tidy_t2, color_mapping, clusters_t2) + labs(subtitle = paste0("Time 2: ", time2))
+  ggsave(file.path(file_path, "plots", 'clustering', "modals_time2.png"), height = 9, width = 12)
+  
+  # save cluster solutions
+  tibble(
+    ID = c(atus_t1$ID, atus_t2$ID),
+    cluster = c(clusters_t1, clusters_t2),
+    time = c(rep('t1', length(clusters_t1)), rep('t2', length(clusters_t2)))
+  ) %>% 
+    write_csv(path = file.path(file_path, 'data', 'cluster_pairs.csv'))
   
 } else {
   stop("Error in clustering.R: cluster_algo must be 'hclust' or 'pam'")

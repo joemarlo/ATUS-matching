@@ -41,6 +41,42 @@ if (!include_matching){
   ggsave(file.path(path_to_batch, 'plots', 'k_clusters.png'),
          width = 9, height = 6)
   
+  # rand_index
+  rand_indices <- map_dfr(years_run, function(years){
+
+    # path_years
+
+    # get cluster from hclust solution
+    path_to_clusters <- paste0('outputs/final_clusters/default/', years, '/data/cluster_pairs.csv')
+    clusters_hclust <- read_csv(path_to_clusters) %>% filter(time == 't1')
+
+    # get clusters from PAM solution
+    clusters_pam <- read_csv(file.path(path_to_batch, years, 'data', 'cluster_pairs.csv')) %>% filter(time == 't1')
+
+    # create ordered vectors of cluster labels and calculate rand index
+    clusters_formatted <- clusters_hclust %>%
+      full_join(clusters_pam, by = 'ID') %>%
+      select(-pair_id, -starts_with('time')) %>%
+      transmute(cluster_hclust = as.numeric(str_extract(cluster.x, '[0-9]')),
+                cluster_pam = as.numeric(str_extract(cluster.y, '[0-9]')))
+    rand_index <- fossil::rand.index(group1 = clusters_formatted$cluster_hclust, group2 = clusters_formatted$cluster_pam)
+
+    return(tibble(year = substr(years, 0, 4), rand = rand_index))
+  })
+  rand_indices %>% 
+    mutate(year = as.numeric(year)) %>% 
+    ggplot(aes(x = year, y = rand)) +
+    geom_line() +
+    geom_point() +
+    scale_x_continuous(breaks = as.numeric(rand_indices$year)) +
+    scale_y_continuous(breaks = seq(0, 1, by = 0.1), limits = c(0, 1)) +
+    labs(title = 'Rand index by year',
+         subtitle = 'Compares PAM clustering to the default hclust solution\n1 indicates perfect agreement',
+         x = NULL,
+         y = NULL)
+  ggsave(file.path(path_to_batch, 'plots', 'rand_index.png'),
+         width = 9, height = 6)
+  
 } else {
 
   # read in the data

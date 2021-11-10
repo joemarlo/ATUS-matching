@@ -77,5 +77,8 @@ file_connection <- file(file.path(path_to_batch, "README.md"))
 writeLines(notes, file_connection)
 close(file_connection)
 
+# turn off batch mode
+in_batch_mode <- FALSE
+
 # bash to copy PAM elbow plots to [batch]/plots directory
 # for f in * ; do cp $f/plots/clustering/cluster_validity_pam.png plots/$f.png ; done
