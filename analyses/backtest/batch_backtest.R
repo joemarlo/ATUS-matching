@@ -55,7 +55,7 @@ if (length(years) != length(created_dirs)) warning("At least one year did not su
 
 # create the summary stats
 dir.create(file.path(path_to_batch, 'plots'))
-if (cluster_algo == 'hclust') source(file.path('analyses', 'backtest', 'backtest_summary_statistics.R'))
+source(file.path('analyses', 'backtest', 'backtest_summary_statistics.R'))
 
 # create README with any relevant notes
 # MANUALLY EDIT THIS WITH EACH RUN

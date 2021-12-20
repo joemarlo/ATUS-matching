@@ -30,7 +30,7 @@ demographics <- readr::read_delim(
   col_types = readr::cols(metropolitan = readr::col_character())
 )
 
-# set labels for SeqI x axis: formated as time
+# set labels for SeqI x axis: formatted as time
 labels_x <- as.character(seq(2, 24, by = 2))
 labels_x <- c(labels_x[2:12], labels_x[1:2])
 labels_x[1] <- "4am"
@@ -108,6 +108,7 @@ seqI_groups %>%
        y = "Sequence", 
        fill = NULL) +
   theme(axis.text.x = element_text(size = 7))
+# ggsave(file.path('outputs', 'plots', "seqi_grey_1920.png"), height = 6, width = 9)
 
 # same seqI plot but split by sex
 year_ <- 2020
@@ -149,7 +150,7 @@ resampled <- seqI_groups %>%
   transmute(ID, ID_resampled = row_number())
 resampled %>% 
   left_join(seqI_groups, by = 'ID') %>% 
-  filter(year == year_) %>%
+  # filter(year == year_) %>%
   mutate(cluster = stringr::str_sub(cluster, 1, 9)) %>% 
   ggplot(aes(x = period, 
              y = stats::reorder(ID_resampled, entropy), 
@@ -159,14 +160,39 @@ resampled %>%
   scale_fill_manual(values = color_mapping_grey) +
   scale_x_continuous(breaks = breaks_x, labels = labels_x) +
   scale_y_discrete(labels = NULL, breaks = NULL) + 
-  facet_wrap(~cluster, scales = "free_y", ncol = 3) + 
+  facet_wrap(year~cluster, scales = "free_y", ncol = 3) + 
   labs(title = "TBD title", 
        x = NULL, 
        y = "Respondent", 
        fill = NULL,
        caption = 'Each cluster resampled with n = 1,000') +
   theme(axis.text.x = element_text(size = 7))
-# ggsave(file.path('outputs', 'plots', "seqi_grey_1920.png"), height = 6, width = 9)
+# ggsave(file.path('outputs', 'plots', "seqi_grey_1920_resampled.png"), height = 6, width = 9)
+
+# split 2020 by sex
+resampled %>% 
+  left_join(seqI_groups, by = 'ID') %>% 
+  filter(year == 2020) %>%
+  mutate(cluster = stringr::str_sub(cluster, 1, 9)) %>% 
+  left_join(dplyr::select(demographics, ID, sex), by = 'ID') %>% 
+  mutate(sex = if_else(sex == 1, 'Male', 'Female')) %>% 
+  ggplot(aes(x = period, 
+             y = stats::reorder(ID_resampled, entropy), 
+             fill = description)) + 
+  geom_tile() + 
+  # scale_fill_manual(values = color_mapping) +
+  scale_fill_manual(values = color_mapping_grey) +
+  scale_x_continuous(breaks = breaks_x, labels = labels_x) +
+  scale_y_discrete(labels = NULL, breaks = NULL) + 
+  facet_wrap(sex~cluster, scales = "free_y", ncol = 3) + 
+  labs(title = "TBD title: 2020", 
+       x = NULL, 
+       y = "Respondent", 
+       fill = NULL,
+       caption = 'Each cluster resampled with n = 1,000') +
+  theme(axis.text.x = element_text(size = 7))
+# ggsave(file.path('outputs', 'plots', "seqi_grey_1920_resampled_by_sex.png"), height = 6, width = 9)
+
 
 # take one.five: resample with n = proportions between clusters
 resampled_prop <- seqI_groups %>% 

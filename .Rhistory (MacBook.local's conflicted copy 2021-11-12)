@@ -1,0 +1,512 @@
+respondents <- demographics %>%
+filter(year != 2003) %>%
+left_join(select(atusresp_0320, ID = TUCASEID, secondary_childcare = TRTHH, TUDIARYDATE),
+by = 'ID') %>%
+mutate(diary_date = lubridate::ymd(TUDIARYDATE),
+diary_month = lubridate::month(diary_date),
+quarter = ceiling(diary_month / 3),
+quarter = as.Date(paste0(year, '-', quarter * 3, '-01')),
+quarter = quarter + months(1) - 1,
+is_covid_era = quarter > as.Date('2020-03-31')) %>%
+filter(quarter %notin% as.Date(c('2020-03-31', '2020-06-30')))
+# filter to only respondents with children
+respondents_with_children <- filter(respondents, n_child_13 > 0)
+# primary childcare -------------------------------------------------------
+childcare_cols <- c('Caring For Household Member', 'Caring For Nonhousehold Members')
+childcare_cols <- descriptions[descriptions$description %in% childcare_cols,]
+# build dataframe that summarizes care by the ID
+childcare_summary <- atussum_0320 %>%
+select(ID = TUCASEID, all_of(childcare_cols$activity)) %>%
+pivot_longer(-ID) %>%
+left_join(childcare_cols, by = c('name' = 'activity')) %>%
+group_by(ID, description) %>%
+summarize(minutes = sum(value),
+.groups = 'drop')
+# calculate weighted childcare by quarter
+PCC_by_quarter <- respondents_with_children %>%
+select(ID, survey_weight, quarter, is_covid_era) %>%
+left_join(childcare_summary, by = "ID") %>%
+group_by(description, quarter, is_covid_era) %>%
+summarize(mean_secondary_childcare = mean(minutes, na.rm = TRUE),
+weighted_secondary_childcare = sum(survey_weight * minutes) / sum(survey_weight),
+.groups = 'drop') %>%
+arrange(quarter) %>%
+mutate(index = round(as.numeric(((quarter - min(quarter)) / 92) + 1)),
+is_covid_era = if_else(is_covid_era, 'Covid era', 'Pre Covid'),
+is_covid_era = factor(is_covid_era, levels = c('Pre Covid', 'Covid era')))
+PCC_by_quarter %>%
+ggplot(aes(x = quarter, y = weighted_secondary_childcare)) +
+geom_line(data = filter(PCC_by_quarter, quarter %in% as.Date(c('2019-12-31', '2020-09-30'))),
+color = 'grey50', linetype = 'dashed') +
+geom_line(aes(color = is_covid_era)) +
+geom_point(aes(color = is_covid_era)) +
+facet_wrap(~description, ncol = 2, scales = 'free_y') +
+ggplot2::scale_color_discrete() +
+scale_x_date(date_breaks = '1 year', date_labels = "'%y") +
+scale_y_continuous(#limits = c(y_min, y_max),
+#breaks = seq(y_min, y_max, by = 15),
+labels = format_hour_minute) +
+labs(title = 'Mean daily time spent on primary childcare for household children under 13',
+subtitle = paste0('Only includes respondents with household children under 13\nn = ',
+scales::comma_format()(nrow(respondents_with_children))),
+x = NULL,
+y = 'Hour:minutes on primary childcare',
+color = NULL) +
+theme(legend.position = 'bottom')
+childcare_cols
+# plot it
+# y_min <- 4.25*60
+# y_max <- 5.75*60
+PCC_by_quarter %>%
+ggplot(aes(x = quarter, y = weighted_secondary_childcare)) +
+geom_line(data = filter(PCC_by_quarter, quarter %in% as.Date(c('2019-12-31', '2020-09-30'))),
+color = 'grey50', linetype = 'dashed') +
+geom_line(aes(color = is_covid_era)) +
+geom_point(aes(color = is_covid_era)) +
+facet_wrap(~description, ncol = 2, scales = 'free_y') +
+ggplot2::scale_color_discrete() +
+scale_x_date(date_breaks = '1 year', date_labels = "'%y") +
+scale_y_continuous(#limits = c(y_min, y_max),
+#breaks = seq(y_min, y_max, by = 15),
+labels = format_hour_minute) +
+labs(title = 'Mean daily time spent on primary childcare', # confirm age group
+subtitle = paste0('Only includes respondents with household children under 13\nn = ',
+scales::comma_format()(nrow(respondents_with_children))),
+x = NULL,
+y = 'Hour:minutes on primary childcare',
+color = NULL) +
+theme(legend.position = 'bottom')
+# time series by quarter
+# add index for regression
+SSC_by_quarter <- respondents_with_children %>%
+group_by(quarter, is_covid_era) %>%
+summarize(mean_secondary_childcare = mean(secondary_childcare, na.rm = TRUE),
+weighted_secondary_childcare = sum(survey_weight * secondary_childcare) / sum(survey_weight),
+.groups = 'drop') %>%
+arrange(quarter) %>%
+mutate(index = round(as.numeric(((quarter - min(quarter)) / 92) + 1)))
+# plot it
+y_min <- 4.25*60
+y_max <- 5.75*60
+SSC_by_quarter %>%
+mutate(is_covid_era = if_else(is_covid_era, 'Covid era', 'Pre Covid'),
+is_covid_era = factor(is_covid_era, levels = c('Pre Covid', 'Covid era'))) %>%
+ggplot(aes(x = quarter, y = weighted_secondary_childcare)) +
+geom_rect(aes(xmin = as.Date('2020-01-01'),
+xmax = as.Date('2020-09-30'),
+ymin = y_min,
+ymax = y_max),
+fill = 'grey90') +
+geom_line(data = filter(SSC_by_quarter, quarter %in% as.Date(c('2019-12-31', '2020-09-30'))),
+color = 'grey50', linetype = 'dashed') +
+geom_line(aes(color = is_covid_era)) +
+geom_point(aes(color = is_covid_era)) +
+annotate('text', x = as.Date('2020-06-30'), y = 275, label = 'No data collection',
+color = 'grey30', angle = -90, size = 4) +
+ggplot2::scale_color_discrete() +
+scale_x_date(date_breaks = '1 year', date_labels = "'%y") +
+scale_y_continuous(limits = c(y_min, y_max),
+breaks = seq(y_min, y_max, by = 15),
+labels = format_hour_minute) +
+labs(title = 'Mean daily time spent on secondary childcare for household children under 13',
+subtitle = paste0('Only includes respondents with household children under 13\nn = ',
+scales::comma_format()(nrow(respondents_with_children))),
+x = NULL,
+y = 'Hour:minutes on secondary childcare',
+color = NULL) +
+theme(legend.position = 'bottom')
+library(dplyr)
+library(ggplot2)
+x_mean <- 100
+x_sd <- 15
+x <- rnorm(100000, x_mean, x_sd)
+X <- x_mean + x_sd * 2.05
+z <- (X - mean(x)) / sd(x)
+mean(X > x)
+p <- tibble(x = x) %>%
+ggplot(aes(x = x)) +
+geom_density()
+p
+x_sd <- 30
+x <- rnorm(100000, x_mean, x_sd)
+tibble(x = x) %>%
+ggplot(aes(x = x)) +
+geom_density()
+x <- rnorm(1000000, x_mean, x_sd)
+p <- tibble(x = x) %>%
+ggplot(aes(x = x)) +
+geom_density()
+p
+p +
+geom_area(data = d, aes(x = x, y = y),
+fill = 'red', alpha = 0.7)
+d <- ggplot_build(p)$data[[1]]
+p +
+geom_area(data = d, aes(x = x, y = y),
+fill = 'red', alpha = 0.7)# +
+d <- ggplot_build(p)$data[[1]] %>% filter(x < 75) #filter(x < X & x > 55.4)
+p +
+geom_area(data = d, aes(x = x, y = y),
+fill = 'red', alpha = 0.7)# +
+X <- 75
+z <- (X - mean(x)) / sd(x)
+z
+mean(X > x)
+x
+hist(x)
+hist(x / sum(x))
+hist(x)
+barplot(table(x) / sum(x))
+library(dplyr)
+library(ggplot2)
+x_mean <- 100
+x_sd <- 30
+x <- rnorm(1000000, x_mean, x_sd)
+X <- x_mean + x_sd * 2.05
+z <- (X - mean(x)) / sd(x)
+mean(X > x)
+p <- tibble(x = x) %>%
+ggplot(aes(x = x)) +
+geom_density()
+p
+hist(x)
+x
+hist(x)
+p
+mean(x)
+tibble(x = x) %>%
+ggplot(aes(x = x)) +
+geom_density()
+geom_vline(xintercept = mean(x), linetype = 'dashed')
+tibble(x = x) %>%
+ggplot(aes(x = x)) +
+geom_density() +
+geom_vline(xintercept = mean(x), linetype = 'dashed')
+tibble(x = x) %>%
+ggplot(aes(x = x)) +
+geom_density() +
+geom_vline(xintercept = 75, linetype = 'dashed')
+x
+x_sd <- 10
+x <- rnorm(1000000, x_mean, x_sd)
+p <- tibble(x = x) %>%
+ggplot(aes(x = x)) +
+geom_density() +
+geom_vline(xintercept = 75, linetype = 'dashed')
+tibble(x = x) %>%
+ggplot(aes(x = x)) +
+geom_density()
+x_sd <- 100
+x <- rnorm(1000000, x_mean, x_sd)
+tibble(x = x) %>%
+ggplot(aes(x = x)) +
+geom_density()
+plot(density(x))
+x_sd <- 10
+x <- rnorm(1000000, x_mean, x_sd)
+lines(dentsity(x))
+lines(density(x))
+shiny::runApp('~/Dropbox/Data/Projects/thinkCausal_dev/student_work/regression_trees_explainer')
+library(tidyverse)
+library(rdrobust)
+source(file.path('analyses', 'plots', 'ggplot_settings.R'))
+source(file.path('data', 'helpers.R'))
+source(file.path("analyses", "helpers_analyses.R"))
+# read in the demographics data
+demographics <- read_delim(file = file.path("data", "demographic.tsv"),
+delim = "\t",
+escape_double = FALSE,
+trim_ws = TRUE,
+col_types = cols(metropolitan = col_character()))
+# recode sex so its explicit
+demographics$sex <- recode(demographics$sex,
+'1' = 'Male',
+'2' = 'Female')
+# childcare definitions ---------------------------------------------------
+# household children under 13 -- all day
+# respondent file
+# Total time spent during diary day providing secondary childcare for household children < 13 (in minutes)
+'TRTHH'
+# household children under 13 -- within a certain activity
+# activity file
+#Total time spent during activity providing secondary childcare for household children < 13 (in minutes)
+'TRTHH_LN'
+# all children under 13
+# activity file
+# Total time spent during activity providing secondary childcare for all children < 13 (in minutes)
+'TRTCCTOT_LN'
+# time spent with family
+# Respondent File
+# Total nonwork-related time respondent spent with household family members (in minutes
+'TRTHHFAMILY'
+# count household children under 13 ----------------------------------------
+# create var of household children  (own or not) under the age of 13
+household_children <- atusrost_0320 %>%
+group_by(ID = TUCASEID) %>%
+summarize(n_child_13 = sum(TEAGE < 13 & TERRP != 40))
+# add to demographics data
+demographics <- left_join(demographics, household_children, by = 'ID')
+# remove 1Q and 2Q 2020
+respondents <- demographics %>%
+filter(year != 2003) %>%
+left_join(select(atusresp_0320, ID = TUCASEID, secondary_childcare = TRTHH, TUDIARYDATE),
+by = 'ID') %>%
+mutate(diary_date = lubridate::ymd(TUDIARYDATE),
+diary_month = lubridate::month(diary_date),
+quarter = ceiling(diary_month / 3),
+quarter = as.Date(paste0(year, '-', quarter * 3, '-01')),
+quarter = quarter + months(1) - 1,
+is_covid_era = quarter > as.Date('2020-03-31')) %>%
+filter(quarter %notin% as.Date(c('2020-03-31', '2020-06-30')))
+# filter to only respondents with children
+respondents_with_children <- filter(respondents, n_child_13 > 0)
+respondents_with_children
+respondents
+demographics %>%
+filter(year %notin% c(2003, 2004)) %>%
+left_join(select(atusresp_0320, ID = TUCASEID, secondary_childcare = TRTHH, TUDIARYDATE),
+by = 'ID') %>%
+mutate(diary_date = lubridate::ymd(TUDIARYDATE),
+diary_month = lubridate::month(diary_date),
+quarter = ceiling(diary_month / 3),
+quarter = as.Date(paste0(year, '-', quarter * 3, '-01')),
+quarter = quarter + months(1) - 1,
+is_covid_era = quarter > as.Date('2020-03-31')) %>%
+filter(quarter %notin% as.Date(c('2020-03-31', '2020-06-30')))
+# add secondary childcare (household children only) to demographics data
+# remove 1Q and 2Q 2020
+respondents <- demographics %>%
+filter(year %notin% c(2003, 2004)) %>%
+left_join(select(atusresp_0320, ID = TUCASEID, secondary_childcare = TRTHH, TUDIARYDATE),
+by = 'ID') %>%
+mutate(diary_date = lubridate::ymd(TUDIARYDATE),
+diary_month = lubridate::month(diary_date),
+quarter = ceiling(diary_month / 3),
+quarter = as.Date(paste0(year, '-', quarter * 3, '-01')),
+quarter = quarter + months(1) - 1,
+is_covid_era = quarter > as.Date('2020-03-31')) %>%
+filter(quarter %notin% as.Date(c('2020-03-31', '2020-06-30')))
+# filter to only respondents with children
+respondents_with_children <- filter(respondents, n_child_13 > 0)
+respondents_with_children
+simple.codes
+specific.codes
+specific.codes %>% View
+respondents
+29*24
+29*24/2
+shiny::runGitHub('thinkCausal', 'gperrett', subdir = 'thinkCausal')
+?shiny::runGitHub('thinkCausal', 'gperrett', subdir = 'thinkCausal')
+shiny::runGitHub('thinkCausal_dev', 'gperrett', subdir = 'thinkCausal')
+n_tanks <- round(runif(1, 1, 1000))
+sampled_tanks <- sample(1:n_tanks, 5)
+sampled_tanks
+mean(diff(sampled_tanks))
+diff(sampled_tanks)
+mean(diff(sort(sampled_tanks)))
+n_tanks <- round(runif(1, 1, 1000))
+sampled_tanks <- sample(1:n_tanks, 5)
+n_diff <- mean(diff(sort(sampled_tanks)))
+est <- max(sampled_tanks) + n_diff
+est
+n_tanks
+estimate_tanks <- function() {
+n_tanks <- round(runif(1, 1, 1000))
+sampled_tanks <- sample(1:n_tanks, 5)
+n_diff <- mean(diff(sort(sampled_tanks)))
+est <- max(sampled_tanks) + n_diff
+return(est)
+}
+estimate_tanks <- function() {
+n_tanks <- round(runif(1, 1, 1000))
+sampled_tanks <- sample(1:n_tanks, 5)
+n_diff <- mean(diff(sort(sampled_tanks)))
+est <- max(sampled_tanks) + n_diff
+est <- data.frame(actual = n_tanks, estimate = est)
+return(est)
+}
+estimate_tanks
+estimate_tanks()
+estimate_tanks()
+replicate(1000, estimate_tanks())
+estimate_tanks <- function() {
+n_tanks <- round(runif(1, 5, 1000))
+sampled_tanks <- sample(1:n_tanks, 5)
+n_diff <- mean(diff(sort(sampled_tanks)))
+est <- max(sampled_tanks) + n_diff
+est <- data.frame(actual = n_tanks, estimate = est)
+return(est)
+}
+replicate(1000, estimate_tanks())
+lapply(1:1000, estimate_tanks())
+lapply(1:1000, estimate_tanks)
+lapply(1:1000, function(i) estimate_tanks())
+rbind(lapply(1:1000, function(i) estimate_tanks()))
+purrr::map_dfr(1:1000, function(i) estimate_tanks())
+out <- purrr::map_dfr(1:1000, function(i) estimate_tanks())
+out
+library(ggplot2)
+ggplot(out, aes(x = actual, y = estimate)) + geom_point()
+ggplot(out, aes(x = actual, y = estimate)) +
+geom_point() +
+geom_abline(slope = 1, intercept = 0)
+ggplot(out, aes(x = actual, y = estimate)) +
+geom_point(alpha = 0.5) +
+geom_abline(slope = 1, intercept = 0)
+library(dplyr)
+out
+mutate(est_binned = cut(est)
+)
+out %>%
+mutate(est_binned = cut(est, 50))
+out %>%
+mutate(act_binned = cut(actual, 50)) %>%
+ggplot(aes(x = act_binned, y = est)) +
+geom_boxplot()
+out %>%
+mutate(act_binned = cut(actual, 50)) %>%
+ggplot(aes(x = act_binned, group = est)) +
+geom_boxplot()
+out %>%
+mutate(act_binned = cut(actual, 50)) %>%
+ggplot(aes(x = act_binned, y = est, group = act_binned)) +
+geom_boxplot()
+out %>%
+mutate(act_binned = cut(actual, 50))
+out %>%
+mutate(act_binned = cut(actual, 100)) %>%
+ggplot(aes(x = act_binned, y = est, group = act_binned)) +
+geom_boxplot()
+cut
+?cut
+mutate(act_binned = cut(actual, seq(0, 1000, by 100)) %>%
+mutate(act_binned = cut(actual, seq(0, 1000, by = 100)) %>%
+out %>%
+mutate(act_binned = cut(actual, seq(0, 1000, by = 100))) %>%
+ggplot(aes(x = act_binned, y = est, group = act_binned)) +
+geom_boxplot()
+out %>%
+mutate(act_binned = cut(actual, seq(0, 1000, by = 100))) %>%
+ggplot(aes(x = act_binned, y = est, group = act_binned)) +
+geom_boxplot()
+out %>%
+mutate(act_binned = cut(actual, seq(0, 1000, by = 100)))
+out %>%
+mutate(act_binned = cut(actual, seq(0, 1000, by = 100))) %>%
+ggplot(aes(x = act_binned, y = estimate, group = act_binned)) +
+geom_boxplot()
+out
+out %>%
+mutate(act_binned = cut(actual, seq(0, 1000, by = 100)),
+diff = actual - estimate) %>%
+ggplot(aes(x = act_binned, y = diff, group = act_binned)) +
+geom_boxplot()
+estimate_tanks <- function() {
+n_tanks <- round(runif(1, 5, 1000))
+sampled_tanks <- sample(1:n_tanks, 5)
+n_diff <- mean(diff(sort(sampled_tanks)))
+est <- max(sampled_tanks) + n_diff
+out <- data.frame(actual = n_tanks, estimate = est)
+return(out)
+}
+out <- purrr::map_dfr(1:10000, function(i) estimate_tanks())
+library(ggplot2)
+library(dplyr)
+ggplot(out, aes(x = actual, y = estimate)) +
+geom_point(alpha = 0.5) +
+geom_abline(slope = 1, intercept = 0)
+out %>%
+mutate(act_binned = cut(actual, seq(0, 1000, by = 100)),
+diff = actual - estimate) %>%
+ggplot(aes(x = act_binned, y = diff, group = act_binned)) +
+geom_boxplot()
+estimate_tanks <- function(n_tanks) {
+# n_tanks <- round(runif(1, 5, 1000))
+sampled_tanks <- sample(1:n_tanks, 5)
+n_diff <- mean(diff(sort(sampled_tanks)))
+est <- max(sampled_tanks) + n_diff
+out <- data.frame(actual = n_tanks, estimate = est)
+return(out)
+}
+mean_of_sample <- function() {
+pop <- rnorm(10000)
+mean(sample(pop, 10))
+}
+mean_of_sample()
+mean_of_sample()
+mean_of_sample()
+mean_of_sample()
+mean_of_sample()
+replicate(1000, mean_of_sample())
+replicate(1000, mean_of_sample()) %>% hist()
+hist(replicate(1000, mean_of_sample()))
+pop <- rnorm(10000)
+mean_of_sample <- function() {
+mean(sample(pop, 10))
+}
+hist(replicate(1000, mean_of_sample()))
+hist(replicate(1000, mean_of_sample()))
+hist(replicate(1000, mean_of_sample()))
+hist(replicate(1000, mean_of_sample()))
+hist(replicate(1000, mean_of_sample()))
+hist(replicate(1000, mean_of_sample()))
+hist(replicate(1000, mean_of_sample()))
+hist(replicate(1000, mean_of_sample()))
+hist(replicate(1000, mean_of_sample()))
+hist(replicate(1000, mean_of_sample()))
+hist(replicate(1000, mean_of_sample()))
+hist(replicate(1000, mean_of_sample()))
+hist(replicate(1000, mean_of_sample()))
+plot(density(replicate(1000, mean_of_sample())))
+plot(density(replicate(1000, mean_of_sample())))
+plot(density(replicate(1000, mean_of_sample())))
+plot(density(replicate(1000, mean_of_sample())))
+plot(density(replicate(1000, mean_of_sample())))
+plot(density(replicate(1000, mean_of_sample())))
+plot(density(replicate(1000, mean_of_sample())))
+plot(density(replicate(1000, mean_of_sample())))
+plot(density(replicate(10000, mean_of_sample())))
+plot(density(replicate(10000, mean_of_sample())))
+plot(density(replicate(10000, mean_of_sample())))
+plot(density(replicate(10000, mean_of_sample())))
+sample(pop, 10)
+pop
+pop
+pop
+pop[1:10]
+sample(pop, 10)
+sample(pop, 10)
+sample(pop, 10)
+sample(pop, 10)
+sample(pop, 10)
+sample(pop, 10)
+sample(pop, 10)
+sample(pop, 10)
+mean(sample(pop, 10))
+mean(sample(pop, 10))
+mean(sample(pop, 10))
+mean(sample(pop, 10))
+mean(sample(pop, 10))
+plot(density(replicate(10000, mean_of_sample())))
+x <- replicate(10000, mean_of_sample())
+x
+plot(density(x))
+pop <- rnorm(10000, mean = 100)
+mean_of_sample <- function() {
+mean(sample(pop, 10))
+}
+x <- replicate(10000, mean_of_sample())
+plot(density(x))
+2 / (2.5/sqrt(8))
+(2.5/sqrt(8))
+2 / (2.5/8)
+runif
+pop <- runif(10000)
+mean_of_sample <- function() {
+mean(sample(pop, 10))
+}
+x <- replicate(10000, mean_of_sample())
+plot(density(x))
+2 / (2.5/sqrt(8))
+agnes
+?agnes
