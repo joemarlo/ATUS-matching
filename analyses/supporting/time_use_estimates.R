@@ -243,7 +243,7 @@ housework_by_age_sex_year <- atussum_0320 %>%
 housework_by_age_sex_year %>% 
   filter(name != 'Average minutes') %>% 
   ggplot(aes(x = TUYEAR, y = value, group = grouping, color = as.factor(TESEX))) +
-  # geom_point(alpha = 0.15) +
+  geom_point(alpha = 0.15) +
   geom_smooth(method = lm,
               formula = y ~ x,
               se = TRUE,
@@ -265,6 +265,32 @@ housework_by_age_sex_year %>%
         legend.key.width = unit(1.3, "cm"))
 # ggsave(file.path('analyses', 'supporting', 'plots', "housework_by_age_sex.png"),
 #        height = 6, width = 10)
+
+# same data but different plot style
+housework_by_age_sex_year %>% 
+  filter(name != 'Average minutes') %>% 
+  ggplot(aes(x = TUYEAR, y = value, group = grouping, color = TEAGE)) +
+  # geom_point(alpha = 0.15) +
+  # geom_line(alpha = 0.15) +
+  geom_smooth(method = lm,
+              formula = y ~ x,
+              se = FALSE,
+              aes(linetype = TEAGE),
+              alpha = 0.1) +
+  ggplot2::scale_color_discrete() +
+  scale_linetype_manual(values = c("solid", "dashed", "dotdash", "dotted")) +
+  facet_grid(name~TESEX, scales = 'free_y') + 
+  labs(title = '[DRAFT] Time spent in household activities per day',
+       subtitle = 'Includes activities such as cleaning, laundry, cooking, etc.',
+       caption = "2003-2020 American Time Use Survey",
+       x = NULL,
+       y = NULL,
+       color = NULL,
+       linetype = NULL) +
+  theme(legend.position = 'bottom',
+        legend.key.width = unit(1.3, "cm"))
+# ggsave(file.path('analyses', 'supporting', 'plots', "housework_by_age_sex_split.png"),
+#        height = 7, width = 8)
 
 housework_by_age_sex_year_met <- atussum_0320 %>% 
   select(TUFNWGTP, TUCASEID, house.codes, TESEX, TUYEAR, TEAGE, metropolitan) %>% 
