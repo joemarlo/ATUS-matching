@@ -74,9 +74,9 @@ Plot takeaways:
 - Mean daily time spent on secondary childcare was at an all-time high for 2020 3Q and stayed elevated in 2020 4Q
 - The gap between females and males within primary vs secondary childcare is greater on absolute basis (~1 hour vs ~2 hours) but less relatively (~50% less vs ~33% less)
 
-![secondary childcare](/analyses/supporting/plots/childcare_secondary_timeseries.png)
+![secondary childcare](/analyses/supporting/plots/childcare_secondary_timeseries.png#)
 
-![secondary childcare by gender](/analyses/supporting/plots/childcare_secondary_timeseries_by_sex.png)
+![secondary childcare by gender](/analyses/supporting/plots/childcare_secondary_timeseries_by_sex.png#)
 
 Plot takeaways:
 - Secondary childcare is not as strongly moderated as primary childcare except for elder in household which shows a greater difference
@@ -97,7 +97,8 @@ Plot takeaways:
 - Compared to 2019, there has been an increase in the prevalence of workers providing secondary childcare (red, cluster 2 2020 vs cluster 2 2019)
 - Discuss sex differences. I don't think there is a strong difference but waiting on final plot
 
-![clustering default colored](/outputs/final_clusters/default/2019_2020/plots/clustering/seqD_time2.png)
+<!--![clustering default colored](/outputs/final_clusters/default/2019_2020/plots/clustering/seqD_time2.png)-->
+![clustering seqD](/outputs/plots/seqd_2020.png)
 
 ![clustering default grey](/outputs/plots/seqi_grey_1920_resampled.png)
 

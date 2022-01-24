@@ -93,6 +93,33 @@ seqI_groups <- atus_raw %>%
     description == 'Work : No SCC' ~ 'Work w/o SCC',
     description == 'Work : SCC' ~ 'Work with SCC',
     TRUE ~ 'Other activities'))
+
+# basic seqI
+atus_raw %>% 
+  right_join(clusters, by = 'ID') %>% 
+  filter(time == 't2') %>% 
+  group_by(ID) %>% 
+  mutate(entropy = sum(description %in% yellow_labels),
+         year = case_when(time == 't1' ~ '2019',
+                          time == 't2' ~ '2020',
+                          TRUE ~ 'NA')) %>% 
+  ungroup() %>% 
+  ggplot(ggplot2::aes(x = period, fill = description)) +
+  geom_bar(width = 1) +
+  # geom_tile() +
+  scale_fill_manual(values = color_mapping) +
+  scale_y_discrete(labels = NULL, breaks = NULL) +
+  facet_wrap(~cluster, scales = 'free_y') +
+  labs(title = "All sequences sorted by entropy",
+       x = 'Period',
+       y = 'Sequence',
+       fill = NULL) +
+  theme(legend.position = 'bottom',
+        legend.text = element_text(size = 5))
+# ggsave(file.path('outputs', 'plots', "seqd_2020.png"), height = 6, width = 9)
+
+
+# seqI plot sorted amount of work
 seqI_groups %>% 
   ggplot(aes(x = period, 
              y = stats::reorder(ID, entropy), 
@@ -179,7 +206,7 @@ resampled %>%
   ggplot(aes(x = period, 
              y = stats::reorder(ID_resampled, entropy), 
              fill = description)) + 
-  geom_tile() + 
+  geom_tile(width = 1) + 
   # scale_fill_manual(values = color_mapping) +
   scale_fill_manual(values = color_mapping_grey) +
   scale_x_continuous(breaks = breaks_x, labels = labels_x) +
@@ -193,6 +220,48 @@ resampled %>%
   theme(axis.text.x = element_text(size = 7))
 # ggsave(file.path('outputs', 'plots', "seqi_grey_1920_resampled_by_sex.png"), height = 6, width = 9)
 
+# split by sex but stack them instead of facet
+filler_rows <- tibble(
+  ID = 1:90, 
+  cluster = sort(rep(paste0('Cluster ', 1:3), 30)),
+  entropy = 0,
+  sex = 'g_blank'
+  )
+resampled_sex <- resampled %>% 
+  left_join(seqI_groups, by = 'ID') %>% 
+  filter(year == 2020) %>%
+  mutate(cluster = stringr::str_sub(cluster, 1, 9)) %>% 
+  left_join(dplyr::select(demographics, ID, sex), by = 'ID') %>% 
+  mutate(sex = if_else(sex == 1, 'Male', 'Female'))
+resampled_sex %>%
+  distinct(ID, cluster, entropy, sex) %>%
+  bind_rows(filler_rows) %>% 
+  group_by(cluster) %>% 
+  arrange(sex, entropy) %>% 
+  mutate(order = row_number()) %>%
+  ungroup() %>% 
+  select(ID, order) %>% 
+  left_join(bind_rows(
+    resampled_sex,
+    filler_rows
+    ), by = 'ID') %>% 
+  ggplot(aes(x = period, 
+             y = order,
+             fill = description)) + 
+  geom_tile(width = 1) + 
+  # scale_fill_manual(values = color_mapping) +
+  scale_fill_manual(values = color_mapping_grey) +
+  scale_x_continuous(breaks = breaks_x, labels = labels_x) +
+  scale_y_discrete(labels = NULL, breaks = NULL) + 
+  facet_wrap(~cluster, scales = "free_y", ncol = 3) + 
+  labs(title = "TBD title: 2020", 
+       x = NULL, 
+       y = "Respondent", 
+       fill = NULL,
+       caption = 'Each cluster resampled with n = 1,000') +
+  theme(axis.text.x = element_text(size = 7),
+        panel.grid.major.x = element_blank())
+# ggsave(file.path('outputs', 'plots', "seqi_grey_1920_resampled_by_sex_split.png"), height = 6, width = 9)
 
 # take one.five: resample with n = proportions between clusters
 resampled_prop <- seqI_groups %>% 
