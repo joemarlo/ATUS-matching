@@ -10,12 +10,32 @@ set.seed(44)
 if (!isTRUE(get0('in_batch_mode'))) file_path <- "analyses"
 
 
+# steps for ITT SCC matching ----------------------------------------------
+
+# # for child care ITT matching
+# respondents_with_children <- readr::read_csv(file.path('analyses', 'data', 'respondents_with_children.csv'))
+# demographics <- filter(demographics, demographics$ID %in% respondents_with_children$ID)
+# demographics <- select(demographics, -child_in_HH)
+# 
+# # add quarter identifier and filter to Q3 and Q4
+# demographics <- atusresp_0320 %>% 
+#   mutate(diary_date = lubridate::ymd(TUDIARYDATE),
+#          diary_month = lubridate::month(diary_date),
+#          quarter = ceiling(diary_month / 3)) %>% 
+#   select(ID = TUCASEID, quarter) %>% 
+#   right_join(demographics, by = 'ID') %>% 
+#   filter(quarter %in% 3:4)
+# 
+# matching_vars <- setdiff(c(matching_vars, 'quarter'), 'child_in_HH')
+
+
 # pre-processing ----------------------------------------------------------
 
 # convert year to boolean
 # tmp <- sample(c(T,F), nrow(demographics), replace = T)
 # demographics <- filter(demographics, year == 2006)
-demographics$treatment <- demographics$year == time1
+demographics$treatment <- demographics$year == time1 # flip time here to switch between many-to-1 and 1-to-many
+# time1 is many-to-one
 
 # remove unnecessary columns for m distance
 demographics_trimmed <- demographics[, matching_vars]
@@ -103,6 +123,12 @@ race_matches <- sapply(demographics[demographics$treatment,]$race,
 #   return(is_match)
 # })
 
+# strata: quarter
+quarter_matches <- sapply(demographics_treatment$quarter, function(quarter) {
+  is_match <- demographics_control$quarter == quarter
+  return(is_match)
+})
+
 # get the index of the best match within the age range
 index_of_best_match <- c()
 distance_of_best_match <- c()
@@ -118,7 +144,8 @@ for (i in 1:nrow(demographics_mdistance)){
   t2_matches_sex <- sex_matches[,i]
   t2_matches_race <- race_matches[,i]
   # t2_matches_labor_force <- labor_force_matches[,i]
-  t2_matches_all <- t2_matches_age & t2_matches_sex & t2_matches_race #& t2_matches_labor_force
+  t2_matches_quarter <- quarter_matches[, i]
+  t2_matches_all <- t2_matches_age & t2_matches_sex & t2_matches_race & t2_matches_quarter #& t2_matches_labor_force
   t1[!t2_matches_all] <- 1e10
   potential_match_pop[i] <- sum(t2_matches_all)
   
@@ -127,7 +154,7 @@ for (i in 1:nrow(demographics_mdistance)){
   distance_of_best_match[i] <- min(t1)
 }
 rm(t1, t2_matches_age, t2_matches_sex, t2_matches_race, t2_matches_all, 
-   i, age_matches, sex_matches, race_matches, labor_force_matches)
+   i, age_matches, sex_matches, race_matches, labor_force_matches, quarter_matches)
 
 # how often is there no potential matchs
 # sum(potential_match_pop == 0)
@@ -153,7 +180,7 @@ tibble(ID = demographics[demographics$treatment,]$ID[bad_matches]) %>%
 tibble(pair_id = seq_along(distance_of_best_match),
        distance = distance_of_best_match) %>%
   filter(pair_id %notin% bad_matches) %>%
-  write_csv(path = file.path(file_path, 'data', 'pair_distance.csv'))
+  write_csv(file.path(file_path, 'data', 'pair_distance.csv'))
 
 # overwrite match_indices if using stratifying
 match_indices <- index_of_best_match
@@ -245,7 +272,7 @@ match_summary %>%
   labs(title = 'Proportion of matches that match perfectly on: ',
        subtitle = paste0(
          paste0(blocking_vars, collapse = ', '),
-         '\nMethodology: mahalanobis, blocking on sex, race, age +/- 2 years' #, labor_force_status'
+         '\nMethodology: mahalanobis, blocking on sex, race, age +/- 2 years, quarter' #, labor_force_status'
        ),
        x = 'Number of matches across all privileged variables',
        y = 'Proportion of all pairs')
@@ -265,7 +292,7 @@ match_summary %>%
   facet_grid(~isNumeric, scales = 'free_x') +
   labs(title = 'How many pairs matched perfectly for each variable?',
        subtitle = paste0("Yellow variables are not explicitly privileged but are highlighted for emphasis",
-                         '\nMethodology: mahalanobis, blocking on sex, race, age +/- 2 years'), #, labor_force_status'),
+                         '\nMethodology: mahalanobis, blocking on sex, race, age +/- 2 years, quarter'), #, labor_force_status'),
        x = NULL,
        y = 'Proportion of all pairs') +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
@@ -283,7 +310,7 @@ final_matches %>%
   scale_y_continuous(labels = NULL) +
   facet_wrap(~name, scales = 'free') +
   labs(title = 'Difference within matched pairs for numeric variables',
-       subtitle = 'Methodology: mahalanobis, blocking on sex, race, age +/- 2 years', #, labor_force_status',
+       subtitle = 'Methodology: mahalanobis, blocking on sex, race, age +/- 2 years, quarter', #, labor_force_status',
        x = NULL,
        y = NULL)
 ggsave(file.path(file_path, "plots", 'matching', "numeric_differences_mahalanobis.png"), height = 5, width = 9)

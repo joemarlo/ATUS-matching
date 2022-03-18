@@ -70,6 +70,9 @@ respondents <- demographics %>%
 # filter to only respondents with children
 respondents_with_children <- filter(respondents, n_child_13 > 0)
 
+# readr::write_csv(respondents_with_children, 
+#                  file.path('analyses', 'data', 'respondents_with_children.csv'))
+
 
 # primary childcare -------------------------------------------------------
 

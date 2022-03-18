@@ -396,7 +396,14 @@ clusters %>%
   labs(title = 'Re-weighted cluster proportions by year',
        x = NULL,
        y = NULL)
-  
+
+
+
+# cluster 2 comparison ----------------------------------------------------
+
+# need to get the average minutes for SCC for males/females in cluster2
+# seqI_groups
+
 
 
 # turbulence --------------------------------------------------------------
