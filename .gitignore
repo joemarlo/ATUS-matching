@@ -6,6 +6,9 @@ analyses/supporting/fred_api_key.R
 .DS_Store
 .DS_store
 
+tmp/data/
+tmp/inputs/
+
 # History files
 .Rhistory
 .Rapp.history

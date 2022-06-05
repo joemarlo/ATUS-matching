@@ -1,5 +1,4 @@
 require(viridis)
-require(ggplot2)
 
 # build custom theme
 theme_custom <- function() {
