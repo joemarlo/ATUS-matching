@@ -6,8 +6,11 @@ analyses/supporting/fred_api_key.R
 .DS_Store
 .DS_store
 
-tmp/data/
-tmp/inputs/
+tmp/data/*.csv
+tmp/data/*.tsv
+tmp/inputs/ATUS-2003-2018
+tmp/inputs/ATUS-2003-2020
+tmp/inputs/ATUS-2018
 
 # History files
 .Rhistory

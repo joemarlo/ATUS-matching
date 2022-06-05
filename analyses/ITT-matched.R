@@ -14,7 +14,7 @@ source('analyses/helpers_analyses.R')
 
 # if not running in batch mode, then create a file path to the analyses subfolder
 # for use when saving plots and dataframes
-if (!isTRUE(get0('in_batch_mode'))) file_path <- "analyses"
+# if (!isTRUE(get0('in_batch_mode'))) file_path <- "analyses"
 
 # read in the demographics data
 demographics <- read_delim(file = file.path("data", "demographic.tsv"),
