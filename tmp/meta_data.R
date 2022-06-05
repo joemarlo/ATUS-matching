@@ -1,3 +1,8 @@
+####
+# This script cleans the input data and outputs the relevant data to /data
+###
+
+
 library(dplyr)
 library(lubridate)
 library(stringr)
@@ -83,9 +88,3 @@ demographic_vars <- clean_demographics(
   atusresp_0320
 )
 readr::write_tsv(demographic_vars, 'data/demographic.tsv')
-
-
-# analyses ----------------------------------------------------------------
-
-
-

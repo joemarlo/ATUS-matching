@@ -1,3 +1,8 @@
+###
+# This script performs the time-series modeling 
+###
+
+
 library(dplyr)
 library(purrr)
 library(tidyr)
