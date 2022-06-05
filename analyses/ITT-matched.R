@@ -46,8 +46,8 @@ respondents_with_children <- readr::read_csv(file.path('analyses', 'data', 'resp
 
 # filter SSC to just these years
 childcare_df <- respondents_with_children %>% 
-  # filter(year %in% 2019:2020) %>% 
-  filter(year %in% 2018:2019) %>% 
+  filter(year %in% 2019:2020) %>%
+  # filter(year %in% 2018:2019) %>% 
   select(ID, survey_weight, year, sex, secondary_childcare)
 
 # why so few?
@@ -120,8 +120,8 @@ childcare_pairs %>%
 childcare_pairs_wide <- childcare_pairs %>% 
   select(pair_id, year, secondary_childcare, sex) %>%
   tidyr::pivot_wider(names_from = year, values_from = secondary_childcare) %>% 
-  # mutate(diff = `2020` - `2019`)
-  mutate(diff = `2019` - `2018`)
+  mutate(diff = `2020` - `2019`)
+  # mutate(diff = `2019` - `2018`)
 
 childcare_pairs %>% 
   group_by(pair_id) %>% 
@@ -130,7 +130,7 @@ childcare_pairs %>%
   arrange(pair_id) %>% 
   ggplot() +
   geom_linerange(data = childcare_pairs_wide,
-                 aes(xmin = `2018`, xmax = `2019`, y = reorder(pair_id, -diff)),
+                 aes(xmin = `2019`, xmax = `2020`, y = reorder(pair_id, -diff)),
                  color = 'grey60', linetype = 'solid', size = 0.2) +
   geom_point(aes(x = secondary_childcare, y = reorder(pair_id, -diff), fill = as.factor(year)),
              color = 'grey60', pch = 21, stroke = 0.6, alpha = 0.9, size = 2) +
@@ -197,10 +197,10 @@ childcare_pairs_diffs %>%
   labs(title = 'Distribution of differences between matched pairs',
        subtitle = paste0('Only includes respondents with household children under 13\n', 
                          scales::comma_format()(n_distinct(childcare_pairs$pair_id)), " pairs"),
-       caption = 'Matched 2018:2019 Q3 and Q4; 1-to-many',
+       caption = 'Matched 2019:2020 Q3 and Q4; 1-to-many',
        x = 'Difference in hour:minutes on secondary childcare',
        y = 'Count / scaled density')
-# ggsave(file.path('analyses', 'plots', 'matched-ITT', 'diff-matched-2018:2019-q3q4-sex-1tomany.png'),
+# ggsave(file.path('analyses', 'plots', 'matched-ITT', 'diff-matched-2019:2020-q3q4-sex-1tomany.png'),
 #        width = 9, height = 12)
 
 
@@ -220,6 +220,15 @@ childcare_pairs_diffs %>%
        y = 'Mahalanobis distance between matched pairs',
        fill = NULL)
 
+childcare_pairs_diffs %>% 
+  ungroup() %>% 
+  distinct(pair_id, sex, diff) %>% 
+  left_join(match_distances, by = 'pair_id') %>% 
+  mutate(bin = cut(distance, breaks = c(0, 3, 6, 10))) %>% 
+  ggplot(aes(x = diff)) +
+  geom_density() +
+  facet_grid(bin ~ sex)
+# include as footnote
 
 # call notes --------------------------------------------------------------
 

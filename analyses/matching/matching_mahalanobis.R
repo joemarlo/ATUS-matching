@@ -17,13 +17,13 @@ if (!isTRUE(get0('in_batch_mode'))) file_path <- "analyses"
 # demographics <- filter(demographics, demographics$ID %in% respondents_with_children$ID)
 # demographics <- select(demographics, -child_in_HH)
 # 
-# # add quarter identifier and filter to Q3 and Q4
-# demographics <- atusresp_0320 %>% 
+# # # add quarter identifier and filter to Q3 and Q4
+# demographics <- atusresp_0320 %>%
 #   mutate(diary_date = lubridate::ymd(TUDIARYDATE),
 #          diary_month = lubridate::month(diary_date),
-#          quarter = ceiling(diary_month / 3)) %>% 
-#   select(ID = TUCASEID, quarter) %>% 
-#   right_join(demographics, by = 'ID') %>% 
+#          quarter = ceiling(diary_month / 3)) %>%
+#   select(ID = TUCASEID, quarter) %>%
+#   right_join(demographics, by = 'ID') %>%
 #   filter(quarter %in% 3:4)
 # 
 # matching_vars <- setdiff(c(matching_vars, 'quarter'), 'child_in_HH')
@@ -34,7 +34,7 @@ if (!isTRUE(get0('in_batch_mode'))) file_path <- "analyses"
 # convert year to boolean
 # tmp <- sample(c(T,F), nrow(demographics), replace = T)
 # demographics <- filter(demographics, year == 2006)
-demographics$treatment <- demographics$year == time1 # flip time here to switch between many-to-1 and 1-to-many
+demographics$treatment <- demographics$year == time1 # flip time here to switch between many-to-1 and 1-to-many; ITT should use time2
 # time1 is many-to-one
 
 # remove unnecessary columns for m distance
