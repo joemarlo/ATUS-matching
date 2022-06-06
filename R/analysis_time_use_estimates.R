@@ -1,3 +1,7 @@
+###
+# This functions are no longer used
+###
+
 
 #' Estimate the mean minutes spent on a time-use activity
 #'

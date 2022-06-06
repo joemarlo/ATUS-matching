@@ -16,12 +16,12 @@ Reproducible code for working paper on matching clustered sequence data and unde
     ├── obsolete/		# Obsolete files
     ├── outputs/		# Formal write-ups and figures
     ├── R/			# Functions for cleaning and analysis
-    ├── renv/       # Storage for renv
-    ├── _targets/   # Storage for targets
+    ├── renv/         # Storage for renv
+    ├── _targets/     # Storage for targets
     ├── tests/		# Unit tests
-    ├── _targets.R    # [targets](https://books.ropensci.org/targets/) pipeline
-    ├── run.R         # Run the targets pipeline from R
-    ├── run.sh        # Run the targets pipeline from shell
+    ├── _targets.R      # [targets](https://books.ropensci.org/targets/) pipeline
+    ├── run.R           # Run the targets pipeline from R
+    ├── run.sh          # Run the targets pipeline from shell
     └── README.md
 
 <br>
@@ -29,8 +29,9 @@ Reproducible code for working paper on matching clustered sequence data and unde
 ### Reproducibility
 
 To reproduce, run the scripts in the following order:  
-1. Download 2003-2020 multi-year microdata from the [BLS](https://www.bls.gov/tus/#data) and save to `inputs/ATUS-2003-2020/`    
-2. Clean and consolidate the data:  ~~`meta_data.R`~~ `run.R`
+1. Install `renv` via `install.packages('renv')` and then run `renv::restore()`
+2. Download, clean, and consolidate the data:  ~~`meta_data.R`~~ `run.R`
+  - Note: this downloads the 2003-2020 multi-year microdata from the [BLS](https://www.bls.gov/tus/datafiles-0320.htm) and saves them `inputs/ATUS-2003-2020/`   
 3. Run the analyses  
     1. `analysis/timeseries.R`  
     2. `analysis/matching.R`  
@@ -38,9 +39,10 @@ To reproduce, run the scripts in the following order:
 
 <br>
 
-See also: [ATUS repo](https://github.com/joemarlo/ATUS)
-
-
 ### TODO
 - Function'ize the sequence analysis script and run backtest
 - Integrate cluster post hoc analysis
+
+<br>
+
+See also: [ATUS repo](https://github.com/joemarlo/ATUS)

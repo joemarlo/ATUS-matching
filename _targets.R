@@ -38,7 +38,11 @@ pipeline <- list()
 
 # data pipelines
 pipeline$data$download <- list(
-  # TODO
+  # TODO: this doesn't pull the targets dependency with it
+  tar_target(
+    name = download_ATUS_files,
+    command = download_ATUS()
+  )
 )
 pipeline$data$essential_industries <- list(
   tar_target(
@@ -143,6 +147,7 @@ pipeline$analysis$SA <- list(
 
 # full pipeline
 list(
+  pipeline$data$download,
   pipeline$data$essential_industries,
   pipeline$data$FIPS,
   pipeline$data$ATUS,
