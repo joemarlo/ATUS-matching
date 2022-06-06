@@ -10,6 +10,7 @@ Reproducible code for working paper on matching clustered sequence data and unde
 
 ### Folder structure
     .
+    ├── analysis/		# Analysis scripts
     ├── data/		# Cleaned data
     ├── inputs/		# Raw input data
     ├── obsolete/		# Obsolete files
@@ -19,9 +20,6 @@ Reproducible code for working paper on matching clustered sequence data and unde
     ├── _targets/   # Storage for targets
     ├── tests/		# Unit tests
     ├── _targets.R    # [targets](https://books.ropensci.org/targets/) pipeline
-    ├── meta_matching.R	# Matching analysis
-    ├── meta_SA.R		# Sequence analysis
-    ├── meta_timeseries.R	# Time series analysis
     ├── run.R         # Run the targets pipeline from R
     ├── run.sh        # Run the targets pipeline from shell
     └── README.md
@@ -34,9 +32,9 @@ To reproduce, run the scripts in the following order:
 1. Download 2003-2020 multi-year microdata from the [BLS](https://www.bls.gov/tus/#data) and save to `inputs/ATUS-2003-2020/`    
 2. Clean and consolidate the data:  ~~`meta_data.R`~~ `run.R`
 3. Run the analyses  
-    1. `meta_timeseries.R`  
-    2. `meta_matching.R`  
-    3. `meta_SA.R`  
+    1. `analysis/timeseries.R`  
+    2. `analysis/matching.R`  
+    3. `analysis/sequence_analysis.R`  
 
 <br>
 
