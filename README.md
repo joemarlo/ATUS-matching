@@ -4,7 +4,7 @@ Reproducible code for working paper on matching clustered sequence data and unde
 
 <br>
 <p align="center">
-<img src="outputs/time-series/childcare_secondary_timeseries_by_sex.png" width=80%>
+<img src="obsolete/seqi_grey_1920.png" width=80%>
 </p>
 
 
@@ -39,3 +39,8 @@ To reproduce, run the scripts in the following order:
 <br>
 
 See also: [ATUS repo](https://github.com/joemarlo/ATUS)
+
+
+### TODO
+- Function'ize the sequence analysis script and run backtest
+- Integrate cluster post hoc analysis

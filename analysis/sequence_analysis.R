@@ -124,8 +124,9 @@ names(color_mapping) <- TraMineR::alphabet(atus_seq_t1)
 # dist_t2 <- seqdist(atus_seq_t2, method = "OM", sm = TRATE_cost_t2)
 
 ### LCS method
-dist_t1 <- seqdist(atus_seq_t1, method = "LCS")
-dist_t2 <- seqdist(atus_seq_t2, method = "LCS")
+method <- 'LCS'
+dist_t1 <- seqdist(atus_seq_t1, method = method)
+dist_t2 <- seqdist(atus_seq_t2, method = method)
 
 
 # cluster the data and create summary metrics
@@ -217,7 +218,7 @@ sequenchr::plot_sequence_index(atus_tidy_t2, color_mapping, clusters_t2) + labs(
 sequenchr::plot_state(atus_tidy_t1, color_mapping, clusters_t1) + labs(subtitle = paste0("Time 1: ", year1))
 # ggsave(file.path(file_path, "plots", 'clustering', "seqD_year1.png"), height = 9, width = 9)
 sequenchr::plot_state(atus_tidy_t2, color_mapping, clusters_t2) + labs(subtitle = paste0("Time 2: ", year2))
-# ggsave(file.path(file_path, "plots", 'clustering', "seqD_year2.png"), height = 9, width = 9)
+# ggsave(file.path("outputs", 'SA', method, "seqD_year2.png"), height = 9, width = 9)
 
 # plot modals
 sequenchr::plot_modal(atus_tidy_t1, color_mapping, clusters_t1) + labs(subtitle = paste0("Time 1: ", year1))
