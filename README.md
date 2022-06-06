@@ -4,39 +4,39 @@ Reproducible code for working paper on matching clustered sequence data and unde
 
 <br>
 <p align="center">
-<img src="outputs/plots/seqi_grey_1920.png" width=80%>
+<img src="outputs/time-series/childcare_secondary_timeseries_by_sex.png" width=80%>
 </p>
 
 
 ### Folder structure
     .
-    ├── analyses          # Clustering, matching, demographic vars, etc.
-    │   ├── backtest      # 2003-2018 backtest scripts and results
-    │   ├── data          # Output data from one run
-    │   ├── matching      # Scripts to perform matching
-    │   ├── plots         # Plots from one run
-    │   └── supporting    # Supporting analyses
-    ├── data              # Cleaned data and cleaning scripts
-    ├── inputs            # Raw input data
-    ├── outputs           # Formal write-ups and final clusters
-    ├── tests             # Unit tests
+    ├── data/		# Cleaned data
+    ├── inputs/		# Raw input data
+    ├── obsolete/		# Obsolete files
+    ├── outputs/		# Formal write-ups and figures
+    ├── R/			# Functions for cleaning and analysis
+    ├── renv/       # Storage for renv
+    ├── _targets/   # Storage for targets
+    ├── tests/		# Unit tests
+    ├── _targets.R    # [targets](https://books.ropensci.org/targets/) pipeline
+    ├── meta_matching.R	# Matching analysis
+    ├── meta_SA.R		# Sequence analysis
+    ├── meta_timeseries.R	# Time series analysis
+    ├── run.R         # Run the targets pipeline from R
+    ├── run.sh        # Run the targets pipeline from shell
     └── README.md
 
 <br>
 
 ### Reproducibility
+
 To reproduce, run the scripts in the following order:  
 1. Download 2003-2020 multi-year microdata from the [BLS](https://www.bls.gov/tus/#data) and save to `inputs/ATUS-2003-2020/`    
-2. Clean and consolidate the data:  
-    1. `data/cleaning_atus30.R`  
-    2. `data/cleaning_demographics.R`  
-    3. `data/essential_industries.R`  
-3.  Run a single year or full back test:  
-    - Single year:  
-        1. `analyses/matching/matching_mahalanobis.R`  
-        2. `analyses/clustering.R`  
-    - Backtest:  
-        1. `analyses/backtest/batch_backtest.R`  
+2. Clean and consolidate the data:  ~~`meta_data.R`~~ `run.R`
+3. Run the analyses  
+    1. `meta_timeseries.R`  
+    2. `meta_matching.R`  
+    3. `meta_SA.R`  
 
 <br>
 
