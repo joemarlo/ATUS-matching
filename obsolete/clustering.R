@@ -1,4 +1,4 @@
-library(tidyverse)
+# library(tidyverse)
 library(TraMineR)
 library(fastcluster)
 library(sequenchr)
