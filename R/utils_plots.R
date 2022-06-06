@@ -35,7 +35,8 @@ theme_custom <- function() {
 }
 
 # set custom theme
-ggplot2::theme_set(theme_custom())
+# ggplot2::theme_set(theme_custom())
+ggplot2::theme_set(theme_bw())
 
 # set default continuous colors
 options(

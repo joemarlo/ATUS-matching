@@ -1,4 +1,20 @@
 
+#' Match two years of survey respondents based on their demographics 
+#'
+#' Note: code must be manually updated if matching or blocking variables change
+#'
+#' @param demographics 
+#' @param year1 
+#' @param year2 
+#' @param matching_vars 
+#' @param method 
+#' @param include_plots 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' # See analysis/matching.R for an example
 matching_mahalanobis <- function(demographics, year1, year2, matching_vars, method = c('1-to-many', 'many-to-1'), include_plots = FALSE){
   
   method <- match.arg(method)
