@@ -1,16 +1,11 @@
-inputs/ATUS-2003-2020
-inputs/ATUS-2003-2018
-inputs/ATUS-2018
-data/*.tsv
-analyses/supporting/fred_api_key.R
 .DS_Store
 .DS_store
 
-tmp/data/*.csv
-tmp/data/*.tsv
-tmp/inputs/ATUS-2003-2018
-tmp/inputs/ATUS-2003-2020
-tmp/inputs/ATUS-2018
+data/*.csv
+data/*.tsv
+inputs/ATUS-2003-2018
+inputs/ATUS-2003-2020
+inputs/ATUS-2018
 
 # History files
 .Rhistory
