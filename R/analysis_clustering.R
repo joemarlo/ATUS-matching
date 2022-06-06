@@ -1,7 +1,3 @@
-# library(tidyverse)
-
-`%notin%` <- negate(`%in%`)
-scale_01 <- function(x) (x - min(x))/diff(range(x))
 
 #' Plot the standardized difference in means
 #' 
@@ -81,7 +77,7 @@ calculate_balance <- function(rawdata, .matches, .propensity_model){
 #' get_distance(c(1,3,2,5,4), mat)
 #' get_distance(c(1,3,2,5,5), mat)
 get_distance <- function(row_indices, mat, penalized_value = 1e10){
-
+  
   col_indices <- 1:ncol(mat)
   if (length(row_indices) != length(col_indices)) stop('row_indices should == ncol(mat)')
   
@@ -125,7 +121,7 @@ minimal_distance <- function(mat, with_replacement = FALSE, penalized_value = 1e
     best_matches <- apply(mat, 2, which.min)
     return(best_matches)
   }
-
+  
   # grid search for optimum
   grid_results <- NMOF::gridSearch(get_distance,
                                    mat = mat,
@@ -146,7 +142,7 @@ minimal_distance <- function(mat, with_replacement = FALSE, penalized_value = 1e
   # grid_results <- as.numeric(no_dups[which.min(distances),])
   
   # if there are more columns then rows (e.g. k_t2 > k_t1) then replace 
-    # the duplicates with the furthest distance with NAs
+  # the duplicates with the furthest distance with NAs
   # this means the medoids that are duplicate matches -- but are not the best match -- will not be matched
   if (n_cols > n_rows){
     warning("ncol(mat) > nrow(mat); replacing duplicate row index with furthest distance with NA")
@@ -157,7 +153,7 @@ minimal_distance <- function(mat, with_replacement = FALSE, penalized_value = 1e
       grid_results[grid_results == dup_value][-min_value] <- NA
     }
   }
-
+  
   return(grid_results)
 }
 
@@ -183,7 +179,7 @@ swap_labels <- function(clusters_one, clusters_two, label_mapping){
   
   if (!(is.numeric(clusters_one) & is.numeric(clusters_two))) stop('clusters_one and clusters_two must be numeric vectors')
   if (any(c(is.na(clusters_one), is.na(clusters_two)))) stop('clusters_one and/or clusters_two contain NAs')
-
+  
   cluster_1_labels <- sort(unique(clusters_one))
   cluster_2_labels <- sort(unique(clusters_two))
   if (length(cluster_1_labels) != length(label_mapping)){
@@ -214,7 +210,7 @@ swap_labels <- function(clusters_one, clusters_two, label_mapping){
   } else {
     clusters_two_new <- clusters_two_new$t2_new
   }
-
+  
   # convert to a factor so ordering matches clusters_one
   # this is important later when viewing the transition matrix
   clusters_two_new_f <- factor(clusters_two_new,
@@ -227,256 +223,6 @@ swap_labels <- function(clusters_one, clusters_two, label_mapping){
   
   return(clusters_two_new_f)
 }
-
-
-# time use estimates ------------------------------------------------------
-
-#' Estimate the mean minutes spent on a time-use activity
-#'
-#' Estimate the survey-weighted mean amount of time spent on a given activity or activities. 
-#'
-#' @param df the summary dataframe containing the time use data. Use atussum_0318 for multi-year or atussum_XX for single year estimates
-#' @param groups grouping variables. E.g. 'TESEX' for sex
-#' @param activities the t codes for time-use activities. If none are provided, then all t-codes are used
-#' @param simplify if TRUE, then simplify output to the group. Can be a dataframe specifying a rollup of activities (see `descriptions` dataframe in 'data/helpers.R')
-#' @include_SE include standard errors? Automatically sets `simplify = TRUE`. Calculation may take a while if there are multiple activities. Uses replicate weight method outlined here https://www.bls.gov/tus/atususersguide.pdf
-#'
-#' @return a tidy dataframe listing the activity, any grouping variables, and the survey-weighted mean minutes spent in that activity
-#' @export
-#'
-#' @examples
-#' get_minutes(atussum_0318)
-#' get_minutes(atussum_0318, groups = 'TESEX') # group by sex
-#' game.codes <- colnames(atussum_0318)[colnames(atussum_0318) %in% paste0('t', 130101:130199)]
-#' get_minutes(atussum_0318, groups = 'TESEX', activities = game.codes)
-#' get_minutes(atussum_0318, groups = 'TESEX', simplify = descriptions) # see 'data/helpers.R' for descriptions dataframe
-get_minutes <- function(df, groups = NULL, activities = NULL, simplify = NULL, include_SE = FALSE){
-
-  if (!all("TUCASEID" %in% names(df) & any(c('TUFINLWGT', 'TUFNWGTP') %in% names(df)))) {
-    stop("data must contain variables named TUCASEID and (TUFINLWGT or TUFNWGTP)")
-  }
-  
-  # if no activities are explicitly provided then include all of them
-  if (is.null(activities)){
-    activities <- str_subset(names(df), '^t[0-9]')
-    message('get_minutes(): No activities explicitly provided. Returning all activities in dataframe.')
-  }
-  
-  if (isTRUE(simplify)){
-    simplify <- tibble(activity = activities, 
-                       description = 'All activites provided')
-  }
-  
-  if (!is.null(simplify)) {
-    if (!is.data.frame(simplify) | !(all(names(simplify) %in% c('activity', 'description')))) {
-      stop(
-        "if simplifying then simplify must be a data frame with columns 'activity' and 'description'"
-      )
-    }
-  }
-  
-  # select the correct weighting variable based on the data provided
-  weight.var <- c('TUFNWGTP', 'TUFINLWGT')[c('TUFNWGTP', 'TUFINLWGT') %in% names(df)]
-  
-  estimates <- df %>% 
-    select(TUCASEID, all_of(weight.var), groups, activities) %>%
-    pivot_longer(cols = -c('TUCASEID', all_of(weight.var), groups),
-                 names_to = "activity",
-                 values_to = 'time') %>%
-    group_by_at(vars(activity, groups)) %>% 
-    summarize(weighted.minutes = sum(.data[[weight.var]] * time) / sum(.data[[weight.var]]),
-              .groups = 'drop') %>%
-    ungroup() %>%
-    {
-      # if simplifying, then left join to get the descriptions and then
-      #  sum the minutes
-      if(!is.null(simplify)) {
-        left_join(x = .,
-                  y = simplify,
-                  by = 'activity') %>% 
-          select(activity = description, groups, weighted.minutes) %>% 
-          group_by_at(vars(activity, groups)) %>%
-          summarize(weighted.minutes = sum(weighted.minutes),
-                    .groups = 'drop') %>% 
-          ungroup()
-      } else .
-    }
-  
-  # calculate standard errors via replicate weights method
-  if (isTRUE(include_SE)){
-    # calculate the original statistic
-    y0 <- get_minutes(
-      df = df,
-      groups = groups,
-      activities = activities,
-      simplify = TRUE,
-      include_SE = FALSE
-    )
-    
-    # repeat the statistic calculation using each weight
-    statistics <- apply(atuswgts_0318[, -1], MARGIN = 2, FUN = function(wgt) {
-      df[, 'TUFNWGTP'] <- wgt
-      minutes <- get_minutes(
-        df = df,
-        groups = groups,
-        activities = activities,
-        simplify = TRUE,
-        include_SE = FALSE
-      )
-      return(minutes$weighted.minutes)
-    }
-    )
-    
-    # calculate the standard error. See https://www.bls.gov/tus/atususersguide.pdf
-    y0$SE <- sqrt((4 / 160) * rowSums((statistics - y0$weighted.minutes)^2))
-    
-    return(y0)
-  }
-  
-  return(estimates)
-}
-
-#' Estimate the participation rate for a time-use activity
-#'
-#' Estimate the survey-weighted participation rate spent on a given activity or activities. 
-#'
-#' @param df the summary dataframe containing the time use data. Use atussum_0318 for multi-year or atussum_XX for single year estimates
-#' @param groups grouping variables. E.g. 'TESEX' for sex
-#' @param activities the t codes for time-use activities. If none are provided, then all t-codes are used
-#' @param simplify if TRUE, then simplify output to the group. Can be a dataframe specifying a rollup of activities (see `descriptions` dataframe in 'data/helpers.R')
-#'
-#' @return a tidy dataframe listing the activity, any grouping variables, and the survey-weighted participation rate for that activity
-#' @export
-#'
-#' @examples
-#' get_participation(atussum_0318)
-#' get_participation(atussum_0318, groups = 'TESEX') # group by sex
-#' game.codes <- colnames(atussum_0318)[colnames(atussum_0318) %in% paste0('t', 130101:130199)]
-#' get_participation(atussum_0318, groups = 'TESEX', activities = game.codes)
-#' get_participation(atussum_0318, groups = 'TESEX', simplify = descriptions) # see 'data/helpers.R' for descriptions dataframe
-get_participation <- function(df, groups = NULL, activities = NULL, simplify = NULL) {
-
-  if (!all("TUCASEID" %in% names(df) & any(c('TUFINLWGT', 'TUFNWGTP') %in% names(df)))) {
-    stop("data must contain variables named TUCASEID and (TUFINLWGT or TUFNWGTP)")
-  }
-  
-  # if no activities are explicitly provided then include all of them
-  if (is.null(activities)){
-    activities <- str_subset(names(df), '^t[0-9]')
-    message('get_participation(): No activities explicitly provided. Returning all activities in dataframe.')
-  }
-  
-  if (isTRUE(simplify)){
-    simplify <- tibble(activity = activities, 
-                       description = 'All activites provided')
-  }
-  
-  if (!is.null(simplify)) {
-    if (!is.data.frame(simplify) | !(all(names(simplify) %in% c('activity', 'description')))) {
-      stop(
-        "if simplifying then simplify must be a data frame with columns 'activity' and 'description'"
-      )
-    }
-  }
-  
-  weight.var <- c('TUFNWGTP', 'TUFINLWGT')[c('TUFNWGTP', 'TUFINLWGT') %in% names(df)]
-  
-  df %>%
-    select(TUCASEID, all_of(weight.var), groups, activities) %>%
-    pivot_longer(
-      cols = -c('TUCASEID', all_of(weight.var), groups),
-      names_to = "activity",
-      values_to = 'time'
-    ) %>%
-    {
-      # if simplifying, then left join to get the descriptions and then
-      #  sum the minutes
-      if (!is.null(simplify)) {
-        left_join(x = .,
-                  y = simplify,
-                  by = 'activity') %>%
-          select(TUCASEID, all_of(weight.var), groups, activity = description, groups, time)
-      } else .
-    } %>%
-    group_by_at(vars(activity, groups)) %>%
-    group_modify(~ {
-      # sum the distinct weights that have time > 0
-      num <- .x %>%
-        filter(time > 0) %>%
-        select(TUCASEID, all_of(weight.var)) %>%
-        distinct() %>%
-        pull(weight.var) %>%
-        sum()
-      
-      # sum all distinct weights
-      denom <- select(.x, TUCASEID, all_of(weight.var)) %>%
-        distinct() %>%
-        pull(weight.var) %>%
-        sum()
-      
-      return(tibble(participation.rate = num / denom))
-    }) %>%
-    ungroup()
-}
-
-#' Estimate the mean minutes spent on a time-use activity, only for the participants
-#'
-#' Estimate the survey-weighted mean amount of time spent on a given activity or activities. This differs from `get_minutes()` as it returns the mean amount of minutes for individuals that participated in the activity. `get_minutes()` returns the mean minutes for the entire survey population.
-#'
-#' @param df the summary dataframe containing the time use data. Use atussum_0318 for multi-year or atussum_XX for single year estimates
-#' @param groups grouping variables. E.g. 'TESEX' for sex
-#' @param activities the t codes for time-use activities. If none are provided, then all t-codes are used
-#' @param simplify if TRUE, then simplify output to the group. Can be a dataframe specifying a rollup of activities (see `descriptions` dataframe in 'data/helpers.R')
-#'
-#' @return a tidy dataframe listing the activity, any grouping variables, the survey-weighted mean minutes, participation rate, and mean minutes per participant for that activity
-#' @export
-#'
-#' @examples
-#' get_min_per_part(atussum_0318)
-#' get_min_per_part(atussum_0318, groups = 'TESEX') # group by sex
-#' game.codes <- colnames(atussum_0318)[colnames(atussum_0318) %in% paste0('t', 130101:130199)]
-#' get_min_per_part(atussum_0318, groups = 'TESEX', activities = game.codes)
-#' get_min_per_part(atussum_0318, groups = 'TESEX', simplify = descriptions) # see 'data/helpers.R' for descriptions dataframe
-get_min_per_part <- function(df, groups = NULL, activities = NULL, simplify = NULL) {
-
-  min.df <- get_minutes(df = df, groups = groups, activities = activities, simplify = simplify)
-  part.df <- get_participation(df = df, groups = groups, activities = activities, simplify = simplify)
-  
-  if (nrow(min.df) != nrow(part.df)) {
-    stop("Issue in matching minutes and participation data.frames. Number of rows does not match.")
-  }
-  
-  rslts <- full_join(min.df, part.df, by = c('activity', all_of(groups))) %>% 
-    mutate(minutes.per.participant = weighted.minutes / participation.rate) %>% 
-    select(activity, groups, weighted.minutes, participation.rate, minutes.per.participant)
-  
-  # fix NaNs; NaNs produced when participation.rate is 0
-  rslts$minutes.per.participant[is.nan(rslts$minutes.per.participant)] <- 0
-  
-  return(rslts)
-}
-
-#' Format minutes as hour:minute
-#'
-#' @param min a numeric representing a count of minutes
-#'
-#' @return
-#' @export
-#'
-#' @examples
-#' format_hour_minute(230)
-format_hour_minute <- function(min) {
-  H <- floor(min / 60)
-  M <- min %% 60
-  M <- ifelse(nchar(M) == 1, paste0('0', M), as.character(M))
-  formatted <- paste0(H, ":", M)
-  return(formatted)
-}
-
-
-
-# global vars -------------------------------------------------------------
-options(scipen = 999)
 
 
 # experimental ------------------------------------------------------------
