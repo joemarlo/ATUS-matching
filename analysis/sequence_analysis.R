@@ -28,12 +28,6 @@ demographics <- readr::read_delim(file = file.path("data", "demographic.tsv"),
                                   trim_ws = TRUE,
                                   col_types = readr::cols(metropolitan = readr::col_character()))
 
-# read in data with diary date
-atusresp_0320 <- readr::read_csv(file.path("inputs", "ATUS-2003-2020", "atusresp_0320.dat"))
-
-# regions for matching
-state_regions <- readr::read_csv("inputs/state_regions.csv")
-
 
 # population --------------------------------------------------------------
 
@@ -42,6 +36,13 @@ year2 <- 2020
 
 # convert atus data to wide for traminer
 atus_wide <- local({
+  
+  # read in data with diary date
+  atusresp_0320 <- readr::read_csv(file.path("inputs", "ATUS-2003-2020", "atusresp_0320.dat"))
+  
+  # regions for matching
+  state_regions <- readr::read_csv("inputs/state_regions.csv")
+  
   # NOTE: this is only for plots; must adjust code in matching_prep_demographics() and matching_mahalanobis()
   # if you want to change the matching and blocking vars
   matching_vars <- c('age', 'sex', 'race', 'fam_income', 'has_partner', 
@@ -231,4 +232,112 @@ sequenchr::plot_modal(atus_tidy_t2, color_mapping, clusters_t2) + labs(subtitle 
 
 # post-hoc ----------------------------------------------------------------
 
+clusters <- tibble(
+  ID = c(atus_wide$t1$ID, atus_wide$t2$ID),
+  cluster = c(clusters_t1, clusters_t2),
+  year = c(rep(year1, length(clusters_t1)),
+           rep(year2, length(clusters_t2)))
+)
 
+# establish color mapping
+unique_states <- sort(unique(atus_raw$description))
+color_mapping <- viridis::viridis_pal()(length(unique_states))
+names(color_mapping) <- unique_states
+
+# create second color mapping with extraneous tokens greyed out
+color_mapping_grey <- c('grey20', '#d9d955', '#db324b', 'grey55')
+names(color_mapping_grey) <- c('Sleep', 'Work w/o SCC', 'Work with SCC', 'Other activities')
+
+# seqI plot sorted amount of work
+yellow_labels <- c('Work : No SCC', 'Work : SCC')
+seqI_groups <- atus_raw %>% 
+  right_join(clusters, by = 'ID') %>% 
+  group_by(ID) %>% 
+  mutate(entropy = sum(description %in% yellow_labels)) %>% 
+  ungroup() %>% 
+  mutate(description = case_when(
+    description == 'Sleep : No SCC' ~ 'Sleep',
+    description == 'Work : No SCC' ~ 'Work w/o SCC',
+    description == 'Work : SCC' ~ 'Work with SCC',
+    TRUE ~ 'Other activities'))
+
+# basic seqD
+seqI_groups %>% 
+  ggplot(ggplot2::aes(x = period, fill = description)) +
+  geom_bar(width = 1) +
+  # geom_tile() +
+  scale_fill_manual(values = color_mapping_grey) +
+  scale_y_discrete(labels = NULL, breaks = NULL) +
+  facet_wrap(year~cluster, scales = 'free_y') +
+  labs(title = "All sequences sorted by entropy",
+       x = 'Period',
+       y = 'Sequence',
+       fill = NULL) +
+  theme(legend.position = 'bottom',
+        legend.text = element_text(size = 5))
+# ggsave(file.path('outputs', 'plots', "seqd_2020.png"), height = 6, width = 9)
+
+# basic seqI
+seqI_groups %>% 
+  ggplot(ggplot2::aes(x = period, y = reorder(ID, entropy), fill = description)) +
+  geom_tile() +
+  scale_fill_manual(values = color_mapping_grey) +
+  scale_y_discrete(labels = NULL, breaks = NULL) +
+  facet_wrap(~cluster, scales = 'free_y') +
+  labs(title = "All sequences sorted by entropy",
+       x = 'Period',
+       y = 'Sequence',
+       fill = NULL) +
+  theme(legend.position = 'bottom',
+        legend.text = element_text(size = 5))
+
+# 2020 seqD by gender -- resampled so each cluster has 1000 individuals 
+# but maintains between sex split within cluster
+resampled_seq <- local({
+
+  resampled <- seqI_groups %>%
+    filter(year == year2) %>% 
+    distinct(ID, cluster, year) %>% 
+    left_join(select(demographics, ID, survey_weight), by = 'ID') %>% 
+    group_by(year, cluster) %>% 
+    slice_sample(n = 1000, weight_by = survey_weight, replace = TRUE) %>% 
+    ungroup() %>% 
+    transmute(ID, ID_resampled = row_number())
+  
+  # get sequence information and insert filler rows between sexes
+  # TODO: pickup here
+  n_filler_rows <- 50
+  cluster_names <- seqI_groups %>% filter(year == year2) %>% pull(cluster) %>% unique()
+  filler_rows <- tibble(
+    description = 'filler',
+    sex = 'filler',
+    cluster = rep(cluster_names, n_filler_rows)
+  )
+  
+  resampled_seq <- resampled %>% 
+    left_join(seqI_groups, by = 'ID') %>% 
+    left_join(select(demographics, ID, sex), by = 'ID') %>% 
+    mutate(sex = recode(sex, `1` = 'male', `2` = 'female'),
+           cluster = stringr::str_sub(cluster, 1, 9)) # %>% 
+  # bind_rows(filler_rows) %>% 
+  # group_by(cluster, sex, ID_resampled) %>% 
+  # arrange(entropy) %>% 
+  # mutate(ID_resampled = row_number())
+  
+  return(resampled_seq)
+})
+
+# plot it
+resampled_seq %>% 
+  ggplot(ggplot2::aes(x = period, y = reorder(ID_resampled, entropy), fill = description)) +
+  geom_tile() +
+  scale_fill_manual(values = color_mapping_grey) +
+  scale_y_discrete(labels = NULL, breaks = NULL) +
+  facet_wrap(sex~cluster, scales = 'free_y') +
+  labs(title = "2020 sequences split by cluster and sex",
+       subtitle = 'Each cluster resampled with n = 1,000',
+       x = NULL, 
+       y = "Respondent", 
+       fill = NULL) +
+  theme(legend.position = 'bottom',
+        legend.text = element_text(size = 5))

@@ -29,7 +29,7 @@ Reproducible code for working paper on matching clustered sequence data and unde
 ### Reproducibility
 
 To reproduce:  
-1. Install `renv` via `install.packages('renv')` and then run `renv::restore()`
+1. Open `ATUS-matching.Rproj`. Install `renv` via `install.packages('renv')` and then run `renv::restore()`
 2. Download, clean, and consolidate the data:  ~~`meta_data.R`~~ `run.R`. Note: this downloads the 2003-2020 multi-year microdata from the [BLS](https://www.bls.gov/tus/datafiles-0320.htm) and saves them `inputs/ATUS-2003-2020/`   
 3. Run the analyses  
     1. `analysis/timeseries.R`  
@@ -39,6 +39,7 @@ To reproduce:
 <br>
 
 ### TODO
+- Recreate seqI plot with split by sex with whitespace gap
 - Function'ize the sequence analysis script and run backtest
 - Integrate cluster post hoc analysis
 
