@@ -19,7 +19,7 @@ Reproducible code for working paper on matching clustered sequence data and unde
     ├── renv/         # Storage for renv
     ├── _targets/     # Storage for targets
     ├── tests/		# Unit tests
-    ├── _targets.R      # [targets](https://books.ropensci.org/targets/) pipeline
+    ├── _targets.R      # targets pipeline
     ├── run.R           # Run the targets pipeline from R
     ├── run.sh          # Run the targets pipeline from shell
     └── README.md
@@ -28,10 +28,9 @@ Reproducible code for working paper on matching clustered sequence data and unde
 
 ### Reproducibility
 
-To reproduce, run the scripts in the following order:  
+To reproduce:  
 1. Install `renv` via `install.packages('renv')` and then run `renv::restore()`
-2. Download, clean, and consolidate the data:  ~~`meta_data.R`~~ `run.R`
-  - Note: this downloads the 2003-2020 multi-year microdata from the [BLS](https://www.bls.gov/tus/datafiles-0320.htm) and saves them `inputs/ATUS-2003-2020/`   
+2. Download, clean, and consolidate the data:  ~~`meta_data.R`~~ `run.R`. Note: this downloads the 2003-2020 multi-year microdata from the [BLS](https://www.bls.gov/tus/datafiles-0320.htm) and saves them `inputs/ATUS-2003-2020/`   
 3. Run the analyses  
     1. `analysis/timeseries.R`  
     2. `analysis/matching.R`  

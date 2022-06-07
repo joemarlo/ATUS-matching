@@ -54,7 +54,7 @@ atus_wide <- local({
   demographics_prepped <- matching_prep_demographics(atusresp_0320, demographics, state_regions, year1, year2, matching_vars)
   
   # filter the ATUS data to just the this population
-  year1_IDs <- demographics %>% 
+  year1_IDs <- demographics_prepped$demographics %>% 
     filter(year == year1) %>% 
     pull(ID)
   year2_IDs <- demographics_prepped$demographics %>% 
@@ -227,3 +227,8 @@ sequenchr::plot_modal(atus_tidy_t2, color_mapping, clusters_t2) + labs(subtitle 
 # ggsave(file.path(file_path, "plots", 'clustering', "modals_year2.png"), height = 9, width = 9)
 
 # plotly::ggplotly()
+
+
+# post-hoc ----------------------------------------------------------------
+
+
