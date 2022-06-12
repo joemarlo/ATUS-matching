@@ -95,7 +95,11 @@ clusters <- tibble(
            rep(year2, length(sequences_clustered$clusters$t2)))
 )
 
-
+# set labels for SeqI x axis: formatted as time
+labels_x <- as.character(seq(2, 24, by = 2))
+labels_x <- c(labels_x[2:12], labels_x[1:2])
+labels_x[1] <- "4am"
+breaks_x <- seq(0, 48, by = 4)
 
 # establish color mapping
 unique_states <- sort(unique(atus_raw$description))
@@ -103,8 +107,8 @@ color_mapping <- viridis::viridis_pal()(length(unique_states))
 names(color_mapping) <- unique_states
 
 # create second color mapping with extraneous tokens greyed out
-color_mapping_grey <- c('grey20', '#d9d955', '#db324b', 'grey55')
-names(color_mapping_grey) <- c('Sleep', 'Work w/o SCC', 'Work with SCC', 'Other activities')
+color_mapping_grey <- c('grey20', '#d9d955', '#db324b', 'grey55', '#ffffff')
+names(color_mapping_grey) <- c('Sleep', 'Work w/o SCC', 'Work with SCC', 'Other activities', 'filler')
 
 # seqI plot sorted amount of work
 yellow_labels <- c('Work : No SCC', 'Work : SCC')
@@ -125,71 +129,74 @@ seqI_groups %>%
   geom_bar(width = 1) +
   # geom_tile() +
   scale_fill_manual(values = color_mapping_grey) +
+  scale_x_continuous(breaks = breaks_x, labels = labels_x) +
   scale_y_discrete(labels = NULL, breaks = NULL) +
   facet_wrap(year~cluster, scales = 'free_y') +
-  labs(title = "All sequences sorted by entropy",
-       x = 'Period',
-       y = 'Sequence',
+  labs(title = "State distributions of the clusters",
+       subtitle = 'Activities simplified into the four categories shown',
+       x = NULL,
+       y = 'Frequency',
        fill = NULL) +
-  theme(legend.position = 'bottom',
-        legend.text = element_text(size = 5))
-# ggsave(file.path('outputs', 'plots', "seqd_2020.png"), height = 6, width = 9)
-
-# basic seqI
-seqI_groups %>% 
-  ggplot(ggplot2::aes(x = period, y = reorder(ID, entropy), fill = description)) +
-  geom_tile() +
-  scale_fill_manual(values = color_mapping_grey) +
-  scale_y_discrete(labels = NULL, breaks = NULL) +
-  facet_wrap(~cluster, scales = 'free_y') +
-  labs(title = "All sequences sorted by entropy",
-       x = 'Period',
-       y = 'Sequence',
-       fill = NULL) +
-  theme(legend.position = 'bottom',
-        legend.text = element_text(size = 5))
+  theme(legend.position = 'bottom')
+# ggsave(file.path('outputs', 'SA', "seqd_2020.png"), height = 6, width = 9)
 
 # 2020 seqD by gender -- resampled so each cluster has 1000 individuals 
 # but maintains between sex split within cluster
 resampled_seq <- local({
   
-  # # create filler rows for white-space on plot
-  # n_filler_rows <- 50
-  # cluster_names <- seqI_groups %>% filter(year == year2) %>% pull(cluster) %>% unique()
-  # filler_rows <- tibble(
-  #   sex = 'filler',
-  #   cluster = rep(cluster_names, n_filler_rows)
-  # )
-  # 
-  # # resample
-  # resampled <- seqI_groups %>%
-  #   filter(year == year2) %>%
-  #   distinct(ID, cluster, year) %>%
-  #   left_join(select(demographics, ID, survey_weight, sex), by = 'ID') %>%
-  #   mutate(sex = recode(sex, `1` = 'male', `2` = 'female')) %>%
-  #   group_by(year, cluster) %>%
-  #   slice_sample(n = 1000, weight_by = survey_weight, replace = TRUE) %>%
-  #   bind_rows(filler_rows) %>%
-  #   mutate(ID_resampled = row_number()) %>%
-  #   ungroup()
-  # 
-  # # join to get activities
-  # resampled_seq <- resampled %>%
-  #   left_join(select(seqI_groups, ID, period, description, entropy), by = 'ID') %>%
-  #   mutate(cluster = stringr::str_sub(cluster, 1, 9),
-  #          description = if_else(is.na(description), 'filler', description))
-  # group_by(cluster, sex, ID_resampled) %>%
-  # arrange(entropy) %>%
-  # mutate(ID_resampled = row_number())
+  # create filler rows for white-space on plot
+  n_filler_rows <- 50
+  cluster_names <- seqI_groups %>% filter(year == year2) %>% pull(cluster) %>% unique()
+  filler_rows <- tibble(
+    sex = 'filler',
+    year = 2020,
+    cluster = rep(cluster_names, n_filler_rows),
+    ID = as.numeric(paste0(999, 1:(n_filler_rows * length(cluster_names)))),
+    entropy = 1,
+  )
+  
+  # filler sequence data
+  filler_seq <- crossing(
+    period =  unique(seqI_groups$period),
+    ID = filler_rows$ID,
+    description = 'filler'
+  )
+  
+  # resample
+  resampled <- seqI_groups %>%
+    filter(year == year2) %>%
+    distinct(ID, cluster, year) %>%
+    left_join(select(demographics, ID, survey_weight, sex), by = 'ID') %>%
+    left_join(seqI_groups %>% distinct(ID, entropy), by = 'ID') %>%
+    mutate(sex = recode(sex, `1` = 'male', `2` = 'female')) %>%
+    group_by(year, cluster) %>%
+    slice_sample(n = 1000, weight_by = survey_weight, replace = TRUE) %>% 
+    bind_rows(filler_rows) %>%
+    mutate(sex = factor(sex, levels = c('female', 'filler', 'male'))) %>% 
+    group_by(year, cluster) %>%
+    arrange(sex, entropy) %>% 
+    mutate(ID_resampled = row_number()) %>%
+    ungroup()
+  
+  # resampled %>% arrange(cluster, sex, ID_resampled) %>% View()
+
+  # join to get activities
+  resampled_seq <- resampled %>%
+    left_join(seqI_groups %>% 
+                select(ID, period, description, entropy) %>% 
+                bind_rows(filler_seq),
+              by = 'ID') %>%
+    mutate(cluster = stringr::str_sub(cluster, 1, 9))
 
   return(resampled_seq)
 })
 
 # plot it
-resampled_seq %>% 
-  ggplot(ggplot2::aes(x = period, y = reorder(ID_resampled, entropy), fill = description)) +
+resampled_seq %>%
+  ggplot(ggplot2::aes(x = period, y = ID_resampled, fill = description)) +
   geom_tile() +
   scale_fill_manual(values = color_mapping_grey) +
+  scale_x_continuous(breaks = breaks_x, labels = labels_x) +
   scale_y_discrete(labels = NULL, breaks = NULL) +
   facet_wrap(~cluster, scales = 'free_y') +
   labs(title = "2020 sequences split by cluster and sex",
@@ -197,5 +204,5 @@ resampled_seq %>%
        x = NULL, 
        y = "Respondent", 
        fill = NULL) +
-  theme(legend.position = 'bottom',
-        legend.text = element_text(size = 5))
+  theme(legend.position = 'bottom')
+# ggsave(file.path('outputs', 'SA', "seqi_2020.png"), height = 6, width = 9)

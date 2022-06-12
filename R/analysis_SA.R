@@ -54,7 +54,7 @@ cluster_sequences <- function(atus_wide, method = 'LCS', k_range = c(2, 10), clu
     # compute distances
     dist_t1 <- seqdist(atus_seq_t1, method = "OM", sm = TRATE_cost)
     dist_t2 <- seqdist(atus_seq_t2, method = "OM", sm = TRATE_cost_t2)
-  } else if(method == 'LCS'){
+  } else if (method == 'LCS'){
     # LCS method
     dist_t1 <- seqdist(atus_seq_t1, method = method)
     dist_t2 <- seqdist(atus_seq_t2, method = method)
@@ -189,6 +189,8 @@ cluster_sequences <- function(atus_wide, method = 'LCS', k_range = c(2, 10), clu
   
   
   out <- list(
+    sequences = list(t1 = atus_tidy_t1,
+                     t2 = atus_tidy_t2),
     clusters = list(t1 = clusters_t1,
                     t2 = clusters_t2),
     k = list(t1 = k_t1,

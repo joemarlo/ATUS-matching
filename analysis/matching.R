@@ -130,8 +130,8 @@ childcare_pairs %>%
        caption = 'Matched 2019:2020 Q3 and Q4; 1-to-many',
        x = 'Hour:minutes on secondary childcare',
        fill = NULL) +
-  theme(legend.position = 'top')
-# ggsave(file.path('tmp/outputs/', 'matching', 'density-matched-2019:2020-q3q4-1tomany.png'),
+  theme(legend.position = 'bottom')
+# ggsave(file.path('outputs', 'matching', 'density-matched-2019:2020-q3q4-1tomany.png'),
 #        width = 9, height = 6)
 
 

@@ -127,35 +127,41 @@ PCC_by_quarter <- respondents_with_children %>%
          quarter_ex_year = factor(quarter_ex_year, levels = 1:4)) %>% 
   ungroup()
 
-# fit mulitple  generalized least squares with dummy for quarter
-model_primary_childcare <- nlme::gls(
-  weighted_childcare ~ index + is_covid_era + quarter_ex_year,
-  data = PCC_by_quarter,
-  corr = nlme::corAR1(form = ~ index))
-model_primary_childcare_no_seasonality <- nlme::gls(
-  weighted_childcare ~ index + is_covid_era,
-  data = PCC_by_quarter,
-  corr = nlme::corAR1(form = ~ index))
-model_primary_childcare_simple <- nlme::gls(
-  weighted_childcare ~ index,
-  data = PCC_by_quarter,
-  corr = nlme::corAR1(form = ~ index))
-model_primary_childcare_covid <- nlme::gls(
-  weighted_childcare ~ index + quarter_ex_year,
-  data = PCC_by_quarter,
-  corr = nlme::corAR1(form = ~ index))
-
-### model selection
-anova(model_primary_childcare_simple, model_primary_childcare_covid, model_primary_childcare_no_seasonality, model_primary_childcare)
-
-# best model
-tmp <- summary(model_primary_childcare)
-tmp$tTable %>% 
-  as_tibble() %>% 
-  mutate(Coef = names(tmp$coefficients)) %>% 
-  slice(-1) %>% 
-  select(Coef, Beta = Value, Std.Error, `p-value`)
-rm(tmp)
+model_PCC <- local({
+  
+  # fit mulitple  generalized least squares with dummy for quarter
+  model_primary_childcare <- nlme::gls(
+    weighted_childcare ~ index + is_covid_era + quarter_ex_year,
+    data = PCC_by_quarter,
+    corr = nlme::corAR1(form = ~ index))
+  model_primary_childcare_no_seasonality <- nlme::gls(
+    weighted_childcare ~ index + is_covid_era,
+    data = PCC_by_quarter,
+    corr = nlme::corAR1(form = ~ index))
+  model_primary_childcare_simple <- nlme::gls(
+    weighted_childcare ~ index,
+    data = PCC_by_quarter,
+    corr = nlme::corAR1(form = ~ index))
+  model_primary_childcare_covid <- nlme::gls(
+    weighted_childcare ~ index + quarter_ex_year,
+    data = PCC_by_quarter,
+    corr = nlme::corAR1(form = ~ index))
+  
+  ### model selection
+  anova(model_primary_childcare_simple, model_primary_childcare_covid, model_primary_childcare_no_seasonality, model_primary_childcare)
+  
+  # best model
+  tmp <- summary(model_primary_childcare)
+  tmp$tTable %>% 
+    as_tibble() %>% 
+    mutate(Coef = names(tmp$coefficients)) %>% 
+    slice(-1) %>% 
+    select(Coef, Beta = Value, Std.Error, `p-value`) %>% 
+    print()
+  rm(tmp)
+  
+  return(model_primary_childcare)
+})
 
 
 # plot it
@@ -173,7 +179,7 @@ PCC_by_quarter %>%
   geom_line(aes(color = is_covid_era), alpha = 0.3) +
   geom_point(aes(color = is_covid_era), alpha = 0.3) +
   geom_line(data = tibble(x = PCC_by_quarter$quarter, 
-                          y = model_primary_childcare$fitted,
+                          y = model_PCC$fitted,
                           group = PCC_by_quarter$is_covid_era),
             aes(x = x, y = y, group = group)) + 
   annotate('text', x = as.Date('2020-06-30'), y = 72, label = 'No data collection',
@@ -191,7 +197,7 @@ PCC_by_quarter %>%
        color = NULL) +
   theme(legend.position = 'bottom')
 # ggsave(file.path('outputs', 'time-series', "childcare_primary_timeseries.png"),
-#        height = 6, width = 10)
+#        height = 5, width = 8)
 
 ## split by sex
 # calculate weighted childcare by quarter
@@ -212,40 +218,58 @@ PCC_by_quarter_sex <- respondents_with_children %>%
          quarter_ex_year = factor(quarter_ex_year, levels = 1:4)) %>% 
   ungroup()
 
-# fit mulitple generalized least squares with dummy for quarter
-model_primary_childcare_sex <- nlme::gls(
-  weighted_childcare ~ index + is_covid_era + quarter_ex_year + sex,
-  data = PCC_by_quarter_sex,
-  corr = nlme::corAR1(form = ~ index | sex))
-model_primary_childcare_sex_no_seasonality <- nlme::gls(
-  weighted_childcare ~ index + sex + is_covid_era,
-  data = PCC_by_quarter_sex,
-  corr = nlme::corAR1(form = ~ index | sex))
-model_primary_childcare_sex_simple <- nlme::gls(
-  weighted_childcare ~ index + sex,
-  data = PCC_by_quarter_sex,
-  corr = nlme::corAR1(form = ~ index | sex))
-model_primary_childcare_sex_covid <- nlme::gls(
-  weighted_childcare ~ index + sex + quarter_ex_year,
-  data = PCC_by_quarter_sex,
-  corr = nlme::corAR1(form = ~ index | sex))
 
-### model selection
-anova(
-  model_primary_childcare_sex, 
-  model_primary_childcare_sex_covid, 
-  model_primary_childcare_sex_no_seasonality, 
-  model_primary_childcare_sex_simple
-)
+model_PCC_sex <- local({
+  
+  # fit mulitple generalized least squares with dummy for quarter
+  model_primary_childcare_sex <- nlme::gls(
+    weighted_childcare ~ index + is_covid_era + quarter_ex_year + sex,
+    data = PCC_by_quarter_sex,
+    corr = nlme::corAR1(form = ~ index | sex))
+  model_primary_childcare_sex_no_seasonality <- nlme::gls(
+    weighted_childcare ~ index + sex + is_covid_era,
+    data = PCC_by_quarter_sex,
+    corr = nlme::corAR1(form = ~ index | sex))
+  model_primary_childcare_sex_simple <- nlme::gls(
+    weighted_childcare ~ index + sex,
+    data = PCC_by_quarter_sex,
+    corr = nlme::corAR1(form = ~ index | sex))
+  model_primary_childcare_sex_covid <- nlme::gls(
+    weighted_childcare ~ index + sex + quarter_ex_year,
+    data = PCC_by_quarter_sex,
+    corr = nlme::corAR1(form = ~ index | sex))
+  model_primary_childcare_sex_covid_trend <- nlme::gls(
+    weighted_childcare ~ index + sex * is_covid_era + quarter_ex_year,
+    data = PCC_by_quarter_sex,
+    corr = nlme::corAR1(form = ~ index | sex))
+  model_primary_childcare_sex_covid_trend_int <- nlme::gls(
+    weighted_childcare ~ index * sex * is_covid_era + quarter_ex_year,
+    data = PCC_by_quarter_sex,
+    corr = nlme::corAR1(form = ~ index | sex))
+  
+  ### model selection
+  anova(
+    model_primary_childcare_sex, 
+    model_primary_childcare_sex_covid, 
+    model_primary_childcare_sex_no_seasonality, 
+    model_primary_childcare_sex_simple,
+    model_primary_childcare_sex_covid_trend,
+    model_primary_childcare_sex_covid_trend_int
+  )
+  
+  # best model
+  tmp <- summary(model_primary_childcare_sex_covid_trend)
+  tmp$tTable %>% 
+    as_tibble() %>% 
+    mutate(Coef = names(tmp$coefficients)) %>% 
+    slice(-1) %>% 
+    select(Coef, Beta = Value, Std.Error, `p-value`) %>% 
+    print()
+  rm(tmp)
+  
+  return(model_primary_childcare_sex_covid_trend)
+})
 
-# best model
-tmp <- summary(model_primary_childcare_sex)
-tmp$tTable %>% 
-  as_tibble() %>% 
-  mutate(Coef = names(tmp$coefficients)) %>% 
-  slice(-1) %>% 
-  select(Coef, Beta = Value, Std.Error, `p-value`)
-rm(tmp)
 
 # plot it
 PCC_by_quarter_sex %>% 
@@ -255,7 +279,7 @@ PCC_by_quarter_sex %>%
   geom_line(aes(color = is_covid_era), alpha = 0.3) +
   geom_point(aes(color = is_covid_era), alpha = 0.3) +
   geom_line(data = tibble(x = PCC_by_quarter_sex$quarter,
-                          y = model_primary_childcare_sex$fitted,
+                          y = model_PCC_sex$fitted,
                           group = PCC_by_quarter_sex$is_covid_era,
                           sex = PCC_by_quarter_sex$sex),
             aes(x = x, y = y, group = group)) +
@@ -275,7 +299,7 @@ PCC_by_quarter_sex %>%
        color = NULL) +
   theme(legend.position = 'bottom')
 # ggsave(file.path('outputs', 'time-series', "childcare_primary_timeseries_by_sex.png"),
-#        height = 6, width = 10)
+#        height = 5, width = 8)
 
 # demographics
 # age, sex, n_child, labor_force_status, partner_working, has_partner, elder_in_HH, race, education, metropolitan
