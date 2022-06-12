@@ -75,169 +75,27 @@ atus_wide <- local({
   return(list(t1 = atus_t1, t2 = atus_t2))
 })
 
-
-# traminer ----------------------------------------------------------------
-
-# define alphabet as all unique states
-alphabet <- atus_wide$t1[,-1] %>% unlist() %>% unique() %>% sort()
-labels <- c("Care_HH", "Care_NHH", "Cons_Pur", "Eat_drink", "Edu", 
-            "HH_activ", "Other", "Prsl_care", "Care_svcs", "Rel_spirit", 
-            "Sleep", "Leisure", "Recreation", "Volunteer", "Work")
-
-# create state sequence object
-atus_seq_t1 <- seqdef(
-  data = atus_wide$t1[, -1], 
-  alphabet = alphabet, 
-  id = atus_wide$t1$ID,
-  # labels = labels,
-  xtstep = 1)
-atus_seq_t2 <- seqdef(
-  data = atus_wide$t2[, -1], 
-  alphabet = alphabet, 
-  id = atus_wide$t2$ID,
-  # labels = labels,
-  xtstep = 1)
-
-# sequenchr::launch_sequenchr(atus_seq_t1)
-
-# tidy the data
-atus_tidy_t1 <- sequenchr::tidy_sequence_data(atus_seq_t1)
-atus_tidy_t2 <- sequenchr::tidy_sequence_data(atus_seq_t2)
-
-# establish color mapping for plots
-color_mapping <- viridis::viridis_pal()(length(alphabet(atus_seq_t1)))
-names(color_mapping) <- TraMineR::alphabet(atus_seq_t1)
-
-
-# clustering --------------------------------------------------------------
-
-### TRATE method
-## calculate transition rates
-## TRATE_t1 <- seqtrate(atus_seq_t1)
-
-# calculate substitution cost from year1
-# TRATE_cost <- seqsubm(atus_seq_t1, method = 'TRATE') #, time.varying = TRUE
-# # TRATE_cost_t2 <- TRATE_cost # default
-# TRATE_cost_t2 <- seqsubm(atus_seq_t2, method = 'TRATE') # only use when clustering separately
-# 
-# # compute distances
-# dist_t1 <- seqdist(atus_seq_t1, method = "OM", sm = TRATE_cost)
-# dist_t2 <- seqdist(atus_seq_t2, method = "OM", sm = TRATE_cost_t2)
-
-### LCS method
-method <- 'LCS'
-dist_t1 <- seqdist(atus_seq_t1, method = method)
-dist_t2 <- seqdist(atus_seq_t2, method = method)
-
-
-# cluster the data and create summary metrics
-k_range <- c(2, 10)
-cluster_algo <- 'hclust'
-
-# cluster the data
-cluster_model_t1 <- fastcluster::hclust(as.dist(dist_t1), method = "ward.D2")
-cluster_model_t2 <- fastcluster::hclust(as.dist(dist_t2), method = "ward.D2")
-# plot(cluster_model_t1)
-# plot(cluster_model_t2)
-
-# optimize k
-k_seq <- k_range[1]:k_range[2]
-# TODO: verify Hubert C index code via 1976 paper
-hubert_c_t1 <- sapply(k_seq, function(k) clusterSim::index.C(dist_t1, stats::cutree(cluster_model_t1, k)))
-hubert_c_t2 <- sapply(k_seq, function(k) clusterSim::index.C(dist_t2, stats::cutree(cluster_model_t2, k)))
-stats_t1 <- sequenchr::cluster_stats(dist_t1, cluster_model_t1, k_range[1], k_range[2])
-stats_t2 <- sequenchr::cluster_stats(dist_t2, cluster_model_t2, k_range[1], k_range[2])
-
-# plot all the metrics
-validity_stats <- bind_rows(
-  tibble(k = k_seq, name = 'Hubert C', value = scale_01(hubert_c_t1)) %>% mutate(time = 't1'),
-  tibble(k = k_seq, name = 'Hubert C', value = scale_01(hubert_c_t2)) %>% mutate(time = 't2'),
-  stats_t1 %>% select(k, ch_norm, silhouette_norm) %>% mutate(time = 't1') %>% pivot_longer(c("ch_norm", "silhouette_norm")),
-  stats_t2 %>% select(k, ch_norm, silhouette_norm) %>% mutate(time = 't2') %>% pivot_longer(c("ch_norm", "silhouette_norm"))
+# cluster the sequences
+sequences_clustered <- cluster_sequences(
+  atus_wide, 
+  method = 'LCS', 
+  k_range = c(2, 10), 
+  cluster_algo = 'hclust', 
+  cluster_method = 'ward.D2', 
+  include_plots = TRUE
 )
-mean_metric <- validity_stats %>%
-  pivot_wider() %>% 
-  group_by(time, k) %>% 
-  summarize(mean_metrics = mean(c(1-`Hubert C`, ch_norm, silhouette_norm)),
-            .groups = 'drop')
-mean_metric %>% 
-  rename(value = mean_metrics) %>% 
-  mutate(name = "Aggregate mean") %>%  
-  bind_rows(validity_stats) %>% 
-  mutate(name = recode(name, 
-                       'ch_norm' = "Calinski and Harabasz index",
-                       'silhouette_norm' = 'Silhouette width'),
-         name = factor(name, levels = c('Calinski and Harabasz index', 'Hubert C',
-                                        'Silhouette width', 'Aggregate mean'))) %>%
-  ggplot(aes(x = k, y = value, color = name, linetype = time)) +
-  geom_line() +
-  geom_point() +
-  scale_x_continuous(breaks = k_range[1]:k_range[2]) +
-  facet_wrap(~name, nrow = 1) +
-  guides(color = 'none') +
-  labs(title = "Normalized cluster validity statistics",
-       subtitle = paste0("Best = max(CH), min(Hubert C), max(Silhouette), max(aggregate)\n", year1, "/", year2),
-       x = 'n clusters',
-       y = 'Normalized index',
-       color = NULL,
-       linetype = NULL) +
-  theme(legend.position = 'bottom')
-# ggsave(file.path(file_path, "plots", 'clustering', "cluster_validity.png"), height = 6, width = 9)
-
-# which k is optimal based on the mean metrics?
-optimal_k <- mean_metric %>%  
-  group_by(time) %>% 
-  summarize(optimal_k = k[which.max(mean_metrics)],
-            .groups = 'drop')
-
-# set the cluster labels
-k_t1 <- optimal_k$optimal_k[optimal_k$time == 't1']
-k_t2 <- optimal_k$optimal_k[optimal_k$time == 't2']
-sequenchr::plot_dendrogram(cluster_model_t1, k_t1, 50) + labs(subtitle = paste0("Time 1: ", year1))
-# ggsave(file.path(file_path, "plots", 'clustering', "dendrogram_year1.png"), height = 6, width = 9)
-sequenchr::plot_dendrogram(cluster_model_t2, k_t2, 50) + labs(subtitle = paste0("Time 2: ", year2))
-# ggsave(file.path(file_path, "plots", 'clustering', "dendrogram_year2.png"), height = 6, width = 9)
-clusters_t1 <- sequenchr::label_clusters(cluster_model_t1, k_t1)
-clusters_t2 <- sequenchr::label_clusters(cluster_model_t2, k_t2)
-
-# calculate n and proportion per cluster
-n_t1 <- as.numeric(table(clusters_t1))
-n_t2 <- as.numeric(table(clusters_t2))
-p_t1 <- n_t1 / sum(n_t1)
-p_t2 <- n_t2 / sum(n_t2)
-
-
-# cluster descriptions ----------------------------------------------------
-
-# plot seqI
-sequenchr::plot_sequence_index(atus_tidy_t1, color_mapping, clusters_t1) + labs(subtitle = paste0("Time 1: ", year1))
-# ggsave(file.path(file_path, "plots", 'clustering', "seqI_year1.png"), height = 9, width = 9)
-sequenchr::plot_sequence_index(atus_tidy_t2, color_mapping, clusters_t2) + labs(subtitle = paste0("Time 2: ", year2))
-# ggsave(file.path(file_path, "plots", 'clustering', "seqI_year2.png"), height = 9, width = 9)
-
-# plot seqD
-sequenchr::plot_state(atus_tidy_t1, color_mapping, clusters_t1) + labs(subtitle = paste0("Time 1: ", year1))
-# ggsave(file.path(file_path, "plots", 'clustering', "seqD_year1.png"), height = 9, width = 9)
-sequenchr::plot_state(atus_tidy_t2, color_mapping, clusters_t2) + labs(subtitle = paste0("Time 2: ", year2))
-# ggsave(file.path("outputs", 'SA', method, "seqD_year2.png"), height = 9, width = 9)
-
-# plot modals
-sequenchr::plot_modal(atus_tidy_t1, color_mapping, clusters_t1) + labs(subtitle = paste0("Time 1: ", year1))
-# ggsave(file.path(file_path, "plots", 'clustering', "modals_year1.png"), height = 9, width = 9)
-sequenchr::plot_modal(atus_tidy_t2, color_mapping, clusters_t2) + labs(subtitle = paste0("Time 2: ", year2))
-# ggsave(file.path(file_path, "plots", 'clustering', "modals_year2.png"), height = 9, width = 9)
-
-# plotly::ggplotly()
 
 
 # post-hoc ----------------------------------------------------------------
 
 clusters <- tibble(
   ID = c(atus_wide$t1$ID, atus_wide$t2$ID),
-  cluster = c(clusters_t1, clusters_t2),
-  year = c(rep(year1, length(clusters_t1)),
-           rep(year2, length(clusters_t2)))
+  cluster = c(sequences_clustered$clusters$t1, sequences_clustered$clusters$t2),
+  year = c(rep(year1, length(sequences_clustered$clusters$t1)),
+           rep(year2, length(sequences_clustered$clusters$t2)))
 )
+
+
 
 # establish color mapping
 unique_states <- sort(unique(atus_raw$description))
@@ -294,36 +152,36 @@ seqI_groups %>%
 # 2020 seqD by gender -- resampled so each cluster has 1000 individuals 
 # but maintains between sex split within cluster
 resampled_seq <- local({
-
-  resampled <- seqI_groups %>%
-    filter(year == year2) %>% 
-    distinct(ID, cluster, year) %>% 
-    left_join(select(demographics, ID, survey_weight), by = 'ID') %>% 
-    group_by(year, cluster) %>% 
-    slice_sample(n = 1000, weight_by = survey_weight, replace = TRUE) %>% 
-    ungroup() %>% 
-    transmute(ID, ID_resampled = row_number())
   
-  # get sequence information and insert filler rows between sexes
-  # TODO: pickup here
-  n_filler_rows <- 50
-  cluster_names <- seqI_groups %>% filter(year == year2) %>% pull(cluster) %>% unique()
-  filler_rows <- tibble(
-    description = 'filler',
-    sex = 'filler',
-    cluster = rep(cluster_names, n_filler_rows)
-  )
-  
-  resampled_seq <- resampled %>% 
-    left_join(seqI_groups, by = 'ID') %>% 
-    left_join(select(demographics, ID, sex), by = 'ID') %>% 
-    mutate(sex = recode(sex, `1` = 'male', `2` = 'female'),
-           cluster = stringr::str_sub(cluster, 1, 9)) # %>% 
-  # bind_rows(filler_rows) %>% 
-  # group_by(cluster, sex, ID_resampled) %>% 
-  # arrange(entropy) %>% 
+  # # create filler rows for white-space on plot
+  # n_filler_rows <- 50
+  # cluster_names <- seqI_groups %>% filter(year == year2) %>% pull(cluster) %>% unique()
+  # filler_rows <- tibble(
+  #   sex = 'filler',
+  #   cluster = rep(cluster_names, n_filler_rows)
+  # )
+  # 
+  # # resample
+  # resampled <- seqI_groups %>%
+  #   filter(year == year2) %>%
+  #   distinct(ID, cluster, year) %>%
+  #   left_join(select(demographics, ID, survey_weight, sex), by = 'ID') %>%
+  #   mutate(sex = recode(sex, `1` = 'male', `2` = 'female')) %>%
+  #   group_by(year, cluster) %>%
+  #   slice_sample(n = 1000, weight_by = survey_weight, replace = TRUE) %>%
+  #   bind_rows(filler_rows) %>%
+  #   mutate(ID_resampled = row_number()) %>%
+  #   ungroup()
+  # 
+  # # join to get activities
+  # resampled_seq <- resampled %>%
+  #   left_join(select(seqI_groups, ID, period, description, entropy), by = 'ID') %>%
+  #   mutate(cluster = stringr::str_sub(cluster, 1, 9),
+  #          description = if_else(is.na(description), 'filler', description))
+  # group_by(cluster, sex, ID_resampled) %>%
+  # arrange(entropy) %>%
   # mutate(ID_resampled = row_number())
-  
+
   return(resampled_seq)
 })
 
@@ -333,7 +191,7 @@ resampled_seq %>%
   geom_tile() +
   scale_fill_manual(values = color_mapping_grey) +
   scale_y_discrete(labels = NULL, breaks = NULL) +
-  facet_wrap(sex~cluster, scales = 'free_y') +
+  facet_wrap(~cluster, scales = 'free_y') +
   labs(title = "2020 sequences split by cluster and sex",
        subtitle = 'Each cluster resampled with n = 1,000',
        x = NULL, 

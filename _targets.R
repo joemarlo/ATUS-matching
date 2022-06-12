@@ -31,14 +31,12 @@ lapply(list.files("R", full.names = TRUE, recursive = TRUE), source)
 # tar_meta(fields = warnings)
 
 
-
 # pipeline ----------------------------------------------------------------
 
 pipeline <- list()
 
 # data pipelines
 pipeline$data$download <- list(
-  # TODO: this doesn't pull the targets dependency with it
   tar_target(
     name = download_ATUS_files,
     command = download_ATUS()

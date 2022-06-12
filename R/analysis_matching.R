@@ -309,7 +309,7 @@ matching_mahalanobis <- function(demographics, year1, year2, matching_vars, meth
     # ggsave(file.path(file_path, "plots", 'matching', "numeric_differences_mahalanobis.png"), height = 5, width = 9)
     
     plots <- list(
-      counts <- p_counts,
+      counts = p_counts,
       matches_privileged = p_matches_privileged,
       matches_perfect = p_matches_perfect,
       matches_numeric = p_matches_numeric
