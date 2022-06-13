@@ -13,15 +13,14 @@ Reproducible code for working paper on matching clustered sequence data and unde
     ├── analysis/		# Analysis scripts
     ├── data/		# Cleaned data
     ├── inputs/		# Raw input data
-    ├── obsolete/		# Obsolete files
     ├── outputs/		# Formal write-ups and figures
     ├── R/			# Functions for cleaning and analysis
-    ├── renv/         # Storage for renv
-    ├── _targets/     # Storage for targets
+    ├── renv/         	# Storage for renv
+    ├── _targets/     	# Storage for targets
     ├── tests/		# Unit tests
-    ├── _targets.R      # targets pipeline
-    ├── run.R           # Run the targets pipeline from R
-    ├── run.sh          # Run the targets pipeline from shell
+    ├── _targets.R      	# targets pipeline
+    ├── run.R           	# Run the targets pipeline from R
+    ├── run.sh          	# Run the targets pipeline from shell
     └── README.md
 
 <br>

@@ -13,11 +13,13 @@ library(ggplot2)
 purrr:::walk(list.files('R', full.names = TRUE), source)
 
 # read in the demographics data
-demographics <- readr::read_delim(file = file.path("data", "demographic.tsv"),
-                           delim = "\t",
-                           escape_double = FALSE,
-                           trim_ws = TRUE,
-                           col_types = readr::cols(metropolitan = readr::col_character()))
+demographics <- readr::read_delim(
+  file = file.path("data", "demographic.tsv"),
+  delim = "\t",
+  escape_double = FALSE,
+  trim_ws = TRUE,
+  col_types = readr::cols(metropolitan = readr::col_character())
+)
 
 # recode sex so its explicit
 demographics$sex <- recode(demographics$sex,
@@ -127,9 +129,10 @@ PCC_by_quarter <- respondents_with_children %>%
          quarter_ex_year = factor(quarter_ex_year, levels = 1:4)) %>% 
   ungroup()
 
+# fit a few models and select the best based on BIC
 model_PCC <- local({
   
-  # fit mulitple  generalized least squares with dummy for quarter
+  # fit multiple  generalized least squares with dummy for quarter
   model_primary_childcare <- nlme::gls(
     weighted_childcare ~ index + is_covid_era + quarter_ex_year,
     data = PCC_by_quarter,
@@ -147,28 +150,14 @@ model_PCC <- local({
     data = PCC_by_quarter,
     corr = nlme::corAR1(form = ~ index))
   
-  ### model selection
-  pcc_anova <- anova(
+  best_model <- select_model(
     model_primary_childcare_simple, 
     model_primary_childcare_covid, 
     model_primary_childcare_no_seasonality, 
     model_primary_childcare
   )
-  pcc_best_model <- rownames(pcc_anova)[which.min(pcc_anova$BIC)]
-  pcc_best_model <- eval(as.symbol(pcc_best_model))
-  cli::cli_alert_success('Best model is {pcc_best_model$call}')
   
-  # best model
-  tmp <- summary(pcc_best_model)
-  tmp$tTable %>% 
-    as_tibble() %>% 
-    mutate(Coef = names(tmp$coefficients)) %>% 
-    slice(-1) %>% 
-    select(Coef, Beta = Value, Std.Error, `p-value`) %>% 
-    print()
-  rm(tmp)
-  
-  return(pcc_best_model)
+  return(best_model)
 })
 
 
@@ -226,7 +215,7 @@ PCC_by_quarter_sex <- respondents_with_children %>%
          quarter_ex_year = factor(quarter_ex_year, levels = 1:4)) %>% 
   ungroup()
 
-
+# fit a few models and select the best based on BIC
 model_PCC_sex <- local({
   
   # fit mulitple generalized least squares with dummy for quarter
@@ -255,8 +244,8 @@ model_PCC_sex <- local({
     data = PCC_by_quarter_sex,
     corr = nlme::corAR1(form = ~ index | sex))
   
-  ### model selection
-  pcc_sex_anova <- anova(
+  # model selection
+  best_model <- select_model(
     model_primary_childcare_sex, 
     model_primary_childcare_sex_covid, 
     model_primary_childcare_sex_no_seasonality, 
@@ -264,21 +253,8 @@ model_PCC_sex <- local({
     model_primary_childcare_sex_covid_trend,
     model_primary_childcare_sex_covid_trend_int
   )
-  pcc_sex_best_model <- rownames(pcc_sex_anova)[which.min(pcc_sex_anova$BIC)]
-  pcc_sex_best_model <- eval(as.symbol(pcc_sex_best_model))
-  cli::cli_alert_success('Best model is {pcc_sex_best_model$call}')
   
-  # best model
-  tmp <- summary(pcc_sex_best_model)
-  tmp$tTable %>% 
-    as_tibble() %>% 
-    mutate(Coef = names(tmp$coefficients)) %>% 
-    slice(-1) %>% 
-    select(Coef, Beta = Value, Std.Error, `p-value`) %>% 
-    print()
-  rm(tmp)
-  
-  return(pcc_sex_best_model)
+  return(best_model)
 })
 
 
@@ -358,6 +334,7 @@ SSC_by_quarter <- respondents_with_children %>%
          quarter_ex_year = factor(quarter_ex_year, levels = 1:4)) %>%  
   ungroup()
 
+# fit a few models and select the best based on BIC
 model_SCC <- local({
   
   # fit mulitple generalized least squares with dummy for quarter
@@ -378,28 +355,15 @@ model_SCC <- local({
     data = SSC_by_quarter,
     corr = nlme::corAR1(form = ~ index))
   
-  ### model selection
-  scc_anova <- anova(
+  # model selection
+  best_model <- select_model(
     model_secondary_childcare, 
     model_secondary_childcare_no_covid, 
     model_secondary_childcare_no_seasonality, 
     model_secondary_childcare_simple
   )
-  scc_best_model <- rownames(scc_anova)[which.min(scc_anova$BIC)]
-  scc_best_model <- eval(as.symbol(scc_best_model))
-  cli::cli_alert_success('Best model is {scc_best_model$call}')
   
-  # best model
-  tmp <- summary(scc_best_model)
-  tmp$tTable %>% 
-    as_tibble() %>% 
-    mutate(Coef = names(tmp$coefficients)) %>% 
-    slice(-1) %>% 
-    select(Coef, Beta = Value, Std.Error, `p-value`) %>% 
-    print()
-  rm(tmp)
-  
-  return(scc_best_model)
+  return(best_model)
 })
 
 # plot it
@@ -457,6 +421,7 @@ SSC_by_quarter_sex <- respondents_with_children %>%
          quarter_ex_year = factor(quarter_ex_year, levels = 1:4)) %>%  
   ungroup()
 
+# fit a few models and select the best based on BIC
 SCC_sex_model <- local({
   
   # fit multiple generalized least squares with dummy for quarter
@@ -486,7 +451,7 @@ SCC_sex_model <- local({
     corr = nlme::corAR1(form = ~ index | sex))
   
   # model selection
-  scc_sex_anova <- anova(
+  best_model <- select_model(
     model_secondary_childcare_sex, 
     model_secondary_childcare_sex_no_covid, 
     model_secondary_childcare_sex_no_seasonality, 
@@ -494,21 +459,8 @@ SCC_sex_model <- local({
     model_secondary_childcare_sex_covid_trend,
     model_secondary_childcare_sex_covid_trend_int
   )
-  scc_sex_best_model <- rownames(scc_sex_anova)[which.min(scc_sex_anova$BIC)]
-  scc_sex_best_model <- eval(as.symbol(scc_sex_best_model))
-  cli::cli_alert_success('Best model is {scc_sex_best_model$call}')
   
-  # best model
-  tmp <- summary(scc_sex_best_model)
-  tmp$tTable %>% 
-    as_tibble() %>% 
-    mutate(Coef = names(tmp$coefficients)) %>% 
-    slice(-1) %>% 
-    select(Coef, Beta = Value, Std.Error, `p-value`) %>% 
-    print()
-  rm(tmp)
-  
-  return(scc_sex_best_model)
+  return(best_model)
 })
 
 
