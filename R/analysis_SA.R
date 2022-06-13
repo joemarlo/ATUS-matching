@@ -4,6 +4,8 @@
 #' See sequence_analysis.R for example
 #'
 #' @param atus_wide 
+#' @param year1 
+#' @param year2 
 #' @param method one of c('LCS', 'TRATE')
 #' @param k_range range of k values to test to determine best k values
 #' @param cluster_algo unused
@@ -14,7 +16,7 @@
 #' @export
 #'
 #' @examples
-cluster_sequences <- function(atus_wide, method = 'LCS', k_range = c(2, 10), cluster_algo = 'hclust', cluster_method = 'ward.D2', include_plots = FALSE){
+cluster_sequences <- function(atus_wide, year1, year2, method = 'LCS', k_range = c(2, 10), cluster_algo = 'hclust', cluster_method = 'ward.D2', include_plots = FALSE){
   
   method <- match.arg(method, c('LCS', 'TRATE'))
   cluster_algo <- match.arg(cluster_algo, c('hclust'))
@@ -41,7 +43,7 @@ cluster_sequences <- function(atus_wide, method = 'LCS', k_range = c(2, 10), clu
     xtstep = 1)
   
   # sequenchr::launch_sequenchr(atus_seq_t1)
-  
+
   
   # clustering --------------------------------------------------------------
   
@@ -76,6 +78,7 @@ cluster_sequences <- function(atus_wide, method = 'LCS', k_range = c(2, 10), clu
   stats_t1 <- sequenchr::cluster_stats(dist_t1, cluster_model_t1, k_range[1], k_range[2])
   stats_t2 <- sequenchr::cluster_stats(dist_t2, cluster_model_t2, k_range[1], k_range[2])
   
+  # put stats in same data format
   validity_stats <- bind_rows(
     tibble(k = k_seq, name = 'Hubert C', value = scale_01(hubert_c_t1)) %>% mutate(time = 't1'),
     tibble(k = k_seq, name = 'Hubert C', value = scale_01(hubert_c_t2)) %>% mutate(time = 't2'),
@@ -83,6 +86,7 @@ cluster_sequences <- function(atus_wide, method = 'LCS', k_range = c(2, 10), clu
     stats_t2 %>% select(k, ch_norm, silhouette_norm) %>% mutate(time = 't2') %>% pivot_longer(c("ch_norm", "silhouette_norm"))
   )
   
+  # calculate average normalized stat
   mean_metric <- validity_stats %>%
     pivot_wider() %>% 
     group_by(time, k) %>% 
@@ -187,16 +191,71 @@ cluster_sequences <- function(atus_wide, method = 'LCS', k_range = c(2, 10), clu
     )
   }
   
+  # df denoting the clusters
+  clusters <- tibble(
+    ID = c(atus_wide$t1$ID, atus_wide$t2$ID),
+    cluster = c(clusters_t1, clusters_t2),
+    year = c(rep(year1, length(clusters_t1)),
+             rep(year2, length(clusters_t2)))
+  )
   
+  # output structure
   out <- list(
     sequences = list(t1 = atus_tidy_t1,
                      t2 = atus_tidy_t2),
-    clusters = list(t1 = clusters_t1,
-                    t2 = clusters_t2),
+    clusters = clusters,
     k = list(t1 = k_t1,
              t2 = k_t2),
     plots = plots
   )
   
   return(out)
+}
+
+
+
+#' Prep the data for clustering
+#' 
+#' See sequence_analysis.R for example
+#'
+#' @param year1 
+#' @param year2 
+#' @param atusresp_0320 
+#' @param state_regions 
+#' @param demographics 
+#'
+#' @return
+#' @export
+sequence_prep_atus <- function(year1, year2, atusresp_0320, state_regions, demographics){
+  
+  # NOTE: this is only for plots; must adjust code in matching_prep_demographics() and matching_mahalanobis()
+  # if you want to change the matching and blocking vars
+  matching_vars <- c('age', 'sex', 'race', 'fam_income', 'has_partner', 
+                     'education', 'child_in_HH', 'n_child', 'age_youngest', 'region', 
+                     'partner_working', 'elder_in_HH', 'metropolitan')#, 'labor_force_status')
+  # blocking_vars <- c('sex', 'race', 'metropolitan', 'region', 'has_partner', 'labor_force_status') #'essential_worker # add child_in_HH?
+  blocking_vars <- c('sex', 'race') #, 'has_partner') #'essential_worker
+  
+  # clean the demographics data
+  demographics_prepped <- matching_prep_demographics(atusresp_0320, demographics, state_regions, year1, year2, matching_vars)
+  
+  # filter the ATUS data to just the this population
+  year1_IDs <- demographics_prepped$demographics %>% 
+    filter(year == year1) %>% 
+    pull(ID)
+  year2_IDs <- demographics_prepped$demographics %>% 
+    filter(year == year2) %>% 
+    pull(ID)
+  
+  atus_t1 <- atus_raw %>% 
+    filter(ID %in% year1_IDs) %>% 
+    pivot_wider(values_from = description, names_from = period, names_prefix = "p_") %>% 
+    arrange(ID)
+  
+  atus_t2 <- atus_raw %>% 
+    filter(ID %in% year2_IDs) %>% 
+    pivot_wider(values_from = description, names_from = period, names_prefix = "p_") %>% 
+    arrange(ID)
+  
+  return(list(t1 = atus_t1, t2 = atus_t2))
 }

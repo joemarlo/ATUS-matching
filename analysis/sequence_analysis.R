@@ -31,11 +31,12 @@ demographics <- readr::read_delim(file = file.path("data", "demographic.tsv"),
 
 # population --------------------------------------------------------------
 
-year1 <- 2019
-year2 <- 2020
+# years to backtest
+years1 <- 2004:2019
+years2 <- years1 + 1
 
-# convert atus data to wide for traminer
-atus_wide <- local({
+# run backtest of clustering
+clustering_results <- local({
   
   # read in data with diary date
   atusresp_0320 <- readr::read_csv(file.path("inputs", "ATUS-2003-2020", "atusresp_0320.dat"))
@@ -43,57 +44,50 @@ atus_wide <- local({
   # regions for matching
   state_regions <- readr::read_csv("inputs/state_regions.csv")
   
-  # NOTE: this is only for plots; must adjust code in matching_prep_demographics() and matching_mahalanobis()
-  # if you want to change the matching and blocking vars
-  matching_vars <- c('age', 'sex', 'race', 'fam_income', 'has_partner', 
-                     'education', 'child_in_HH', 'n_child', 'age_youngest', 'region', 
-                     'partner_working', 'elder_in_HH', 'metropolitan')#, 'labor_force_status')
-  # blocking_vars <- c('sex', 'race', 'metropolitan', 'region', 'has_partner', 'labor_force_status') #'essential_worker # add child_in_HH?
-  blocking_vars <- c('sex', 'race') #, 'has_partner') #'essential_worker
+  # cluster the data for each year
+  clustering_result <- purrr::map2(years1, years2, function(year1, year2){
+    
+    cli::cli_alert('On year {year1}:{year2}')
+    
+    # prep the data
+    atus_wide <- sequence_prep_atus(year1, year2, atusresp_0320, state_regions, demographics)
+    
+    # cluster the sequences
+    sequences_clustered <- cluster_sequences(
+      atus_wide = atus_wide, 
+      year1 = year1,
+      year2 = year2,
+      method = 'LCS', 
+      k_range = c(2, 10), 
+      cluster_algo = 'hclust', 
+      cluster_method = 'ward.D2', 
+      include_plots = TRUE
+    )
+    
+    # store the years
+    sequences_clustered$years$year1 <- year1
+    sequences_clustered$years$year2 <- year2
+    
+    return(sequences_clustered)
+  })
   
-  # clean the demographics data
-  demographics_prepped <- matching_prep_demographics(atusresp_0320, demographics, state_regions, year1, year2, matching_vars)
-  
-  # filter the ATUS data to just the this population
-  year1_IDs <- demographics_prepped$demographics %>% 
-    filter(year == year1) %>% 
-    pull(ID)
-  year2_IDs <- demographics_prepped$demographics %>% 
-    filter(year == year2) %>% 
-    pull(ID)
-  
-  atus_t1 <- atus_raw %>% 
-    filter(ID %in% year1_IDs) %>% 
-    pivot_wider(values_from = description, names_from = period, names_prefix = "p_") %>% 
-    arrange(ID)
-  
-  atus_t2 <- atus_raw %>% 
-    filter(ID %in% year2_IDs) %>% 
-    pivot_wider(values_from = description, names_from = period, names_prefix = "p_") %>% 
-    arrange(ID)
-  
-  return(list(t1 = atus_t1, t2 = atus_t2))
+  return(clustering_result)
 })
+names(clustering_results) <- glue::glue('{years1}:{years2}')
 
-# cluster the sequences
-sequences_clustered <- cluster_sequences(
-  atus_wide, 
-  method = 'LCS', 
-  k_range = c(2, 10), 
-  cluster_algo = 'hclust', 
-  cluster_method = 'ward.D2', 
-  include_plots = TRUE
-)
+# save the results
+saveRDS(clustering_results, 'outputs/SA/backtest.rds')
+# clustering_results <- readRDS('outputs/SA/backtest.rds')
 
 
-# post-hoc ----------------------------------------------------------------
+# post-hoc analysis -------------------------------------------------------
 
-clusters <- tibble(
-  ID = c(atus_wide$t1$ID, atus_wide$t2$ID),
-  cluster = c(sequences_clustered$clusters$t1, sequences_clustered$clusters$t2),
-  year = c(rep(year1, length(sequences_clustered$clusters$t1)),
-           rep(year2, length(sequences_clustered$clusters$t2)))
-)
+sequences_clustered <- clustering_results$`2019:2020`
+clusters <- sequences_clustered$clusters
+years <- sequences_clustered$clusters$year %>% unique() %>% sort()
+year1 <- sequences_clustered$years$year1
+year2 <- sequences_clustered$years$year2
+
 
 # set labels for SeqI x axis: formatted as time
 labels_x <- as.character(seq(2, 24, by = 2))
@@ -138,7 +132,7 @@ seqI_groups %>%
        y = 'Frequency',
        fill = NULL) +
   theme(legend.position = 'bottom')
-# ggsave(file.path('outputs', 'SA', "seqd_2020.png"), height = 6, width = 9)
+# ggsave(file.path('outputs', 'SA', glue::glue("seqd_{year2}.png")), height = 6, width = 9)
 
 # 2020 seqD by gender -- resampled so each cluster has 1000 individuals 
 # but maintains between sex split within cluster
@@ -149,7 +143,7 @@ resampled_seq <- local({
   cluster_names <- seqI_groups %>% filter(year == year2) %>% pull(cluster) %>% unique()
   filler_rows <- tibble(
     sex = 'filler',
-    year = 2020,
+    year = year2,
     cluster = rep(cluster_names, n_filler_rows),
     ID = as.numeric(paste0(999, 1:(n_filler_rows * length(cluster_names)))),
     entropy = 1,
@@ -199,10 +193,10 @@ resampled_seq %>%
   scale_x_continuous(breaks = breaks_x, labels = labels_x) +
   scale_y_discrete(labels = NULL, breaks = NULL) +
   facet_wrap(~cluster, scales = 'free_y') +
-  labs(title = "2020 sequences split by cluster and sex",
+  labs(title = glue::glue("{year2} sequences split by cluster and sex"),
        subtitle = 'Each cluster resampled with n = 1,000',
        x = NULL, 
        y = "Respondent", 
        fill = NULL) +
   theme(legend.position = 'bottom')
-# ggsave(file.path('outputs', 'SA', "seqi_2020.png"), height = 6, width = 9)
+# ggsave(file.path('outputs', 'SA', glue::glue("seqi_{year2}.png")), height = 6, width = 9)

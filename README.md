@@ -37,11 +37,4 @@ To reproduce:
 
 <br>
 
-### TODO
-- Recreate seqI plot with split by sex with whitespace gap
-- Function'ize the sequence analysis script and run backtest
-- Integrate cluster post hoc analysis
-
-<br>
-
 See also: [ATUS repo](https://github.com/joemarlo/ATUS)
