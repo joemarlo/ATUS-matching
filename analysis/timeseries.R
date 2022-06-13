@@ -148,10 +148,18 @@ model_PCC <- local({
     corr = nlme::corAR1(form = ~ index))
   
   ### model selection
-  anova(model_primary_childcare_simple, model_primary_childcare_covid, model_primary_childcare_no_seasonality, model_primary_childcare)
+  pcc_anova <- anova(
+    model_primary_childcare_simple, 
+    model_primary_childcare_covid, 
+    model_primary_childcare_no_seasonality, 
+    model_primary_childcare
+  )
+  pcc_best_model <- rownames(pcc_anova)[which.min(pcc_anova$BIC)]
+  pcc_best_model <- eval(as.symbol(pcc_best_model))
+  cli::cli_alert_success('Best model is {pcc_best_model$call}')
   
   # best model
-  tmp <- summary(model_primary_childcare)
+  tmp <- summary(pcc_best_model)
   tmp$tTable %>% 
     as_tibble() %>% 
     mutate(Coef = names(tmp$coefficients)) %>% 
@@ -160,7 +168,7 @@ model_PCC <- local({
     print()
   rm(tmp)
   
-  return(model_primary_childcare)
+  return(pcc_best_model)
 })
 
 
@@ -248,7 +256,7 @@ model_PCC_sex <- local({
     corr = nlme::corAR1(form = ~ index | sex))
   
   ### model selection
-  anova(
+  pcc_sex_anova <- anova(
     model_primary_childcare_sex, 
     model_primary_childcare_sex_covid, 
     model_primary_childcare_sex_no_seasonality, 
@@ -256,9 +264,12 @@ model_PCC_sex <- local({
     model_primary_childcare_sex_covid_trend,
     model_primary_childcare_sex_covid_trend_int
   )
+  pcc_sex_best_model <- rownames(pcc_sex_anova)[which.min(pcc_sex_anova$BIC)]
+  pcc_sex_best_model <- eval(as.symbol(pcc_sex_best_model))
+  cli::cli_alert_success('Best model is {pcc_sex_best_model$call}')
   
   # best model
-  tmp <- summary(model_primary_childcare_sex_covid_trend)
+  tmp <- summary(pcc_sex_best_model)
   tmp$tTable %>% 
     as_tibble() %>% 
     mutate(Coef = names(tmp$coefficients)) %>% 
@@ -267,7 +278,7 @@ model_PCC_sex <- local({
     print()
   rm(tmp)
   
-  return(model_primary_childcare_sex_covid_trend)
+  return(pcc_sex_best_model)
 })
 
 
@@ -347,40 +358,49 @@ SSC_by_quarter <- respondents_with_children %>%
          quarter_ex_year = factor(quarter_ex_year, levels = 1:4)) %>%  
   ungroup()
 
-# fit mulitple generalized least squares with dummy for quarter
-model_secondary_childcare <- nlme::gls(
-  weighted_secondary_childcare ~ index + is_covid_era + quarter_ex_year,
-  data = SSC_by_quarter,
-  corr = nlme::corAR1(form = ~ index))
-model_secondary_childcare_no_seasonality <- nlme::gls(
-  weighted_secondary_childcare ~ index + is_covid_era,
-  data = SSC_by_quarter,
-  corr = nlme::corAR1(form = ~ index))
-model_secondary_childcare_simple <- nlme::gls(
-  weighted_secondary_childcare ~ index,
-  data = SSC_by_quarter,
-  corr = nlme::corAR1(form = ~ index))
-model_secondary_childcare_no_covid <- nlme::gls(
-  weighted_secondary_childcare ~ index + quarter_ex_year,
-  data = SSC_by_quarter,
-  corr = nlme::corAR1(form = ~ index))
-
-### model selection
-anova(
-  model_secondary_childcare, 
-  model_secondary_childcare_no_covid, 
-  model_secondary_childcare_no_seasonality, 
-  model_secondary_childcare_simple
-)
-
-# best model
-tmp <- summary(model_secondary_childcare)
-tmp$tTable %>% 
-  as_tibble() %>% 
-  mutate(Coef = names(tmp$coefficients)) %>% 
-  slice(-1) %>% 
-  select(Coef, Beta = Value, Std.Error, `p-value`)
-rm(tmp)
+model_SCC <- local({
+  
+  # fit mulitple generalized least squares with dummy for quarter
+  model_secondary_childcare <- nlme::gls(
+    weighted_secondary_childcare ~ index + is_covid_era + quarter_ex_year,
+    data = SSC_by_quarter,
+    corr = nlme::corAR1(form = ~ index))
+  model_secondary_childcare_no_seasonality <- nlme::gls(
+    weighted_secondary_childcare ~ index + is_covid_era,
+    data = SSC_by_quarter,
+    corr = nlme::corAR1(form = ~ index))
+  model_secondary_childcare_simple <- nlme::gls(
+    weighted_secondary_childcare ~ index,
+    data = SSC_by_quarter,
+    corr = nlme::corAR1(form = ~ index))
+  model_secondary_childcare_no_covid <- nlme::gls(
+    weighted_secondary_childcare ~ index + quarter_ex_year,
+    data = SSC_by_quarter,
+    corr = nlme::corAR1(form = ~ index))
+  
+  ### model selection
+  scc_anova <- anova(
+    model_secondary_childcare, 
+    model_secondary_childcare_no_covid, 
+    model_secondary_childcare_no_seasonality, 
+    model_secondary_childcare_simple
+  )
+  scc_best_model <- rownames(scc_anova)[which.min(scc_anova$BIC)]
+  scc_best_model <- eval(as.symbol(scc_best_model))
+  cli::cli_alert_success('Best model is {scc_best_model$call}')
+  
+  # best model
+  tmp <- summary(scc_best_model)
+  tmp$tTable %>% 
+    as_tibble() %>% 
+    mutate(Coef = names(tmp$coefficients)) %>% 
+    slice(-1) %>% 
+    select(Coef, Beta = Value, Std.Error, `p-value`) %>% 
+    print()
+  rm(tmp)
+  
+  return(scc_best_model)
+})
 
 # plot it
 y_min <- 4.25*60
@@ -397,7 +417,7 @@ SSC_by_quarter %>%
   geom_line(aes(color = is_covid_era), alpha = 0.3) +
   geom_point(aes(color = is_covid_era), alpha = 0.3) +
   geom_line(data = tibble(x = SSC_by_quarter$quarter, 
-                          y = model_secondary_childcare$fitted,
+                          y = model_SCC$fitted,
                           group = SSC_by_quarter$is_covid_era),
             aes(x = x, y = y, group = group)) + 
   annotate('text', x = as.Date('2020-06-30'), y = 275, label = 'No data collection', 
@@ -415,7 +435,7 @@ SSC_by_quarter %>%
        color = NULL) +
   theme(legend.position = 'bottom')
 # ggsave(file.path('outputs/', 'time-series', "childcare_secondary_timeseries.png"),
-#        height = 6, width = 10)
+#        height = 5, width = 8)
 
 
 # repeat but split by sex -------------------------------------------------
@@ -437,40 +457,60 @@ SSC_by_quarter_sex <- respondents_with_children %>%
          quarter_ex_year = factor(quarter_ex_year, levels = 1:4)) %>%  
   ungroup()
 
-# fit multiple generalized least squares with dummy for quarter
-model_secondary_childcare_sex <- nlme::gls(
-  weighted_secondary_childcare ~ index + is_covid_era + quarter_ex_year + sex,
-  data = SSC_by_quarter_sex,
-  corr = nlme::corAR1(form = ~ index | sex))
-model_secondary_childcare_sex_no_seasonality <- nlme::gls(
-  weighted_secondary_childcare ~ index + is_covid_era + sex,
-  data = SSC_by_quarter_sex,
-  corr = nlme::corAR1(form = ~ index | sex))
-model_secondary_childcare_sex_simple <- nlme::gls(
-  weighted_secondary_childcare ~ index + sex,
-  data = SSC_by_quarter_sex,
-  corr = nlme::corAR1(form = ~ index | sex))
-model_secondary_childcare_sex_no_covid <- nlme::gls(
-  weighted_secondary_childcare ~ index + quarter_ex_year + sex,
-  data = SSC_by_quarter_sex,
-  corr = nlme::corAR1(form = ~ index | sex))
+SCC_sex_model <- local({
+  
+  # fit multiple generalized least squares with dummy for quarter
+  model_secondary_childcare_sex <- nlme::gls(
+    weighted_secondary_childcare ~ index + is_covid_era + quarter_ex_year + sex,
+    data = SSC_by_quarter_sex,
+    corr = nlme::corAR1(form = ~ index | sex))
+  model_secondary_childcare_sex_no_seasonality <- nlme::gls(
+    weighted_secondary_childcare ~ index + is_covid_era + sex,
+    data = SSC_by_quarter_sex,
+    corr = nlme::corAR1(form = ~ index | sex))
+  model_secondary_childcare_sex_simple <- nlme::gls(
+    weighted_secondary_childcare ~ index + sex,
+    data = SSC_by_quarter_sex,
+    corr = nlme::corAR1(form = ~ index | sex))
+  model_secondary_childcare_sex_no_covid <- nlme::gls(
+    weighted_secondary_childcare ~ index + quarter_ex_year + sex,
+    data = SSC_by_quarter_sex,
+    corr = nlme::corAR1(form = ~ index | sex))
+  model_secondary_childcare_sex_covid_trend <- nlme::gls(
+    weighted_secondary_childcare ~ index + sex * is_covid_era + quarter_ex_year,
+    data = SSC_by_quarter_sex,
+    corr = nlme::corAR1(form = ~ index | sex))
+  model_secondary_childcare_sex_covid_trend_int <- nlme::gls(
+    weighted_secondary_childcare ~ index * sex * is_covid_era + quarter_ex_year,
+    data = SSC_by_quarter_sex,
+    corr = nlme::corAR1(form = ~ index | sex))
+  
+  # model selection
+  scc_sex_anova <- anova(
+    model_secondary_childcare_sex, 
+    model_secondary_childcare_sex_no_covid, 
+    model_secondary_childcare_sex_no_seasonality, 
+    model_secondary_childcare_sex_simple,
+    model_secondary_childcare_sex_covid_trend,
+    model_secondary_childcare_sex_covid_trend_int
+  )
+  scc_sex_best_model <- rownames(scc_sex_anova)[which.min(scc_sex_anova$BIC)]
+  scc_sex_best_model <- eval(as.symbol(scc_sex_best_model))
+  cli::cli_alert_success('Best model is {scc_sex_best_model$call}')
+  
+  # best model
+  tmp <- summary(scc_sex_best_model)
+  tmp$tTable %>% 
+    as_tibble() %>% 
+    mutate(Coef = names(tmp$coefficients)) %>% 
+    slice(-1) %>% 
+    select(Coef, Beta = Value, Std.Error, `p-value`) %>% 
+    print()
+  rm(tmp)
+  
+  return(scc_sex_best_model)
+})
 
-# model selection
-anova(
-  model_secondary_childcare_sex, 
-  model_secondary_childcare_sex_no_covid, 
-  model_secondary_childcare_sex_no_seasonality, 
-  model_secondary_childcare_sex_simple
-)
-
-# best model
-tmp <- summary(model_secondary_childcare_sex)
-tmp$tTable %>% 
-  as_tibble() %>% 
-  mutate(Coef = names(tmp$coefficients)) %>% 
-  slice(-1) %>% 
-  select(Coef, Beta = Value, Std.Error, `p-value`)
-rm(tmp)
 
 # plot it
 y_min <- 3*60
@@ -487,7 +527,7 @@ SSC_by_quarter_sex %>%
   geom_line(aes(color = is_covid_era), alpha = 0.3) +
   geom_point(aes(color = is_covid_era),  alpha = 0.3) +
   geom_line(data = tibble(x = SSC_by_quarter_sex$quarter, 
-                          y = model_secondary_childcare_sex$fitted,
+                          y = SCC_sex_model$fitted,
                           group = SSC_by_quarter_sex$is_covid_era,
                           sex = SSC_by_quarter_sex$sex),
             aes(x = x, y = y, group = group)) + 
@@ -511,26 +551,26 @@ SSC_by_quarter_sex %>%
        color = NULL) +
   theme(legend.position = 'bottom')
 # ggsave(file.path('outputs', 'time-series', "childcare_secondary_timeseries_by_sex.png"),
-#        height = 6, width = 10)
+#        height = 5, width = 8)
 
 # demographics
-# respondents_with_children %>% 
-#   filter(is_covid_era) %>% 
-#   select(ID, age, sex, n_child, labor_force_status, partner_working, has_partner, 
-#          elder_in_HH, race, education, metropolitan, minutes = secondary_childcare) %>% 
-#   # left_join(childcare_summary, by = "ID") %>% 
+# respondents_with_children %>%
+#   filter(is_covid_era) %>%
+#   select(ID, age, sex, n_child, labor_force_status, partner_working, has_partner,
+#          elder_in_HH, race, education, metropolitan, minutes = secondary_childcare) %>%
+#   # left_join(childcare_summary, by = "ID") %>%
 #   mutate(age = cut(age, seq(0, 100, by = 20)),
-#          across(-minutes, as.character)) %>% 
-#   select(-ID) %>% 
-#   pivot_longer(-minutes) %>% 
-#   group_by(name, value) %>% 
-#   summarize(minutes = mean(minutes, na.rm = TRUE)) %>% 
+#          across(-minutes, as.character)) %>%
+#   select(-ID) %>%
+#   pivot_longer(-minutes) %>%
+#   group_by(name, value) %>%
+#   summarize(minutes = mean(minutes, na.rm = TRUE)) %>%
 #   ggplot(aes(x = value, y = minutes)) +
 #   geom_col() +
 #   scale_y_continuous(labels = format_hour_minute) +
 #   facet_wrap(~name, scales = 'free_x') +
 #   labs(title = 'Marginal distributions of daily time spent on secondary childcare (2020)',
-#        subtitle = paste0('Only includes respondents with household children under 13\nn = ', 
+#        subtitle = paste0('Only includes respondents with household children under 13\nn = ',
 #                          scales::comma_format()(nrow(respondents_with_children))),
 #        x = NULL,
 #        y = 'Mean daily time (unweighted)') +
