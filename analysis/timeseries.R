@@ -149,17 +149,28 @@ model_PCC <- local({
     weighted_childcare ~ index + quarter_ex_year,
     data = PCC_by_quarter,
     corr = nlme::corAR1(form = ~ index))
+  model_primary_childcare_noAR <- nlme::gls(
+    weighted_childcare ~ index + is_covid_era + quarter_ex_year,
+    data = PCC_by_quarter)
+  model_primary_childcare_noAR_noQ <- nlme::gls(
+    weighted_childcare ~ index + is_covid_era,
+    data = PCC_by_quarter)
+  model_primary_childcare_noAR_noCovid <- nlme::gls(
+    weighted_childcare ~ index + quarter_ex_year,
+    data = PCC_by_quarter)
   
   best_model <- select_model(
     model_primary_childcare_simple, 
     model_primary_childcare_covid, 
     model_primary_childcare_no_seasonality, 
-    model_primary_childcare
+    model_primary_childcare,
+    model_primary_childcare_noAR,
+    model_primary_childcare_noAR_noQ,
+    model_primary_childcare_noAR_noCovid
   )
   
   return(best_model)
 })
-
 
 # plot it
 y_min <- 1.05*60
@@ -243,6 +254,15 @@ model_PCC_sex <- local({
     weighted_childcare ~ index * sex * is_covid_era + quarter_ex_year,
     data = PCC_by_quarter_sex,
     corr = nlme::corAR1(form = ~ index | sex))
+  model_primary_childcare_sex_noAR <- nlme::gls(
+    weighted_childcare ~ index + sex + is_covid_era + quarter_ex_year,
+    data = PCC_by_quarter_sex)
+  model_primary_childcare_sex_noAR_noQ <- nlme::gls(
+    weighted_childcare ~ index + sex + is_covid_era,
+    data = PCC_by_quarter_sex)
+  model_primary_childcare_sex_noAR_noCovid <- nlme::gls(
+    weighted_childcare ~ index + sex + quarter_ex_year,
+    data = PCC_by_quarter_sex)
   
   # model selection
   best_model <- select_model(
@@ -251,12 +271,14 @@ model_PCC_sex <- local({
     model_primary_childcare_sex_no_seasonality, 
     model_primary_childcare_sex_simple,
     model_primary_childcare_sex_covid_trend,
-    model_primary_childcare_sex_covid_trend_int
+    model_primary_childcare_sex_covid_trend_int,
+    model_primary_childcare_sex_noAR,
+    model_primary_childcare_sex_noAR_noQ,
+    model_primary_childcare_sex_noAR_noCovid
   )
   
   return(best_model)
 })
-
 
 # plot it
 PCC_by_quarter_sex %>% 
@@ -354,13 +376,25 @@ model_SCC <- local({
     weighted_secondary_childcare ~ index + quarter_ex_year,
     data = SSC_by_quarter,
     corr = nlme::corAR1(form = ~ index))
+  model_secondary_childcare_noAR <- nlme::gls(
+    weighted_secondary_childcare ~ index + is_covid_era + quarter_ex_year,
+    data = SSC_by_quarter)
+  model_secondary_childcare_noAR_noQ <- nlme::gls(
+    weighted_secondary_childcare ~ index + is_covid_era,
+    data = SSC_by_quarter)
+  model_secondary_childcare_noAR_noCovid <- nlme::gls(
+    weighted_secondary_childcare ~ index + quarter_ex_year,
+    data = SSC_by_quarter)
   
   # model selection
   best_model <- select_model(
     model_secondary_childcare, 
     model_secondary_childcare_no_covid, 
     model_secondary_childcare_no_seasonality, 
-    model_secondary_childcare_simple
+    model_secondary_childcare_simple,
+    model_secondary_childcare_noAR,
+    model_secondary_childcare_noAR_noQ,
+    model_secondary_childcare_noAR_noCovid
   )
   
   return(best_model)
@@ -449,6 +483,15 @@ SCC_sex_model <- local({
     weighted_secondary_childcare ~ index * sex * is_covid_era + quarter_ex_year,
     data = SSC_by_quarter_sex,
     corr = nlme::corAR1(form = ~ index | sex))
+  model_secondary_childcare_sex_noAR <- nlme::gls(
+    weighted_secondary_childcare ~ index + sex + is_covid_era + quarter_ex_year,
+    data = SSC_by_quarter_sex)
+  model_secondary_childcare_sex_noAR_noQ <- nlme::gls(
+    weighted_secondary_childcare ~ index + sex + is_covid_era,
+    data = SSC_by_quarter_sex)
+  model_secondary_childcare_sex_noAR_noCovid <- nlme::gls(
+    weighted_secondary_childcare ~ index + sex + quarter_ex_year,
+    data = SSC_by_quarter_sex)
   
   # model selection
   best_model <- select_model(
@@ -457,7 +500,10 @@ SCC_sex_model <- local({
     model_secondary_childcare_sex_no_seasonality, 
     model_secondary_childcare_sex_simple,
     model_secondary_childcare_sex_covid_trend,
-    model_secondary_childcare_sex_covid_trend_int
+    model_secondary_childcare_sex_covid_trend_int,
+    model_secondary_childcare_sex_noAR,
+    model_secondary_childcare_sex_noAR_noQ,
+    model_secondary_childcare_sex_noAR_noCovid
   )
   
   return(best_model)

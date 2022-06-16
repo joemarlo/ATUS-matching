@@ -209,8 +209,8 @@ demographics %>%
   mutate(across(everything(), as.character)) %>%
   mutate(sex = recode(sex, `1` = 'male', `2` = 'female'),
          group = recode(group, group1 = '1. None: 0 hours +/- 2', group2 = '2. Large: 8 hours +/- 2')) %>% 
-  # select(group, age_youngest, n_child, fam_income) %>% 
-  select(group, sex, labor_force_status, partner_working, has_partner, elder_in_HH, education) %>%
+  select(group, age_youngest, n_child, fam_income) %>%
+  # select(group, sex, labor_force_status, partner_working, has_partner, elder_in_HH, education) %>%
   pivot_longer(-group) %>%
   group_by(group, name, value) %>%
   tally() %>%
@@ -228,3 +228,31 @@ demographics %>%
         legend.position = 'bottom')
 # ggsave(file.path('outputs', 'matching', 'group-num-diff-matched-2019:2020-q3q4-sex-1tomany.png'),
 #        width = 9, height = 8)
+
+# only look at wealthy and sex
+demographics %>% 
+  right_join(childcare_pairs_groups, by = 'ID') %>% 
+  select(ID, group, pair_id, sex, age_youngest, n_child, labor_force_status, 
+         partner_working, has_partner, fam_income, elder_in_HH, 
+         essential_industry, education, metropolitan) %>% 
+  mutate(across(everything(), as.character)) %>%
+  mutate(sex = recode(sex, `1` = 'male', `2` = 'female'),
+         group = recode(group, group1 = '1. None: 0 hours +/- 2', group2 = '2. Large: 8 hours +/- 2'),
+         `wealthy (>$60k)` = glue::glue("Wealthy(>$60k):{as.character(as.numeric(fam_income) > 60000)}")) %>% 
+  select(group, sex, `wealthy (>$60k)`) %>%
+  # pivot_longer(-group) %>%
+  group_by(group, sex, `wealthy (>$60k)`) %>%
+  tally() %>%
+  # group_by(group, name) %>%
+  # mutate(prop = n / sum(n)) %>%
+  ggplot(aes(x = group, y = n, group = group, fill = group)) +
+  geom_col(position = 'dodge') +
+  facet_wrap(sex~`wealthy (>$60k)`, scales = 'free') +
+  labs(title = 'Demographics variables across respondents who experience no and large increases in SCC',
+       # subtitle = 'Normalized by group sample size',
+       x = NULL,
+       y = 'Count',
+       fill = NULL) +
+  theme(axis.text.x = element_text(angle = -30, hjust = 0),
+        legend.position = 'bottom')
+
