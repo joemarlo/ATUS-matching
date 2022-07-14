@@ -27,13 +27,13 @@ demographics$sex <- recode(demographics$sex,
                            '2' = 'Female')
 
 # ATUS roster
-atusrost_0320 <- readr::read_csv(file.path("inputs", "ATUS-2003-2020", "atusrost_0320.dat"))
+atusrost_0321 <- readr::read_csv(file.path("inputs","ATUS-2003-2021", "atusrost_0321.dat"))
 
 # read in data with diary date
-atusresp_0320 <- readr::read_csv(file.path("inputs", "ATUS-2003-2020", "atusresp_0320.dat"))
+atusresp_0321 <- readr::read_csv(file.path("inputs","ATUS-2003-2021", "atusresp_0321.dat"))
 
 # summary file
-atussum_0320 <- readr::read_tsv(file.path('data', 'atussum_0320.tsv'))
+atussum_0321 <- readr::read_tsv(file.path('data', 'atussum_0321.tsv'))
 
 # ATUS codes
 specific.codes <- readr::read_delim("inputs/specific_codes.csv", 
@@ -42,7 +42,7 @@ simple.codes <- readr::read_delim("inputs/simple_codes.csv",
                                   "+", escape_double = FALSE, trim_ws = TRUE)
 
 # all codes matched to description
-descriptions <- atussum_0320 %>%
+descriptions <- atussum_0321 %>%
   select(matches('^t[0-9].')) %>%
   tidyr::pivot_longer(cols = everything(), names_to = 'activity') %>%
   select(activity) %>%
@@ -54,7 +54,7 @@ descriptions <- atussum_0320 %>%
 # count household children under 13 ----------------------------------------
 
 # create var of household children  (own or not) under the age of 13
-household_children <- atusrost_0320 %>% 
+household_children <- atusrost_0321 %>% 
   group_by(ID = TUCASEID) %>% 
   summarize(n_child_13 = sum(TEAGE < 13 & TERRP != 40))
 
@@ -68,7 +68,7 @@ demographics <- left_join(demographics, household_children, by = 'ID')
 # remove 1Q and 2Q 2020
 respondents <- demographics %>% 
   filter(year %notin% c(2003, 2004)) %>% 
-  left_join(select(atusresp_0320, ID = TUCASEID, secondary_childcare = TRTHH, TUDIARYDATE),
+  left_join(select(atusresp_0321, ID = TUCASEID, secondary_childcare = TRTHH, TUDIARYDATE),
             by = 'ID') %>% 
   mutate(diary_date = lubridate::ymd(TUDIARYDATE),
          diary_month = lubridate::month(diary_date),
@@ -103,7 +103,7 @@ childcare_cols <- specific.codes %>%
 
 
 # build dataframe that summarizes care by the ID
-childcare_summary <- atussum_0320 %>% 
+childcare_summary <- atussum_0321 %>% 
   select(ID = TUCASEID, any_of(childcare_cols$activity)) %>% 
   pivot_longer(-ID) %>% 
   left_join(childcare_cols, by = c('name' = 'activity')) %>% 
@@ -508,6 +508,11 @@ SCC_sex_model <- local({
   
   return(best_model)
 })
+
+# (63*11.3570) + -672.9832 (summary(model_secondary_childcare_sex_covid_trend_int)))
+# compared to 38 in summary(model_secondary_childcare_sex_covid_trend)
+# why is -1 corr b/t is_covid_era and index:is_covid_era (summary(model_secondary_childcare_sex_covid_trend_int))
+# linear hypothesis to test the significance
 
 
 # plot it

@@ -11,11 +11,11 @@
 # this script duplicates cleaning_atus30.R but also splits it each activity into if 
 # the respondent was providing secondary childcare during that time or not
 
-clean_atus <- function(atusact_0320){
+clean_atus <- function(atusact_0321){
   
   # create dataframe of start and end time for each activity for each respondent
   # if any secondary child care is provided during a given activity then denote it as SSC
-  ATUS <- atusact_0320 %>%
+  ATUS <- atusact_0321 %>%
     select(TUCASEID, TUSTARTTIM, TUSTOPTIME, TRCODEP, secondary_childcare = TRTHH_LN) %>% 
     mutate(secondary_childcare = if_else(
       secondary_childcare > 0,

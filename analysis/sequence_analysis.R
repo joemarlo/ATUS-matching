@@ -32,17 +32,17 @@ demographics <- readr::read_delim(file = file.path("data", "demographic.tsv"),
 # population --------------------------------------------------------------
 
 # years to backtest
-years1 <- 2004:2019
+years1 <- 2004:2020
 years2 <- years1 + 1
 
 # run backtest of clustering
 clustering_results <- local({
   
   # read in data with diary date
-  atusresp_0320 <- readr::read_csv(file.path("inputs", "ATUS-2003-2020", "atusresp_0320.dat"))
+  atusresp_0320 <- readr::read_csv(file.path("inputs","ATUS-2003-2021", "atusresp_0321.dat"))
   
   # regions for matching
-  state_regions <- readr::read_csv("inputs/state_regions.csv")
+  state_regions <- readr::read_csv(file.path("inputs", "state_regions.csv"))
   
   # cluster the data for each year
   clustering_result <- purrr::map2(years1, years2, function(year1, year2){
@@ -76,13 +76,15 @@ clustering_results <- local({
 names(clustering_results) <- glue::glue('{years1}:{years2}')
 
 # save the results
-saveRDS(clustering_results, 'outputs/SA/backtest.rds')
+saveRDS(clustering_results, 'outputs/SA/backtest_2021.rds')
 # clustering_results <- readRDS('outputs/SA/backtest.rds')
+# clustering_results <- readRDS('outputs/SA/backtest_2021.rds')
 
 
 # post-hoc analysis -------------------------------------------------------
 
 sequences_clustered <- clustering_results$`2019:2020`
+sequences_clustered <- clustering_results$`2020:2021`
 clusters <- sequences_clustered$clusters
 years <- sequences_clustered$clusters$year %>% unique() %>% sort()
 year1 <- sequences_clustered$years$year1
@@ -200,3 +202,21 @@ resampled_seq %>%
        fill = NULL) +
   theme(legend.position = 'bottom')
 # ggsave(file.path('outputs', 'SA', glue::glue("seqi_{year2}.png")), height = 6, width = 9)
+
+# how many people are in each cluster:quarter
+# clusters %>% 
+#   left_join(atusresp_0321 %>% select(TUCASEID, TUDIARYDATE),
+#             by = c('ID' = 'TUCASEID')) %>% 
+#   mutate(diary_date = lubridate::ymd(TUDIARYDATE),
+#          diary_month = lubridate::month(diary_date),
+#          quarter = ceiling(diary_month / 3),
+#          quarter = as.Date(paste0(year, '-', quarter * 3, '-01')),
+#          quarter = quarter + months(1) - 1,
+#          year = lubridate::year(diary_date)) %>% 
+#   filter(year == 2021) %>% 
+#   group_by(cluster, quarter) %>% 
+#   tally() %>% 
+#   ggplot(aes(x = cluster, y = n)) +
+#   geom_col() +
+#   facet_wrap(~quarter)
+

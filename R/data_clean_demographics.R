@@ -1,11 +1,11 @@
 
-clean_demographics <- function(ATUS_30, atusrost_0320, atuscps_0320, atussum_0320, atusresp_0320, essential_industries, FIPS){
+clean_demographics <- function(ATUS_30, atusrost_0321, atuscps_0321, atussum_0321, atusresp_0321, essential_industries, FIPS){
   
   # pull demographics information -------------------------------------------
   
   # from CPS, check if there is an elder in the household
   # elder = parent or other relative who is >=1 year older than respondent
-  elder_in_HH <- atusrost_0320 %>% 
+  elder_in_HH <- atusrost_0321 %>% 
     group_by(TUCASEID) %>% 
     arrange(TUCASEID, TULINENO) %>%
     mutate(resp_age = first(TEAGE),
@@ -22,7 +22,7 @@ clean_demographics <- function(ATUS_30, atusrost_0320, atuscps_0320, atussum_032
   #   rename(ID = TUCASEID)
   
   # get occupation code and match to essential worker
-  industry <- dplyr::select(atusresp_0320, ID = TUCASEID, industry = TEIO1ICD)
+  industry <- dplyr::select(atusresp_0321, ID = TUCASEID, industry = TEIO1ICD)
   industry$industry[industry$industry == -1] <- NA
   industry$industry <- case_when(
     nchar(industry$industry) == 2 ~ paste0('00', industry$industry),
@@ -36,7 +36,7 @@ clean_demographics <- function(ATUS_30, atusrost_0320, atuscps_0320, atussum_032
   
   # from CPS data, get race, marriage status, education, metropolitan status, and state 
   # data dictionary here: https://www2.census.gov/programs-surveys/cps/datasets/2021/basic/2021_Basic_CPS_Public_Use_Record_Layout_plus_IO_Code_list.txt
-  CPS_vars <- atuscps_0320 %>%
+  CPS_vars <- atuscps_0321 %>%
     filter(TULINENO == 1) %>%   # filter so only person responding to ATUS is included
     select(TUCASEID, PTDTRACE, PEEDUCA, GESTFIPS, GEMETSTA, GTMETSTA) %>%
     mutate(
@@ -67,7 +67,7 @@ clean_demographics <- function(ATUS_30, atusrost_0320, atuscps_0320, atussum_032
     distinct()
   
   # from ATUS data, get weights, age, sex, children, income,  
-  atus_vars <- atussum_0320 %>% 
+  atus_vars <- atussum_0321 %>% 
     mutate(survey_weight_2020 = TU20FWGT,
            survey_weight_ex_2020 = TUFNWGTP,
            survey_weight = if_else(TUYEAR == 2020, 
@@ -93,7 +93,7 @@ clean_demographics <- function(ATUS_30, atusrost_0320, atuscps_0320, atussum_032
         partner_working == 1 ~ 'employed',
         partner_working == 2 ~ 'not employed'
       )) %>%
-    left_join(distinct(atuscps_0320[, c('TUCASEID', 'HEFAMINC', 'HUFAMINC')]),
+    left_join(distinct(atuscps_0321[, c('TUCASEID', 'HEFAMINC', 'HUFAMINC')]),
               by = 'TUCASEID')
   
   # recode family income and account for change in reporting code
@@ -113,7 +113,7 @@ clean_demographics <- function(ATUS_30, atusrost_0320, atuscps_0320, atussum_032
     left_join(industry, by = 'ID') %>% 
     left_join(CPS_vars, by = 'ID') %>% 
     semi_join(distinct(ATUS_30, ID), by = 'ID') %>% 
-    left_join(atusresp_0320 %>% 
+    left_join(atusresp_0321 %>% 
                 select(ID = TUCASEID, date = TUDIARYDATE, day_of_week = TUDIARYDAY, holiday = TRHOLIDAY,
                        year = TUYEAR, TRTALONE, TRTALONE_WK, TESCHFT),
               by = 'ID') %>% 

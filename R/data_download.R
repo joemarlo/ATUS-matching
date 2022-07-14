@@ -1,23 +1,23 @@
 
 download_ATUS <- function(){
-  path <- 'inputs/ATUS-2003-2020'
+  path <- 'inputs/ATUS-2003-2021'
   dir.create(path)
   
   urls <- c(
-    "https://www.bls.gov/tus/special.requests/atusresp-0320.zip",
-    'https://www.bls.gov/tus/special.requests/atusrost-0320.zip',
-    'https://www.bls.gov/tus/special.requests/atusact-0320.zip',
-    'https://www.bls.gov/tus/special.requests/atussum-0320.zip',
-    'https://www.bls.gov/tus/special.requests/atuswho-0320.zip',
-    'https://www.bls.gov/tus/special.requests/atuscps-0320.zip'
+    "https://www.bls.gov/tus/special.requests/atusresp-0321.zip",
+    'https://www.bls.gov/tus/special.requests/atusrost-0321.zip',
+    'https://www.bls.gov/tus/special.requests/atusact-0321.zip',
+    'https://www.bls.gov/tus/special.requests/atussum-0321.zip',
+    'https://www.bls.gov/tus/special.requests/atuswho-0321.zip',
+    'https://www.bls.gov/tus/special.requests/atuscps-0321.zip'
   )
   file_names <- c(
-    'atusresp_0320.dat',
-    'atusrost_0320.dat',
-    'atusact_0320.dat',
-    'atussum_0320.dat',
-    'atuswho_0320.dat',
-    'atuscps_0320.dat'
+    'atusresp_0321.dat',
+    'atusrost_0321.dat',
+    'atusact_0321.dat',
+    'atussum_0321.dat',
+    'atuswho_0321.dat',
+    'atuscps_0321.dat'
   )
   
   purrr::walk2(urls, file_names, function(url, file_name){

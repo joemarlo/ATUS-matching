@@ -23,7 +23,7 @@ demographics <- readr::read_delim(file = file.path("data", "demographic.tsv"),
 respondents_with_children <- readr::read_csv(file.path('data', 'respondents_with_children.csv'))
 
 # read in data with diary date
-atusresp_0320 <- readr::read_csv(file.path("inputs", "ATUS-2003-2020", "atusresp_0320.dat"))
+atusresp_0321 <- readr::read_csv(file.path("inputs","ATUS-2003-2021", "atusresp_0321.dat"))
 
 # regions for matching
 state_regions <- readr::read_csv("inputs/state_regions.csv")
@@ -43,7 +43,7 @@ m_matches <- local({
   
   year1 <- 2019
   year2 <- 2020
-  demographics_prepped <- matching_prep_demographics(atusresp_0320, demographics, state_regions, year1, year2, matching_vars)
+  demographics_prepped <- matching_prep_demographics(atusresp_0321, demographics, state_regions, year1, year2, matching_vars)
   vars_numeric <- demographics_prepped$vars_numeric
   demographics_prepped <- demographics_prepped$demographics
   
@@ -53,7 +53,7 @@ m_matches <- local({
   demographics_prepped <- select(demographics_prepped, -child_in_HH)
   
   # add quarter identifier and filter to Q3 and Q4
-  demographics_prepped <- atusresp_0320 %>%
+  demographics_prepped <- atusresp_0321 %>%
     mutate(diary_date = lubridate::ymd(TUDIARYDATE),
            diary_month = lubridate::month(diary_date),
            quarter = ceiling(diary_month / 3)) %>%
