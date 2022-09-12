@@ -246,7 +246,7 @@ PCC_by_quarter_sex <- respondents_with_children %>%
 # fit a few models and select the best based on BIC
 model_PCC_sex <- local({
   
-  # fit mulitple generalized least squares with dummy for quarter
+  # fit multiple generalized least squares with dummy for quarter
   model_primary_childcare_sex <- nlme::gls(
     weighted_childcare ~ index + is_covid_era + quarter_ex_year + sex,
     data = PCC_by_quarter_sex,
