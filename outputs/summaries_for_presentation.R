@@ -1,7 +1,11 @@
 
-# data filtering summary
 
 library(dplyr)
+
+# data filtering summary
+
+atussum <- readr::read_csv(file.path("inputs","ATUS-2003-2021", 'atussum_0321.dat'))
+nrow(atussum)
 
 
 # word cloud --------------------------------------------------------------

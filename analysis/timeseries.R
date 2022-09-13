@@ -87,9 +87,7 @@ respondents_with_children <- filter(respondents, n_child_13 > 0)
 
 # primary childcare -------------------------------------------------------
 
-# TODO: filter these activities to just childcare --> check specific codes
-# i think childcare defined as under 18 but we can filter to households with only children < 13 CONFIRM
-# probably have to replace this with the activity file detail
+# filter these activities to just childcare
 c("hh children", "nonhh children")
 childcare_cols <- specific.codes
 childcare_cols <- c('Caring For Household Member', 'Caring For Nonhousehold Members') 
