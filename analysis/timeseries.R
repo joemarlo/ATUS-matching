@@ -27,13 +27,13 @@ demographics$sex <- recode(demographics$sex,
                            '2' = 'Female')
 
 # ATUS roster
-atusrost_0320 <- readr::read_csv(file.path("inputs", "ATUS-2003-2020", "atusrost_0320.dat"))
+atusrost_0321 <- readr::read_csv(file.path("inputs","ATUS-2003-2021", "atusrost_0321.dat"))
 
 # read in data with diary date
-atusresp_0320 <- readr::read_csv(file.path("inputs", "ATUS-2003-2020", "atusresp_0320.dat"))
+atusresp_0321 <- readr::read_csv(file.path("inputs","ATUS-2003-2021", "atusresp_0321.dat"))
 
 # summary file
-atussum_0320 <- readr::read_tsv(file.path('data', 'atussum_0320.tsv'))
+atussum_0321 <- readr::read_tsv(file.path('data', 'atussum_0321.tsv'))
 
 # ATUS codes
 specific.codes <- readr::read_delim("inputs/specific_codes.csv", 
@@ -42,7 +42,7 @@ simple.codes <- readr::read_delim("inputs/simple_codes.csv",
                                   "+", escape_double = FALSE, trim_ws = TRUE)
 
 # all codes matched to description
-descriptions <- atussum_0320 %>%
+descriptions <- atussum_0321 %>%
   select(matches('^t[0-9].')) %>%
   tidyr::pivot_longer(cols = everything(), names_to = 'activity') %>%
   select(activity) %>%
@@ -54,7 +54,7 @@ descriptions <- atussum_0320 %>%
 # count household children under 13 ----------------------------------------
 
 # create var of household children  (own or not) under the age of 13
-household_children <- atusrost_0320 %>% 
+household_children <- atusrost_0321 %>% 
   group_by(ID = TUCASEID) %>% 
   summarize(n_child_13 = sum(TEAGE < 13 & TERRP != 40))
 
@@ -68,7 +68,7 @@ demographics <- left_join(demographics, household_children, by = 'ID')
 # remove 1Q and 2Q 2020
 respondents <- demographics %>% 
   filter(year %notin% c(2003, 2004)) %>% 
-  left_join(select(atusresp_0320, ID = TUCASEID, secondary_childcare = TRTHH, TUDIARYDATE),
+  left_join(select(atusresp_0321, ID = TUCASEID, secondary_childcare = TRTHH, TUDIARYDATE),
             by = 'ID') %>% 
   mutate(diary_date = lubridate::ymd(TUDIARYDATE),
          diary_month = lubridate::month(diary_date),
@@ -87,9 +87,7 @@ respondents_with_children <- filter(respondents, n_child_13 > 0)
 
 # primary childcare -------------------------------------------------------
 
-# TODO: filter these activities to just childcare --> check specific codes
-# i think childcare defined as under 18 but we can filter to households with only children < 13 CONFIRM
-# probably have to replace this with the activity file detail
+# filter these activities to just childcare
 c("hh children", "nonhh children")
 childcare_cols <- specific.codes
 childcare_cols <- c('Caring For Household Member', 'Caring For Nonhousehold Members') 
@@ -101,9 +99,11 @@ childcare_cols <- specific.codes %>%
   transmute(activity = paste0('t', Code), 
             description = Description)
 
+# quarter (minus 1) to rebase the index to (for inference)
+rebase_quarter <- as.Date('2020-09-30')
 
 # build dataframe that summarizes care by the ID
-childcare_summary <- atussum_0320 %>% 
+childcare_summary <- atussum_0321 %>% 
   select(ID = TUCASEID, any_of(childcare_cols$activity)) %>% 
   pivot_longer(-ID) %>% 
   left_join(childcare_cols, by = c('name' = 'activity')) %>% 
@@ -121,12 +121,15 @@ PCC_by_quarter <- respondents_with_children %>%
             .groups = 'drop') %>% 
   arrange(quarter) %>% 
   mutate(index = round(as.numeric(((quarter - min(quarter)) / 92) + 1)),
+         index = index - index[quarter == rebase_quarter][1] + 1, #rebases index to beginning of covid
          is_covid_era = if_else(is_covid_era, 'Covid era', 'Pre Covid'),
          is_covid_era = factor(is_covid_era, levels = c('Pre Covid', 'Covid era')),
          quarter_ex_year = str_sub(quarter, 6)) %>% 
   rowwise() %>% 
   mutate(quarter_ex_year = which(quarter_ex_year == c('03-31', '06-30', '09-30', '12-31')),
-         quarter_ex_year = factor(quarter_ex_year, levels = 1:4)) %>% 
+         quarter_ex_year = factor(quarter_ex_year, levels = 1:4),
+         is_2021 = lubridate::year(quarter) == '2021',
+         is_2020 = lubridate::year(quarter) == '2020') %>% 
   ungroup()
 
 # fit a few models and select the best based on BIC
@@ -158,6 +161,13 @@ model_PCC <- local({
   model_primary_childcare_noAR_noCovid <- nlme::gls(
     weighted_childcare ~ index + quarter_ex_year,
     data = PCC_by_quarter)
+  model_primary_childcare_covid_trend_21 <- nlme::gls(
+    weighted_childcare ~ index + is_2020 + is_2021 + quarter_ex_year,
+    data = PCC_by_quarter,
+    corr = nlme::corAR1(form = ~ index))
+  model_primary_childcare_covid_trend_21_noAR <- nlme::gls(
+    weighted_childcare ~ index + is_2020 + is_2021 + quarter_ex_year,
+    data = PCC_by_quarter)
   
   best_model <- select_model(
     model_primary_childcare_simple, 
@@ -166,7 +176,9 @@ model_PCC <- local({
     model_primary_childcare,
     model_primary_childcare_noAR,
     model_primary_childcare_noAR_noQ,
-    model_primary_childcare_noAR_noCovid
+    model_primary_childcare_noAR_noCovid,
+    model_primary_childcare_covid_trend_21,
+    model_primary_childcare_covid_trend_21_noAR
   )
   
   return(best_model)
@@ -218,18 +230,21 @@ PCC_by_quarter_sex <- respondents_with_children %>%
             .groups = 'drop') %>% 
   arrange(quarter) %>% 
   mutate(index = round(as.numeric(((quarter - min(quarter)) / 92) + 1)),
+         index = index - index[quarter == rebase_quarter][1] + 1, #rebases index to beginning of covid
          is_covid_era = if_else(is_covid_era, 'Covid era', 'Pre Covid'),
          is_covid_era = factor(is_covid_era, levels = c('Pre Covid', 'Covid era')),
          quarter_ex_year = str_sub(quarter, 6)) %>% 
   rowwise() %>% 
   mutate(quarter_ex_year = which(quarter_ex_year == c('03-31', '06-30', '09-30', '12-31')),
-         quarter_ex_year = factor(quarter_ex_year, levels = 1:4)) %>% 
+         quarter_ex_year = factor(quarter_ex_year, levels = 1:4),
+         is_2021 = lubridate::year(quarter) == '2021',
+         is_2020 = lubridate::year(quarter) == '2020') %>% 
   ungroup()
 
 # fit a few models and select the best based on BIC
 model_PCC_sex <- local({
   
-  # fit mulitple generalized least squares with dummy for quarter
+  # fit multiple generalized least squares with dummy for quarter
   model_primary_childcare_sex <- nlme::gls(
     weighted_childcare ~ index + is_covid_era + quarter_ex_year + sex,
     data = PCC_by_quarter_sex,
@@ -263,6 +278,13 @@ model_PCC_sex <- local({
   model_primary_childcare_sex_noAR_noCovid <- nlme::gls(
     weighted_childcare ~ index + sex + quarter_ex_year,
     data = PCC_by_quarter_sex)
+  model_primary_childcare_sex_covid_trend_21 <- nlme::gls(
+    weighted_childcare ~ index + sex * is_2020 + sex * is_2021 + quarter_ex_year,
+    data = PCC_by_quarter_sex,
+    corr = nlme::corAR1(form = ~ index | sex))
+  model_primary_childcare_sex_covid_trend_21_no_AR <- nlme::gls(
+    weighted_childcare ~ index + sex * is_2020 + sex * is_2021 + quarter_ex_year,
+    data = PCC_by_quarter_sex)
   
   # model selection
   best_model <- select_model(
@@ -274,7 +296,9 @@ model_PCC_sex <- local({
     model_primary_childcare_sex_covid_trend_int,
     model_primary_childcare_sex_noAR,
     model_primary_childcare_sex_noAR_noQ,
-    model_primary_childcare_sex_noAR_noCovid
+    model_primary_childcare_sex_noAR_noCovid,
+    model_primary_childcare_sex_covid_trend_21,
+    model_primary_childcare_sex_covid_trend_21_no_AR
   )
   
   return(best_model)
@@ -348,12 +372,15 @@ SSC_by_quarter <- respondents_with_children %>%
             .groups = 'drop') %>% 
   arrange(quarter) %>% 
   mutate(index = round(as.numeric(((quarter - min(quarter)) / 92) + 1)),
+         index = index - index[quarter == rebase_quarter][1], #rebases index to beginning of covid
          is_covid_era = if_else(is_covid_era, 'Covid era', 'Pre Covid'),
          is_covid_era = factor(is_covid_era, levels = c('Pre Covid', 'Covid era')),
          quarter_ex_year = str_sub(quarter, 6)) %>% 
   rowwise() %>% 
   mutate(quarter_ex_year = which(quarter_ex_year == c('03-31', '06-30', '09-30', '12-31')),
-         quarter_ex_year = factor(quarter_ex_year, levels = 1:4)) %>%  
+         quarter_ex_year = factor(quarter_ex_year, levels = 1:4),
+         is_2021 = lubridate::year(quarter) == '2021',
+         is_2020 = lubridate::year(quarter) == '2020') %>%  
   ungroup()
 
 # fit a few models and select the best based on BIC
@@ -385,6 +412,13 @@ model_SCC <- local({
   model_secondary_childcare_noAR_noCovid <- nlme::gls(
     weighted_secondary_childcare ~ index + quarter_ex_year,
     data = SSC_by_quarter)
+  model_secondary_childcare_covid_trend_21 <- nlme::gls(
+    weighted_secondary_childcare ~ index + is_2020 + is_2021 + quarter_ex_year,
+    data = SSC_by_quarter,
+    corr = nlme::corAR1(form = ~ index))
+  model_secondary_childcare_covid_trend_21_noAR <- nlme::gls(
+    weighted_secondary_childcare ~ index + is_2020 + is_2021 + quarter_ex_year,
+    data = SSC_by_quarter)
   
   # model selection
   best_model <- select_model(
@@ -394,7 +428,9 @@ model_SCC <- local({
     model_secondary_childcare_simple,
     model_secondary_childcare_noAR,
     model_secondary_childcare_noAR_noQ,
-    model_secondary_childcare_noAR_noCovid
+    model_secondary_childcare_noAR_noCovid,
+    model_secondary_childcare_covid_trend_21,
+    model_secondary_childcare_covid_trend_21_noAR
   )
   
   return(best_model)
@@ -447,12 +483,15 @@ SSC_by_quarter_sex <- respondents_with_children %>%
             .groups = 'drop') %>% 
   arrange(quarter) %>% 
   mutate(index = round(as.numeric(((quarter - min(quarter)) / 92) + 1)),
+         index = index - index[quarter == rebase_quarter][1] + 1, #rebases index to beginning of covid
          is_covid_era = if_else(is_covid_era, 'Covid era', 'Pre Covid'),
          is_covid_era = factor(is_covid_era, levels = c('Pre Covid', 'Covid era')),
          quarter_ex_year = str_sub(quarter, 6)) %>% 
   rowwise() %>% 
   mutate(quarter_ex_year = which(quarter_ex_year == c('03-31', '06-30', '09-30', '12-31')),
-         quarter_ex_year = factor(quarter_ex_year, levels = 1:4)) %>%  
+         quarter_ex_year = factor(quarter_ex_year, levels = 1:4),
+         is_2021 = lubridate::year(quarter) == '2021',
+         is_2020 = lubridate::year(quarter) == '2020') %>%  
   ungroup()
 
 # fit a few models and select the best based on BIC
@@ -492,6 +531,13 @@ SCC_sex_model <- local({
   model_secondary_childcare_sex_noAR_noCovid <- nlme::gls(
     weighted_secondary_childcare ~ index + sex + quarter_ex_year,
     data = SSC_by_quarter_sex)
+  model_secondary_childcare_sex_covid_trend_21 <- nlme::gls(
+    weighted_secondary_childcare ~ index + sex * is_2020 + sex * is_2021 + quarter_ex_year,
+    data = SSC_by_quarter_sex,
+    corr = nlme::corAR1(form = ~ index | sex))
+  model_secondary_childcare_sex_covid_trend_21_no_AR <- nlme::gls(
+    weighted_secondary_childcare ~ index + sex * is_2020 + sex * is_2021 + quarter_ex_year,
+    data = SSC_by_quarter_sex)
   
   # model selection
   best_model <- select_model(
@@ -500,14 +546,21 @@ SCC_sex_model <- local({
     model_secondary_childcare_sex_no_seasonality, 
     model_secondary_childcare_sex_simple,
     model_secondary_childcare_sex_covid_trend,
-    model_secondary_childcare_sex_covid_trend_int,
+    # model_secondary_childcare_sex_covid_trend_int,
     model_secondary_childcare_sex_noAR,
     model_secondary_childcare_sex_noAR_noQ,
-    model_secondary_childcare_sex_noAR_noCovid
+    model_secondary_childcare_sex_noAR_noCovid,
+    model_secondary_childcare_sex_covid_trend_21,
+    model_secondary_childcare_sex_covid_trend_21_no_AR
   )
   
   return(best_model)
 })
+
+# (63*11.3570) + -672.9832 (summary(model_secondary_childcare_sex_covid_trend_int)))
+# compared to 38 in summary(model_secondary_childcare_sex_covid_trend)
+# why is -1 corr b/t is_covid_era and index:is_covid_era (summary(model_secondary_childcare_sex_covid_trend_int))
+# linear hypothesis to test the significance
 
 
 # plot it

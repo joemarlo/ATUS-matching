@@ -1,26 +1,24 @@
 # require(tidyverse)
 # require(rvest)
 
-# import 2003-2018 files ----------------------------------------------------
+# import 2003-2021 files ----------------------------------------------------
 # download data here: https://www.bls.gov/tus/#data
-#  and store in inputs/ATUS-2003-2018
+#  and store in inputs/ATUS-2003-2021
 
 read_atus <- function(files_names){
-  # files_names <- list.files(file.path('inputs', 'ATUS-2003-2020'), pattern = '*.dat')
-  files <- lapply(files_names, function(file) readr::read_csv(file.path("inputs", "ATUS-2003-2020", file)))
+
+  # read in all the .dat files
+  files <- lapply(files_names, function(file) readr::read_csv(file.path("inputs","ATUS-2003-2021", file)))
   names(files) <- stringr::str_remove(files_names, ".dat")
-  # list2env(files, envir = .GlobalEnv)
-  # rm(files, files_names)
-  # rm(atusrost_0318, atuswgts_0318)
   
   # add indicator for work day to summary file
-  files$atussum_0320 <- files$atussum_0320 %>% 
+  files$atussum_0321 <- files$atussum_0321 %>% 
     select(contains('t05')) %>% 
     rowSums() %>% 
     tibble::enframe() %>% 
     mutate(work.status = value >= 120) %>% 
     select(work.status) %>% 
-    bind_cols(files$atussum_0320)
+    bind_cols(files$atussum_0321)
   
   return(files)
 }
@@ -70,8 +68,6 @@ curated.codes <- tibble::tribble(
 )
 
 
-
-
 # income ------------------------------------------------------------------
 
 # family income CPS data is HEFAMINC
@@ -96,5 +92,3 @@ income.levels <- tibble::tribble(
   15, 15, mean(100000, 149999),
   16, 16, 150000
 )
-
-gc()

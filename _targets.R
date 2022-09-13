@@ -88,19 +88,19 @@ pipeline$data$FIPS <- list(
 pipeline$data$ATUS <- list(
   tar_target(
     name = paths_ATUS,
-    command = list.files(file.path('inputs', 'ATUS-2003-2020'), pattern = '*.dat')
+    command = list.files(file.path('inputs', 'ATUS-2003-2021'), pattern = '*.dat')
   ),
   tar_target(
     name = data_ATUS,
     command = read_atus(paths_ATUS)
   ),
   tar_target(
-    name = write_atussum_0320,
-    command = readr::write_tsv(data_ATUS$atussum_0320, 'data/atussum_0320.tsv')
+    name = write_atussum_0321,
+    command = readr::write_tsv(data_ATUS$atussum_0321, 'data/atussum_0321.tsv')
   ),
   tar_target(
     name = clean_ATUS,
-    command = clean_atus(data_ATUS$atusact_0320)
+    command = clean_atus(data_ATUS$atusact_0321)
   ),
   tar_target(
     name = write_ATUS_1,
@@ -116,10 +116,10 @@ pipeline$data$demographics <- list(
     name = data_demographics,
     command = clean_demographics(
       clean_ATUS$ATUS_30,
-      data_ATUS$atusrost_0320,
-      data_ATUS$atuscps_0320,
-      data_ATUS$atussum_0320,
-      data_ATUS$atusresp_0320,
+      data_ATUS$atusrost_0321,
+      data_ATUS$atuscps_0321,
+      data_ATUS$atussum_0321,
+      data_ATUS$atusresp_0321,
       essential_industries,
       FIPS
     )
