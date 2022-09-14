@@ -19,7 +19,7 @@ demographics <- readr::read_delim(file = file.path("data", "demographic.tsv"),
                                   col_types = readr::cols(metropolitan = readr::col_character()))
 
 # read in data containing the respondents that have children
-# determined in meta_timeseries.R
+# determined in analysis.timeseries.R
 respondents_with_children <- readr::read_csv(file.path('data', 'respondents_with_children.csv'))
 
 # read in data with diary date

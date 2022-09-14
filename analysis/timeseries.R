@@ -81,9 +81,6 @@ respondents <- demographics %>%
 # filter to only respondents with children
 respondents_with_children <- filter(respondents, n_child_13 > 0)
 
-# readr::write_csv(respondents_with_children,
-#                  file.path('data', 'respondents_with_children.csv'))
-
 
 # primary childcare -------------------------------------------------------
 
@@ -110,6 +107,16 @@ childcare_summary <- atussum_0321 %>%
   group_by(ID) %>% #, description) %>% 
   summarize(minutes = sum(value),
             .groups = 'drop')
+
+# add primary childcare
+respondents_with_children <- left_join(
+  respondents_with_children,
+  childcare_summary %>% select(ID, primary_childcare = minutes), 
+  by = 'ID'
+) 
+  
+# readr::write_csv(respondents_with_children,
+#                  file.path('data', 'respondents_with_children.csv'))
 
 # calculate weighted childcare by quarter
 PCC_by_quarter <- respondents_with_children %>% 

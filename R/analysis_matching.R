@@ -19,7 +19,6 @@ matching_mahalanobis <- function(demographics, year1, year2, matching_vars, meth
   
   method <- match.arg(method)
   
-  # TODO: double check
   if (method == 'many-to-1'){
     # time1 is many-to-one
     demographics$treatment <- demographics$year == year1 # flip time here to switch between many-to-1 and 1-to-many; ITT should use time2
