@@ -130,27 +130,11 @@ pipeline$data$demographics <- list(
   )
 )
 
-
-# analysis pipelines
-pipeline$analysis$timeseries <- list(
-  
-)
-pipeline$analysis$matching <- list(
-  
-)
-pipeline$analysis$SA <- list(
-  
-)
-
-
 # full pipeline
 list(
   pipeline$data$download,
   pipeline$data$essential_industries,
   pipeline$data$FIPS,
   pipeline$data$ATUS,
-  pipeline$data$demographics,
-  pipeline$analysis$timeseries,
-  pipeline$analysis$matching,
-  pipeline$analysis$SA
+  pipeline$data$demographics
 )

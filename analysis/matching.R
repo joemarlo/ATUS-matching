@@ -64,7 +64,6 @@ m_matches <- local({
   matching_vars <- setdiff(c(matching_vars, 'quarter'), 'child_in_HH')
   
   # matching
-  # TODO: make sure matching method is right
   # -Mahalanobis distance on age, sex, race, fam_income, has_partner, education, child_in_HH, n_child, age_youngest, region, partner_working, elder_in_HH, metropolitan  
   # -Stratified on sex, race, +/- 2 age  
   # -Matching performed from time1 to time2 (many-to-1) 
@@ -96,7 +95,7 @@ pair_IDs <- m_matches$demographics_treated %>%
 childcare_df <- respondents_with_children %>% 
   filter(year %in% 2019:2020) %>%
   # filter(year %in% 2018:2019) %>% 
-  select(ID, survey_weight, year, sex, secondary_childcare)
+  select(ID, survey_weight, year, sex, primary_childcare, secondary_childcare)
 
 # matching 
 childcare_matched <- left_join(childcare_df, select(pair_IDs, -year), by = 'ID')
@@ -119,10 +118,10 @@ childcare_pairs %>%
   geom_density(alpha = 0.5) +
   geom_vline(aes(xintercept = scc_mean, color = as.factor(year)),
              linetype = 'dashed') +
-  scale_x_continuous(limits = c(0, 60*20), 
+  scale_x_continuous(limits = c(0, 60*20),
                      breaks = seq(0, 60*20, by = 120),
                      labels = format_hour_minute) +
-  scale_y_continuous(limits = c(0, 0.0025)) +
+  # scale_y_continuous(limits = c(0, 0.0025)) +
   scale_color_discrete(guide = 'none') +
   labs(title = 'Mean daily time spent on secondary childcare for household children under 13',
        subtitle = paste0('Only includes respondents with household children under 13\nn = ', 
@@ -229,6 +228,40 @@ demographics %>%
 # ggsave(file.path('outputs', 'matching', 'group-num-diff-matched-2019:2020-q3q4-sex-1tomany.png'),
 #        width = 9, height = 8)
 
+# densities
+demographics %>% 
+  right_join(childcare_pairs_groups, by = 'ID') %>% 
+  select(ID, group, pair_id, sex, age_youngest, n_child, labor_force_status, 
+         partner_working, has_partner, fam_income, elder_in_HH, 
+         essential_industry, education, metropolitan) %>% 
+  mutate(across(everything(), as.character)) %>%
+  mutate(sex = recode(sex, `1` = 'male', `2` = 'female'),
+         group = recode(group, group1 = '1. None: 0 hours +/- 2', group2 = '2. Large: 8 hours +/- 2')) %>% 
+  select(group, age_youngest, n_child, fam_income) %>%
+  # select(group, sex, labor_force_status, partner_working, has_partner, elder_in_HH, education) %>%
+  pivot_longer(-group) %>% 
+  mutate(value = as.numeric(value)) %>% 
+  ggplot(aes(x = value, group = group, fill = group)) + 
+  geom_density(alpha = 0.8) + 
+  facet_wrap(~ name, scales = 'free') +
+  labs(title = 'Demographics variables across respondents who experience no and large increases in SCC',
+       x = NULL,
+       fill = NULL) +
+  theme(legend.position = 'bottom')
+
+# densities just 2019 vs 2020; no diff
+demographics %>% 
+  right_join(childcare_pairs_groups, by = 'ID') %>% 
+  select(ID, year, age_youngest, n_child, fam_income) %>% 
+  pivot_longer(c(age_youngest, n_child, fam_income)) %>% 
+  mutate(year = as.factor(year)) %>% 
+  ggplot(aes(x = value, group = year, fill = year)) + 
+  geom_density(alpha = 0.8) +
+  scale_x_continuous(labels = scales::comma_format()) +
+  facet_wrap(~name, scales = 'free') +
+  labs(title = 'Demographic variables across all matched pairs',
+       x = NULL)
+
 # only look at wealthy and sex
 demographics %>% 
   right_join(childcare_pairs_groups, by = 'ID') %>% 
@@ -255,4 +288,62 @@ demographics %>%
        fill = NULL) +
   theme(axis.text.x = element_text(angle = -30, hjust = 0),
         legend.position = 'bottom')
+
+demographics %>% 
+  right_join(childcare_pairs_groups, by = 'ID') %>% 
+  select(ID, group, pair_id, sex) %>% 
+  mutate(sex = recode(sex, `1` = 'male', `2` = 'female')) %>% 
+  group_by(group, sex) %>% 
+  tally()
+
+
+
+# seqI plots of the 0/8 hour  groups --------------------------------------
+
+# read in ATUS data
+atus_raw <- readr::read_tsv(file.path("data", "atus_30min_SSC.tsv"))
+
+# create second color mapping with extraneous tokens greyed out
+color_mapping_grey <- c('grey20', '#d9d955', '#db324b', 'grey55')
+names(color_mapping_grey) <- c('Sleep', 'Work w/o SCC', 'Work with SCC', 'Other activities')
+
+.year <- 2020 #2019
+atus_raw %>% 
+  semi_join(demographics %>% filter(year == .year),
+            by = 'ID') %>% 
+  inner_join(childcare_pairs_groups, by = 'ID') %>% 
+  mutate(ID = as.character(ID),
+         group = recode(group, group1 = '1. None: 0 hours +/- 2', group2 = '2. Large: 8 hours +/- 2'),
+         description = case_when(
+           description == 'Sleep : No SCC' ~ 'Sleep',
+           description == 'Work : No SCC' ~ 'Work w/o SCC',
+           description == 'Work : SCC' ~ 'Work with SCC',
+           TRUE ~ 'Other activities')) %>% 
+  group_by(ID) %>% 
+  mutate(entropy = sum(description == 'Work with SCC')) %>% 
+  ggplot(aes(x = period, y = reorder(ID, entropy), fill = description)) +
+  geom_tile() +
+  scale_fill_manual(values = color_mapping_grey) +
+  scale_y_discrete(labels = NULL, breaks = NULL) +
+  facet_wrap(~group, scales = 'free_y') +
+  labs(title = 'Sequence index of activities across respondents who experience no and large increases in SCC',
+       subtitle = .year,
+       y = NULL,
+       fill = NULL)
+
+
+# which clusters are the matched individuals in ---------------------------
+
+clustering_results <- readRDS('outputs/SA/backtest_2021.rds')
+
+clusters_2020 <- clustering_results$`2019:2020`$clusters %>% 
+  mutate(in_matched = ID %in% pair_IDs$ID)
+
+table(
+  clusters_2020$cluster, 
+  clusters_2020$year, 
+  clusters_2020$in_matched
+)
+
+
 

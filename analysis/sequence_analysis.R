@@ -1,6 +1,5 @@
 ###
 # This script performs the sequence analysis and related clustering
-# work-in-progress
 ###
 
 # no matching for this clustering
@@ -219,4 +218,3 @@ resampled_seq %>%
 #   ggplot(aes(x = cluster, y = n)) +
 #   geom_col() +
 #   facet_wrap(~quarter)
-

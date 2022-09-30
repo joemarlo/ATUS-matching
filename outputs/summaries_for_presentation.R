@@ -30,3 +30,25 @@ wordcloud::wordcloud(names(activity_counts),
                      min.freq = 0,
                      rot.per = 0.1,
                      fixed.asp = TRUE)
+
+
+# SA n --------------------------------------------------------------------
+
+# total n for SA
+clustering_results <- readRDS('outputs/SA/backtest_2021.rds')
+
+n_per_year <- purrr::map_dfr(clustering_results, function(year){
+  year$clusters %>% 
+    pull(year) %>% 
+    table() %>% 
+    as_tibble()
+}) %>% 
+  distinct() %>% 
+  setNames(c('year', 'n'))
+
+# total n
+sum(n_per_year$n)
+
+
+clustering_results$`2019:2020`$sequences$t1 %>% 
+  left_join(clustering_results$`2019:2020`$clusters, by = 'ID')
