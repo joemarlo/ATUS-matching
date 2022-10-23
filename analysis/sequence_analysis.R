@@ -82,8 +82,9 @@ saveRDS(clustering_results, 'outputs/SA/backtest_2021.rds')
 
 # post-hoc analysis -------------------------------------------------------
 
+# sequences_clustered <- clustering_results$`2018:2019`
 sequences_clustered <- clustering_results$`2019:2020`
-sequences_clustered <- clustering_results$`2020:2021`
+# sequences_clustered <- clustering_results$`2020:2021`
 clusters <- sequences_clustered$clusters
 years <- sequences_clustered$clusters$year %>% unique() %>% sort()
 year1 <- sequences_clustered$years$year1
@@ -218,3 +219,9 @@ resampled_seq %>%
 #   ggplot(aes(x = cluster, y = n)) +
 #   geom_col() +
 #   facet_wrap(~quarter)
+
+# percent female in each cluster
+clusters |> 
+  left_join(demographics |> select(ID, sex), by = 'ID') |> 
+  group_by(cluster, year) |> 
+  summarize(percent_female = mean(sex == 2))

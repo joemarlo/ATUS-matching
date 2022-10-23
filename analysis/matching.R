@@ -31,6 +31,9 @@ state_regions <- readr::read_csv("inputs/state_regions.csv")
 
 # matching ----------------------------------------------------------------
 
+year1 <- 2019
+year2 <- year1 + 1
+
 m_matches <- local({
 
   # NOTE: this is only for plots; must adjust code in matching_prep_demographics() and matching_mahalanobis()
@@ -41,8 +44,6 @@ m_matches <- local({
   # blocking_vars <- c('sex', 'race', 'metropolitan', 'region', 'has_partner', 'labor_force_status') #'essential_worker # add child_in_HH?
   blocking_vars <- c('sex', 'race') #, 'has_partner') #'essential_worker
   
-  year1 <- 2019
-  year2 <- 2020
   demographics_prepped <- matching_prep_demographics(atusresp_0321, demographics, state_regions, year1, year2, matching_vars)
   vars_numeric <- demographics_prepped$vars_numeric
   demographics_prepped <- demographics_prepped$demographics
@@ -93,7 +94,7 @@ pair_IDs <- m_matches$demographics_treated %>%
 
 # filter SSC to just these years
 childcare_df <- respondents_with_children %>% 
-  filter(year %in% 2019:2020) %>%
+  filter(year %in% c(year1, year2)) %>%
   # filter(year %in% 2018:2019) %>% 
   select(ID, survey_weight, year, sex, primary_childcare, secondary_childcare)
 
@@ -114,21 +115,23 @@ childcare_pairs <- childcare_matched %>%
 childcare_pairs %>% 
   group_by(year) %>% 
   mutate(scc_mean = mean(secondary_childcare)) %>% 
-  ggplot(aes(x = secondary_childcare, group = year, fill = as.factor(year))) +
-  geom_density(alpha = 0.5) +
+  ggplot(aes(x = secondary_childcare, group = year, color = as.factor(year))) +
+  geom_density(size = 1.6) +
   geom_vline(aes(xintercept = scc_mean, color = as.factor(year)),
              linetype = 'dashed') +
   scale_x_continuous(limits = c(0, 60*20),
                      breaks = seq(0, 60*20, by = 120),
                      labels = format_hour_minute) +
   # scale_y_continuous(limits = c(0, 0.0025)) +
-  scale_color_discrete(guide = 'none') +
+  # scale_color_discrete(guide = 'none') +
+  scale_color_brewer(palette = 2, type = 'qual') +
   labs(title = 'Mean daily time spent on secondary childcare for household children under 13',
        subtitle = paste0('Only includes respondents with household children under 13\nn = ', 
                          scales::comma_format()(nrow(na.omit(childcare_pairs)))),
        caption = 'Matched 2019:2020 Q3 and Q4; 1-to-many',
        x = 'Hour:minutes on secondary childcare',
-       fill = NULL) +
+       fill = NULL,
+       color = NULL) +
   theme(legend.position = 'bottom')
 # ggsave(file.path('outputs', 'matching', 'density-matched-2019:2020-q3q4-1tomany.png'),
 #        width = 9, height = 6)
@@ -164,7 +167,7 @@ childcare_pairs_diffs %>%
   labs(title = 'Distribution of differences between matched pairs',
        subtitle = paste0('Only includes respondents with household children under 13\n', 
                          scales::comma_format()(n_distinct(childcare_pairs$pair_id)), " pairs"),
-       caption = 'Matched 2019:2020 Q3 and Q4; 1-to-many',
+       caption = glue::glue('Matched {year1}:{year2} Q3 and Q4; 1-to-many'),
        x = 'Difference in hour:minutes on secondary childcare',
        y = 'Count / scaled density')
 # ggsave(file.path('outputs', 'matching', 'diff-matched-2019:2020-q3q4-sex-1tomany.png'),

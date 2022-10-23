@@ -85,10 +85,10 @@ respondents_with_children <- filter(respondents, n_child_13 > 0)
 # primary childcare -------------------------------------------------------
 
 # filter these activities to just childcare
-c("hh children", "nonhh children")
-childcare_cols <- specific.codes
-childcare_cols <- c('Caring For Household Member', 'Caring For Nonhousehold Members') 
-childcare_cols <- descriptions[descriptions$description %in% childcare_cols,]
+# c("hh children", "nonhh children")
+# childcare_cols <- specific.codes
+# childcare_cols <- c('Caring For Household Member', 'Caring For Nonhousehold Members')
+# childcare_cols <- descriptions[descriptions$description %in% childcare_cols,]
 
 childcare_cols <- specific.codes %>%
   filter(str_detect(Description, 'hh children'), 
@@ -120,6 +120,7 @@ respondents_with_children <- left_join(
 
 # calculate weighted childcare by quarter
 PCC_by_quarter <- respondents_with_children %>% 
+  # filter(primary_childcare != 0) |> 
   select(ID, survey_weight, quarter, is_covid_era) %>% 
   left_join(childcare_summary, by = "ID") %>% 
   group_by(quarter, is_covid_era) %>% 
