@@ -10,6 +10,9 @@ inputs/ATUS-2018
 outputs/SA/backtest.rds
 outputs/SA/backtest_2021.rds
 
+*.doc
+*.docx
+
 # History files
 .Rhistory
 .Rapp.history

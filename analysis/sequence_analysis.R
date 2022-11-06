@@ -121,13 +121,20 @@ seqI_groups <- atus_raw %>%
 
 # basic seqD
 seqI_groups %>% 
+  group_by(cluster, year) |> 
+  mutate(n = n_distinct(ID)) |> 
+  group_by(year) |> 
+  mutate(percent = n / sum(unique(n)), # hack
+         cluster = stringr::str_extract(cluster, "(.*?)\\|"),
+         label = glue::glue('{cluster}  n={n}  |  pct={scales::percent(percent)}')) |> 
+  ungroup() |> 
   ggplot(ggplot2::aes(x = period, fill = description)) +
   geom_bar(width = 1) +
   # geom_tile() +
-  scale_fill_manual(values = color_mapping_grey) +
+  scale_fill_manual(values = color_mapping_grey[names(color_mapping_grey) != 'filler']) +
   scale_x_continuous(breaks = breaks_x, labels = labels_x) +
   scale_y_discrete(labels = NULL, breaks = NULL) +
-  facet_wrap(year~cluster, scales = 'free_y') +
+  facet_wrap(year~label, scales = 'free_y') +
   labs(title = "State distributions of the clusters",
        subtitle = 'Activities simplified into the four categories shown',
        x = NULL,

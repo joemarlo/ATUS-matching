@@ -173,6 +173,11 @@ childcare_pairs_diffs %>%
 # ggsave(file.path('outputs', 'matching', 'diff-matched-2019:2020-q3q4-sex-1tomany.png'),
 #        width = 9, height = 10)
 
+# mean difference by gender
+childcare_pairs_diffs |> 
+  group_by(sex) |> 
+  summarize(mean = mean(diff))
+
 
 # who is experiencing the 8 hour increase ---------------------------------
 
@@ -196,6 +201,16 @@ childcare_pairs_groups <- local({
     rename(group = name)
 })
 
+# what percent of women are in +8 bump
+childcare_pairs_groups |> 
+  filter(group == 'group2') |> 
+  distinct(pair_id) |> 
+  left_join(childcare_pairs_diffs |> ungroup() |> distinct(pair_id, sex),
+            by = 'pair_id') |> 
+  filter(sex == 'Female') |> 
+  nrow() %>% 
+  {. / (childcare_pairs_diffs |> distinct(pair_id, sex) |> filter(sex == 'Female') |> nrow())}
+
 # childcare_pairs_groups %>%
 #   ggplot(aes(x = diff, fill = group)) +
 #   geom_histogram() +
@@ -211,7 +226,7 @@ demographics %>%
   mutate(across(everything(), as.character)) %>%
   mutate(sex = recode(sex, `1` = 'male', `2` = 'female'),
          group = recode(group, group1 = '1. None: 0 hours +/- 2', group2 = '2. Large: 8 hours +/- 2')) %>% 
-  select(group, age_youngest, n_child, fam_income) %>%
+  select(group, age_youngest, n_child, fam_income, has_partner) %>%
   # select(group, sex, labor_force_status, partner_working, has_partner, elder_in_HH, education) %>%
   pivot_longer(-group) %>%
   group_by(group, name, value) %>%
