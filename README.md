@@ -29,7 +29,7 @@ Reproducible code for working paper on matching clustered sequence data and unde
 
 To reproduce:  
 1. Open `ATUS-matching.Rproj`. Install `renv` via `install.packages('renv')` and then run `renv::restore()`
-2. Download, clean, and consolidate the data:  ~~`meta_data.R`~~ `run.R`. Note: this downloads the 2003-2020 multi-year microdata from the [BLS](https://www.bls.gov/tus/datafiles-0320.htm) and saves them `inputs/ATUS-2003-2020/`   
+2. Download, clean, and consolidate the data:  `run.R`. Note: this downloads a few data files including the 2003-2021 multi-year microdata from the [BLS](https://www.bls.gov/tus/datafiles-0321.htm) (~2GB) and saves them `inputs/ATUS-2003-2021/`   
 3. Run the analyses  
     1. `analysis/timeseries.R`  
     2. `analysis/matching.R`  
