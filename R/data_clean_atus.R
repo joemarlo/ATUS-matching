@@ -16,7 +16,7 @@ clean_atus <- function(atusact_0321){
   # create dataframe of start and end time for each activity for each respondent
   # if any secondary child care is provided during a given activity then denote it as SSC
   ATUS <- atusact_0321 %>%
-    select(TUCASEID, TUSTARTTIM, TUSTOPTIME, TRCODEP, secondary_childcare = TRTHH_LN) %>% 
+    select(TUCASEID, TUSTARTTIM, TUSTOPTIME, TRCODEP, secondary_childcare = TRTHH_LN, location = TEWHERE) %>% 
     mutate(secondary_childcare = if_else(
       secondary_childcare > 0,
       'SCC',
@@ -24,7 +24,7 @@ clean_atus <- function(atusact_0321){
       activity = paste0("t", TRCODEP)) %>% 
     fuzzyjoin::regex_left_join(y = curated.codes, by = 'activity') %>%
     mutate(description = paste0(description, ' : ', secondary_childcare)) %>% 
-    select(TUCASEID, TUSTARTTIM, TUSTOPTIME, activity = activity.x, description)
+    select(TUCASEID, TUSTARTTIM, TUSTOPTIME, activity = activity.x, description, location)
   
   # convert the time to minutes where 0 = 4am
   # split the data into individual dataframes for each respondent
@@ -35,8 +35,9 @@ clean_atus <- function(atusact_0321){
            end_time = baseline_time(end_time),
            # this cuts off things at 4am
            end_time = if_else(end_time < start_time, 1440, end_time)) %>% 
-    select(TUCASEID, start_time, end_time, description) %>% 
+    select(TUCASEID, start_time, end_time, description, location) %>% 
     group_split(TUCASEID)
+  rm(ATUS)
   
   # throw out ~16 respondents who's responses don't capture the whole day
   whole_day <- parallel::mclapply(split_ATUS, FUN = function(tbl){
@@ -53,12 +54,13 @@ clean_atus <- function(atusact_0321){
     #   a period of 1 minute
     stretched_tbl <-
       purrr::pmap_dfr(
-        .l = list(tbl$TUCASEID, tbl$start_time, tbl$end_time, tbl$description),
-        .f = function(ID, start, end, desc) {
+        .l = list(tbl$TUCASEID, tbl$start_time, tbl$end_time, tbl$description, tbl$location),
+        .f = function(ID, start, end, desc, location) {
           tibble(
             ID = ID,
             time = seq(from = start, to = (end - 1), by = 1),
-            description = desc
+            description = desc,
+            location = location
           )
         }
       )
@@ -83,6 +85,7 @@ clean_atus <- function(atusact_0321){
     mutate(period = floor(time / 30) + 1) %>% 
     group_by(ID, period) %>% 
     summarize(description = Mode(description),
+              location = Mode(location),
               .groups = 'drop')
    
   

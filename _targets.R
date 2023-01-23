@@ -6,7 +6,7 @@
 # Load packages required to define the pipeline:
 library(targets)
 # library(tarchetypes)
-options(mc.cores = min(parallel::detectCores(), 6))
+options(mc.cores = min(parallel::detectCores(), 2))
 
 # Set target options:
 tar_option_set(
