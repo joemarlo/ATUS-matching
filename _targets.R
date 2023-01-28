@@ -107,8 +107,12 @@ pipeline$data$ATUS <- list(
     command = readr::write_tsv(clean_ATUS$ATUS_1, 'data/atus_SSC.tsv')
   ),
   tar_target(
+    name = clean_ATUS_30_location,
+    command = clean_location(clean_ATUS$ATUS_30)
+  ),
+  tar_target(
     name = write_ATUS_30,
-    command = readr::write_tsv(clean_ATUS$ATUS_30, 'data/atus_30min_SSC.tsv')
+    command = readr::write_tsv(clean_ATUS_30_location, 'data/atus_30min_SSC.tsv')
   )
 )
 pipeline$data$demographics <- list(
@@ -125,8 +129,12 @@ pipeline$data$demographics <- list(
     )
   ),
   tar_target(
+    name = data_demographics_w_location,
+    command = add_WFH_status(data_demographics, clean_ATUS_30_location)
+  ),
+  tar_target(
     name = write_demographics,
-    command = readr::write_tsv(data_demographics, 'data/demographic.tsv')
+    command = readr::write_tsv(data_demographics_w_location, 'data/demographic.tsv')
   )
 )
 

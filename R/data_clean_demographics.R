@@ -126,3 +126,25 @@ clean_demographics <- function(ATUS_30, atusrost_0321, atuscps_0321, atussum_032
   
   return(demographic_vars)
 }
+
+add_WFH_status <- function(demographics, ATUS_30){
+  # WFH: were they at home and did any work at any part of the day
+  
+  # classify each respondent as WFH or NOT
+  respondent_is_WFH <- ATUS_30 |> 
+    dplyr::mutate(is_WFH =
+      (stringr::str_detect(description, stringr::regex("work", ignore_case = TRUE)))
+      &
+      (location == "Respondent's home or yard")
+    ) |> 
+    dplyr::group_by(ID) |> 
+    dplyr::summarize(is_WFH = any(is_WFH),
+                     .groups = 'drop')
+  
+  # add back to demographics data
+  demographics <- demographics |> 
+    dplyr::left_join(respondent_is_WFH, by = 'ID')
+  
+  return(demographics)
+}
+

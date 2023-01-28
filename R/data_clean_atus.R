@@ -92,6 +92,54 @@ clean_atus <- function(atusact_0321){
   return(list(ATUS_1 = ATUS_1, ATUS_30 = ATUS_30))
 }
 
+clean_location <- function(ATUS_30){
+
+  # location descriptions per survey
+  location_codes <- tibble::tribble(
+    ~location, ~loc_description,
+    1, "Respondent's home or yard",
+    2, "Respondent's workplace",
+    3, "Someone else's home",
+    4, "Restaurant or bar",
+    5, "Place of worship",
+    6, "Grocery store",
+    7, "Other store/mall",
+    8, "School",
+    9, "Outdoors away from home",
+    10, "Library",
+    11, "Other place",
+    12, "Car, truck, or motorcycle (driver)",
+    13, "Car, truck, or motorcycle (passenger)",
+    14, "Walking",
+    15, "Bus",
+    16, "Subway/train",
+    17, "Bicycle",
+    18, "Boat/ferry",
+    19, "Taxi/limousine service",
+    20, "Airplane",
+    21, "Other mode of transportation",
+    30, "Bank",
+    31, "Gym/health club",
+    32, "Post Office",
+    89, "Unspecified place",
+    99, "Unspecified mode of transportation"
+  )
+  
+  # add codes
+  ATUS_30 <- ATUS_30 |> 
+    dplyr::left_join(location_codes, by = 'location') |> 
+    dplyr::select(ID, period, description, location = loc_description)
+  
+  # replace NA for activities noted in survey
+  ATUS_30 <- ATUS_30 |> 
+    mutate(location = ifelse(description == 'Sleep : No SCC', '[sleep]', location),
+           location = ifelse(description %in% c('Personal Care : No SCC', 'Personal Care : SCC'),
+                             '[personal]', location),
+           location = ifelse(is.na(location), '[did not respond]', location))
+  
+  return(ATUS_30)
+}
+
 baseline_time <- function(x_minutes){
   # function baselines time from 4am -> 12am
   ret <- x_minutes - (4*60)
