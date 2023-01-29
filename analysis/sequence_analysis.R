@@ -19,6 +19,7 @@ purrr:::walk(list.files('R', full.names = TRUE), source)
 
 # read in ATUS data
 atus_raw <- readr::read_tsv(file.path("data", "atus_30min_SSC.tsv"))
+atus_raw <- atus_raw |> dplyr::select(-location)
 
 # read in the demographics data
 demographics <- readr::read_delim(file = file.path("data", "demographic.tsv"),
@@ -26,6 +27,9 @@ demographics <- readr::read_delim(file = file.path("data", "demographic.tsv"),
                                   escape_double = FALSE,
                                   trim_ws = TRUE,
                                   col_types = readr::cols(metropolitan = readr::col_character()))
+
+# sensitivity: filter to just couples
+demographics <- demographics |> filter(has_partner)
 
 
 # population --------------------------------------------------------------
@@ -38,7 +42,7 @@ years2 <- years1 + 1
 clustering_results <- local({
   
   # read in data with diary date
-  atusresp_0320 <- readr::read_csv(file.path("inputs","ATUS-2003-2021", "atusresp_0321.dat"))
+  atusresp_0320 <- readr::read_csv(file.path("inputs", "ATUS-2003-2021", "atusresp_0321.dat"))
   
   # regions for matching
   state_regions <- readr::read_csv(file.path("inputs", "state_regions.csv"))
@@ -76,6 +80,7 @@ names(clustering_results) <- glue::glue('{years1}:{years2}')
 
 # save the results
 saveRDS(clustering_results, 'outputs/SA/backtest_2021.rds')
+# saveRDS(clustering_results, 'outputs/SA/backtest_2020_couples.rds') # sensitivity
 # clustering_results <- readRDS('outputs/SA/backtest.rds')
 # clustering_results <- readRDS('outputs/SA/backtest_2021.rds')
 
@@ -142,6 +147,7 @@ seqI_groups %>%
        fill = NULL) +
   theme(legend.position = 'bottom')
 # ggsave(file.path('outputs', 'SA', glue::glue("seqd_{year2}.png")), height = 6, width = 9)
+# ggsave(file.path('outputs', 'SA', glue::glue("seqd_{year2}_couples.png")), height = 6, width = 9)
 
 # 2020 seqD by gender -- resampled so each cluster has 1000 individuals 
 # but maintains between sex split within cluster
@@ -209,6 +215,7 @@ resampled_seq %>%
        fill = NULL) +
   theme(legend.position = 'bottom')
 # ggsave(file.path('outputs', 'SA', glue::glue("seqi_{year2}.png")), height = 6, width = 9)
+# ggsave(file.path('outputs', 'SA', glue::glue("seqi_{year2}_couples.png")), height = 6, width = 9)
 
 # how many people are in each cluster:quarter
 # clusters %>% 

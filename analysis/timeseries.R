@@ -85,7 +85,7 @@ respondents_with_children <- filter(respondents, n_child_13 > 0)
 # sensitivity -------------------------------------------------------------
 
 # 1) only respondents with partners
-# respondents_with_children <- respondents_with_children |> filter(has_partner)
+respondents_with_children <- respondents_with_children |> filter(has_partner)
 
 # 2) only male respondents working from home and have partners
 # respondents_with_children <- respondents_with_children |> 
@@ -133,7 +133,8 @@ respondents_with_children <- left_join(
   childcare_summary %>% select(ID, primary_childcare = minutes), 
   by = 'ID'
 ) 
-  
+
+# this file is does not include any filters implemented in the sensitivity section above
 # readr::write_csv(respondents_with_children,
 #                  file.path('data', 'respondents_with_children.csv'))
 
