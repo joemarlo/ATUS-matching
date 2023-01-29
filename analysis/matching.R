@@ -217,6 +217,18 @@ childcare_pairs_groups |>
 #   scale_x_continuous(labels = format_hour_minute,
 #                      breaks = seq(-60*20, 60*14, by = 60*2))
 
+# what percent of +8 hour bump are single women
+childcare_pairs_groups |> 
+  filter(group == 'group2') |> 
+  distinct(pair_id) |> 
+  left_join(childcare_pairs_diffs |> ungroup() |> distinct(ID, pair_id, sex),
+            by = 'pair_id') |> 
+  left_join(select(demographics, ID, has_partner),
+            by = 'ID') |> 
+  count(sex, has_partner) |> 
+  mutate(prop = n / sum(n)) |> 
+  arrange(desc(prop))
+
 
 demographics %>% 
   right_join(childcare_pairs_groups, by = 'ID') %>% 

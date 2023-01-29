@@ -1,0 +1,155 @@
+---
+title: "January '23 Questions"
+author: "Joe Marlo"
+date: today
+format: 
+  html:
+    code-fold: true
+    embed-resources: true
+    toc: true
+editor: source
+project:
+  execute-dir: project
+---
+
+## Single Moms
+
+#### Prompt
+
+Look at the matching results and see if there is a subpopulation of single moms that are making up the majority of the 8 hour chunk. Also look at single moms in the cluster 2. Need marital status of males and females in cluster 2
+
+#### Response
+
+The 8-hour bump consists mostly of partnered females. Partnered males is the second largest group. Single moms are third at approximately 10% of the group.
+
+<!-- Work in analysis/matching.R line 204 -->
+
+    # A tibble: 4 × 4
+      sex    has_partner     n   prop
+      <chr>  <lgl>       <int>  <dbl>
+    1 Female TRUE          104 0.612 
+    2 Male   TRUE           39 0.229 
+    3 Female FALSE          18 0.106 
+    4 Male   FALSE           9 0.0529
+
+<br>
+
+Cluster 2 does not seem to have a greater number of single moms compared to other clusters. We see that Cluster 3 has the largest at \~30% of the cluster, wherease Cluster 1 and 2 are \~20% for both 2019 and 2020.
+
+```{r}
+#| warning: false
+library(dplyr)
+clustering_results <- readRDS('../outputs/SA/backtest_2021.rds')
+demographics <- readr::read_delim(
+    file = file.path("..", "data", "demographic.tsv"),
+    delim = "\t",
+    escape_double = FALSE,
+    trim_ws = TRUE,
+    col_types = readr::cols(metropolitan = readr::col_character())
+  )
+
+clustering_results$`2019:2020`$clusters |> 
+  left_join(select(demographics, ID, sex, has_partner),
+            by = 'ID') |> 
+  mutate(is_single_mom = sex == 2 & !has_partner) |> 
+  group_by(year, cluster) |> 
+  summarize(n = sum(is_single_mom),
+            prop = mean(is_single_mom),
+            .groups = 'drop') |> 
+  mutate(cluster = stringr::str_extract(cluster, "Cluster [0-9]"))
+```
+
+<br>
+
+## Model Residual Analysis
+
+#### Prompt
+
+Look at residuals of table 2 model; boxplot the residuals (2020+) by single/partners men/women (4 box).
+
+#### Response
+
+TBD. Since table 2 model is aggregated to quarterly, we cannot just examine the residuals by a given group.
+
+<br>
+
+## Work from Home
+
+#### Prompt
+
+Rerun table2 with below three populations. Definition for WFH: are there ever WFH within the day. This is the worse case scenario so we can tell if the original model is affected. Using the same model form as original if possible. ALSO 1) remove all single people 2) only males that have partners and that are working from home 3) only males that have partners and that are working from home and the partner is working
+
+#### Response
+
+<!-- Work in analysis/timeseries.R line 87 -->
+
+Pop 1) Only respondents with partners (n=46,936)
+
+    # A tibble: 9 × 4
+      Coef                    Beta Std.Error `p-value`
+      <chr>                  <dbl>     <dbl>     <dbl>
+    1 index                 -0.261     0.116  2.59e- 2
+    2 sexMale             -121.        4.04   4.76e-58
+    3 Covid 2020           64.2      14.3    1.55e- 5
+    4 Covid 2021           43.5      11.4    2.17e- 4
+    5 Second quarter         9.30      3.66   1.23e- 2
+    6 Third quarter         22.5       3.99   1.10e- 7
+    7 Fourth quarter         4.25      3.70   2.53e- 1
+    8 sexMale:is_2020TRUE  -27.9      19.3    1.52e- 1
+    9 sexMale:is_2021TRUE   -4.80     15.0    7.50e- 1
+
+<br>
+
+Pop 2) Only male respondents working from home and have partners (n=3,860)
+
+    # A tibble: 6 × 4
+      Coef               Beta Std.Error `p-value`
+      <chr>             <dbl>     <dbl>     <dbl>
+    1 index            -0.484     0.293     0.103
+    2 Covid 2020       33.3      30.1       0.272
+    3 Covid 2021       29.5      22.8       0.201
+    4 Second quarter    0.430    13.8       0.975
+    5 Third quarter    20.2      13.8       0.147
+    6 Fourth quarter    8.53     13.8       0.538
+
+<br>
+
+Pop 3) Only male respondents working from home, have partners, and partner is working (n=2,579)
+
+    # A tibble: 6 × 4
+      Coef               Beta Std.Error `p-value`
+      <chr>             <dbl>     <dbl>     <dbl>
+    1 index            -0.333     0.354     0.352
+    2 Covid 2020       37.0      36.4       0.313
+    3 Covid 2021       20.3      27.6       0.466
+    4 Second quarter    3.36     16.8       0.842
+    5 Third quarter     9.67     16.7       0.564
+    6 Fourth quarter    1.89     16.7       0.910
+
+<br>
+
+## Figure 0
+
+#### Prompt
+
+Create a new ITS plot not split by gender. Figure 1a, 1b which will show primary (left panel) and secondary childcare respectively (right panel)
+
+#### Response
+
+*Note that these should probably be set on separate y-axis scales.*
+
+<!-- Work in analysis/timeseries.R line 647 -->
+
+![](images/childcare_timeseries.png)
+
+<br>
+
+## Clustering
+
+#### Prompt
+
+Rerun cluster analysis with 2-cluster solution
+
+#### Response
+
+TBD

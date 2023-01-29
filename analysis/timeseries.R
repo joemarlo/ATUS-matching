@@ -82,6 +82,25 @@ respondents <- demographics %>%
 respondents_with_children <- filter(respondents, n_child_13 > 0)
 
 
+# sensitivity -------------------------------------------------------------
+
+# 1) only respondents with partners
+# respondents_with_children <- respondents_with_children |> filter(has_partner)
+
+# 2) only male respondents working from home and have partners
+# respondents_with_children <- respondents_with_children |> 
+#   filter(has_partner,
+#          sex == 'Male',
+#          is_WFH)
+
+# 3) only male respondents working from home, have partners, and partner is working
+# respondents_with_children <- respondents_with_children |> 
+#   filter(has_partner,
+#          sex == 'Male',
+#          is_WFH,
+#          partner_working == 'employed')
+
+
 # primary childcare -------------------------------------------------------
 
 # filter these activities to just childcare
@@ -636,3 +655,55 @@ SSC_by_quarter_sex %>%
 #   theme(axis.text.x = element_text(angle = -40, hjust = 0))
 # ggsave(file.path('analyses', 'supporting', 'plots', "childcare_secondary_marginals.png"),
 #        height = 8, width = 10)
+
+
+# PCC and SCC plot --------------------------------------------------------
+
+# plot it
+y_min <- 1*60
+y_max <- 6*60
+
+bind_rows(
+  PCC_by_quarter |> transmute(quarter, is_covid_era, value = weighted_childcare, type = 'Primary Childcare'),
+  SSC_by_quarter |> transmute(quarter, is_covid_era, value = weighted_secondary_childcare, type = 'Secondary Childcare')
+) |> 
+  ggplot(aes(x = quarter, y = value)) +
+  geom_rect(aes(xmin = as.Date('2020-01-01'),
+                xmax = as.Date('2020-09-30'),
+                ymin = y_min,
+                ymax = y_max),
+            fill = 'grey90') +
+  # geom_line(data = filter(SSC_by_quarter_sex, quarter %in% as.Date(c('2019-12-31', '2020-09-30'))),
+  #           color = 'grey50', linetype = 'dashed') +
+  geom_line(aes(color = is_covid_era), alpha = 0.3) +
+  geom_point(aes(color = is_covid_era),  alpha = 0.3) +
+  geom_line(data = tibble(x = PCC_by_quarter$quarter,
+                          y = model_PCC$fitted,
+                          group = PCC_by_quarter$is_covid_era,
+                          type = 'Primary Childcare'),
+            aes(x = x, y = y, group = group)) +
+  geom_line(data = tibble(x = SSC_by_quarter$quarter,
+                          y = model_SCC$fitted,
+                          group = SSC_by_quarter$is_covid_era,
+                          type = 'Secondary Childcare'),
+            aes(x = x, y = y, group = group)) +
+  # geom_text(data = tibble(x = c(as.Date('2020-06-01'), NA),
+  #                         y = c(260, NA),
+  #                         label = c('No data collection', ''),
+  #                         sex = c('Female', 'Male')),
+  #           aes(x = x, y = y, label = label),
+  #           color = 'grey30', angle = -90, size = 4) +
+  ggplot2::scale_color_discrete() +
+  scale_x_date(date_breaks = '2 years', date_labels = "'%y") +
+  scale_y_continuous(limits = c(y_min, y_max),
+                     breaks = seq(y_min, y_max, by = 30),
+                     labels = format_hour_minute) +
+  facet_wrap(~type, ncol = 2) +
+  labs(title = 'Mean daily time spent on childcare for household children under 13',
+       subtitle = 'Only includes respondents with household children under 13',
+       x = NULL,
+       y = 'Hour:minutes on childcare',
+       color = NULL) +
+  theme(legend.position = 'bottom')
+# ggsave(file.path('outputs', 'time-series', "childcare_timeseries.png"),
+#        height = 5, width = 8)
