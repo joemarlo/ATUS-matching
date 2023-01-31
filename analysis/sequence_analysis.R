@@ -29,7 +29,7 @@ demographics <- readr::read_delim(file = file.path("data", "demographic.tsv"),
                                   col_types = readr::cols(metropolitan = readr::col_character()))
 
 # sensitivity: filter to just couples
-demographics <- demographics |> filter(has_partner)
+# demographics <- demographics |> filter(has_partner)
 
 
 # population --------------------------------------------------------------
@@ -111,17 +111,24 @@ names(color_mapping) <- unique_states
 color_mapping_grey <- c('grey20', '#d9d955', '#db324b', 'grey55', '#ffffff')
 names(color_mapping_grey) <- c('Sleep', 'Work w/o SCC', 'Work with SCC', 'Other activities', 'filler')
 
+# color mapping if splitting other into with or w/o SCC
+# color_mapping_grey <- c('grey20', '#d9d955', '#db324b', "#433E85FF", 'grey55', '#ffffff')
+# names(color_mapping_grey) <- c('Sleep', 'Work w/o SCC', 'Work with SCC', "Other with SCC", 'Other w/o SCC', 'filler')
+
 # seqI plot sorted amount of work
-yellow_labels <- c('Work : No SCC', 'Work : SCC')
+entropy_labels <- c('Work : No SCC', 'Work : SCC')
 seqI_groups <- atus_raw %>% 
   right_join(clusters, by = 'ID') %>% 
   group_by(ID) %>% 
-  mutate(entropy = sum(description %in% yellow_labels)) %>% 
+  # mutate(entropy = sum(description %in% entropy_labels)) %>%
+  mutate(entropy = sum(stringr::str_detect(description, ": SCC"))) %>%
   ungroup() %>% 
   mutate(description = case_when(
     description == 'Sleep : No SCC' ~ 'Sleep',
     description == 'Work : No SCC' ~ 'Work w/o SCC',
     description == 'Work : SCC' ~ 'Work with SCC',
+    # stringr::str_detect(description, ": SCC") ~ "Other with SCC",
+    # TRUE ~ 'Other w/o SCC'))
     TRUE ~ 'Other activities'))
 
 # basic seqD
