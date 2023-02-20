@@ -85,7 +85,7 @@ respondents_with_children <- filter(respondents, n_child_13 > 0)
 # sensitivity -------------------------------------------------------------
 
 # 1) only respondents with partners
-respondents_with_children <- respondents_with_children |> filter(has_partner)
+# respondents_with_children <- respondents_with_children |> filter(has_partner)
 
 # 2) only male respondents working from home and have partners
 # respondents_with_children <- respondents_with_children |> 

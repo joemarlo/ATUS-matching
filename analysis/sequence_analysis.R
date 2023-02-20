@@ -108,33 +108,68 @@ color_mapping <- viridis::viridis_pal()(length(unique_states))
 names(color_mapping) <- unique_states
 
 # create second color mapping with extraneous tokens greyed out
+filler_label <- ''
 color_mapping_grey <- c('grey20', '#d9d955', '#db324b', 'grey55', '#ffffff')
-names(color_mapping_grey) <- c('Sleep', 'Work w/o SCC', 'Work with SCC', 'Other activities', 'filler')
+names(color_mapping_grey) <- c('Sleep', 'Work without SCC', 'Work with SCC', 'Other activities', filler_label)
 
-# color mapping if splitting other into with or w/o SCC
-# color_mapping_grey <- c('grey20', '#d9d955', '#db324b', "#433E85FF", 'grey55', '#ffffff')
-# names(color_mapping_grey) <- c('Sleep', 'Work w/o SCC', 'Work with SCC', "Other with SCC", 'Other w/o SCC', 'filler')
+# color mapping if splitting other into with or w/o SCC, and PCC
+color_mapping_grey <- c(
+  'Sleep' = 'grey5',
+  "Other with SCC" = '#d9d955',
+  'Other without SCC' = '#8E8E5B',
+  'Socializing and Leisure without SCC' = '#637D8A',
+  'PCC' = '#5249C7',
+  'Work with SCC' = '#db324b',
+  'Work without SCC' = '#75303A',
+  filler_label = '#ffffff'
+)
+names(color_mapping_grey)[length(color_mapping_grey)] <- filler_label
 
 # seqI plot sorted amount of work
-entropy_labels <- c('Work : No SCC', 'Work : SCC')
+# entropy_labels <- c('Work : No SCC', 'Work : SCC')
+# seqI_groups <- atus_raw %>% 
+#   right_join(clusters, by = 'ID') %>% 
+#   group_by(ID) %>% 
+#   # mutate(entropy = sum(description %in% entropy_labels)) %>%
+#   mutate(entropy = sum(stringr::str_detect(description, ": SCC"))) %>%
+#   ungroup() %>% 
+#   mutate(description = case_when(
+#     description == 'Sleep : No SCC' ~ 'Sleep',
+#     description == 'Work : No SCC' ~ 'Work without SCC',
+#     description == 'Work : SCC' ~ 'Work with SCC',
+#     stringr::str_detect(description, ": SCC") ~ "Other with SCC",
+#     TRUE ~ 'Other without SCC'))
+#     # TRUE ~ 'Other activities'))
+
+### now with PCC as a separate category ###
+# note that these tokens do not exactly match PCC definitions in time-series analysis
+# note there is only 80 instances (30min intervals) of "Caring For Household Member : SCC" whereas there is 6626 for the 'no SCC'
+PCC_tokens <- c('Caring For Household Member : No SCC', 'Caring For Household Member : SCC')
+entropy_fn <- function(x) (sum(x == "Work with SCC") * 1000) + (sum(x == "Other with SCC") * 100) + (sum(x == "PCC") * 50) + (sum(x == "Work without SCC") * 5)
 seqI_groups <- atus_raw %>% 
   right_join(clusters, by = 'ID') %>% 
-  group_by(ID) %>% 
+  # group_by(ID) %>% 
   # mutate(entropy = sum(description %in% entropy_labels)) %>%
-  mutate(entropy = sum(stringr::str_detect(description, ": SCC"))) %>%
-  ungroup() %>% 
+  # mutate(entropy = sum(stringr::str_detect(description, ": SCC"))) %>%
+  # ungroup() %>% 
   mutate(description = case_when(
     description == 'Sleep : No SCC' ~ 'Sleep',
-    description == 'Work : No SCC' ~ 'Work w/o SCC',
+    description == 'Work : No SCC' ~ 'Work without SCC',
     description == 'Work : SCC' ~ 'Work with SCC',
-    # stringr::str_detect(description, ": SCC") ~ "Other with SCC",
-    # TRUE ~ 'Other w/o SCC'))
-    TRUE ~ 'Other activities'))
+    description %in% PCC_tokens ~ 'PCC',
+    description == 'Socializing, Relaxing, and Leisure : No SCC' ~ 'Socializing and Leisure without SCC',
+    stringr::str_detect(description, ": SCC") ~ "Other with SCC",
+    TRUE ~ 'Other without SCC')) |> 
+  group_by(ID) |> 
+  mutate(entropy = entropy_fn(description)) |> 
+  ungroup()
+###
 
 # basic seqD
 seqI_groups %>% 
   group_by(cluster, year) |> 
-  mutate(n = n_distinct(ID)) |> 
+  mutate(n = n_distinct(ID),
+         description = factor(description, levels = names(color_mapping_grey))) |> 
   group_by(year) |> 
   mutate(percent = n / sum(unique(n)), # hack
          cluster = stringr::str_extract(cluster, "(.*?)\\|"),
@@ -143,7 +178,7 @@ seqI_groups %>%
   ggplot(ggplot2::aes(x = period, fill = description)) +
   geom_bar(width = 1) +
   # geom_tile() +
-  scale_fill_manual(values = color_mapping_grey[names(color_mapping_grey) != 'filler']) +
+  scale_fill_manual(values = color_mapping_grey[names(color_mapping_grey) != filler_label]) +
   scale_x_continuous(breaks = breaks_x, labels = labels_x) +
   scale_y_discrete(labels = NULL, breaks = NULL) +
   facet_wrap(year~label, scales = 'free_y') +
@@ -152,8 +187,9 @@ seqI_groups %>%
        x = NULL,
        y = 'Frequency',
        fill = NULL) +
-  theme(legend.position = 'bottom')
+  theme(legend.position = 'right')
 # ggsave(file.path('outputs', 'SA', glue::glue("seqd_{year2}.png")), height = 6, width = 9)
+# ggsave(file.path('outputs', 'SA', glue::glue("seqd_{year2}_detail.png")), height = 6, width = 11)
 # ggsave(file.path('outputs', 'SA', glue::glue("seqd_{year2}_couples.png")), height = 6, width = 9)
 
 # 2020 seqD by gender -- resampled so each cluster has 1000 individuals 
@@ -164,7 +200,7 @@ resampled_seq <- local({
   n_filler_rows <- 50
   cluster_names <- seqI_groups %>% filter(year == year2) %>% pull(cluster) %>% unique()
   filler_rows <- tibble(
-    sex = 'filler',
+    sex = filler_label,
     year = year2,
     cluster = rep(cluster_names, n_filler_rows),
     ID = as.numeric(paste0(999, 1:(n_filler_rows * length(cluster_names)))),
@@ -175,7 +211,7 @@ resampled_seq <- local({
   filler_seq <- crossing(
     period =  unique(seqI_groups$period),
     ID = filler_rows$ID,
-    description = 'filler'
+    description = filler_label
   )
   
   # resample
@@ -188,7 +224,7 @@ resampled_seq <- local({
     group_by(year, cluster) %>%
     slice_sample(n = 1000, weight_by = survey_weight, replace = TRUE) %>% 
     bind_rows(filler_rows) %>%
-    mutate(sex = factor(sex, levels = c('female', 'filler', 'male'))) %>% 
+    mutate(sex = factor(sex, levels = c('female', filler_label, 'male'))) %>% 
     group_by(year, cluster) %>%
     arrange(sex, entropy) %>% 
     mutate(ID_resampled = row_number()) %>%
@@ -209,6 +245,7 @@ resampled_seq <- local({
 
 # plot it
 resampled_seq %>%
+  mutate(description = factor(description, levels = names(color_mapping_grey))) |>
   ggplot(ggplot2::aes(x = period, y = ID_resampled, fill = description)) +
   geom_tile() +
   scale_fill_manual(values = color_mapping_grey) +
@@ -220,8 +257,9 @@ resampled_seq %>%
        x = NULL, 
        y = "Respondent", 
        fill = NULL) +
-  theme(legend.position = 'bottom')
+  theme(legend.position = 'right')
 # ggsave(file.path('outputs', 'SA', glue::glue("seqi_{year2}.png")), height = 6, width = 9)
+# ggsave(file.path('outputs', 'SA', glue::glue("seqi_{year2}_detailed.png")), height = 6, width = 12)
 # ggsave(file.path('outputs', 'SA', glue::glue("seqi_{year2}_couples.png")), height = 6, width = 9)
 
 # how many people are in each cluster:quarter

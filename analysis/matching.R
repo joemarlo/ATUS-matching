@@ -116,7 +116,7 @@ childcare_pairs %>%
   group_by(year) %>% 
   mutate(scc_mean = mean(secondary_childcare)) %>% 
   ggplot(aes(x = secondary_childcare, group = year, color = as.factor(year))) +
-  geom_density(size = 1.6) +
+  geom_density(linewidth = 1.6) +
   geom_vline(aes(xintercept = scc_mean, color = as.factor(year)),
              linetype = 'dashed') +
   scale_x_continuous(limits = c(0, 60*20),
@@ -177,6 +177,11 @@ childcare_pairs_diffs %>%
 childcare_pairs_diffs |> 
   group_by(sex) |> 
   summarize(mean = mean(diff))
+
+
+# is match quality conditional on PCC/SCC ---------------------------------
+
+# m_matches$pair_distance
 
 
 # who is experiencing the 8 hour increase ---------------------------------
