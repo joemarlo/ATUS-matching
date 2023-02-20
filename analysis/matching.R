@@ -96,7 +96,7 @@ pair_IDs <- m_matches$demographics_treated %>%
 childcare_df <- respondents_with_children %>% 
   filter(year %in% c(year1, year2)) %>%
   # filter(year %in% 2018:2019) %>% 
-  select(ID, survey_weight, year, sex, primary_childcare, secondary_childcare)
+  select(ID, survey_weight, year, sex, primary_childcare, secondary_childcare, has_partner)
 
 # matching 
 childcare_matched <- left_join(childcare_df, select(pair_IDs, -year), by = 'ID')
@@ -110,6 +110,13 @@ childcare_pairs <- childcare_matched %>%
   filter(n == 2) %>% 
   select(-n) %>% 
   arrange(pair_id)
+
+# restrict to just couples
+childcare_pairs <- childcare_pairs |> 
+  group_by(pair_id) |> 
+  mutate(keep = has_partner[year == 2020]) |> 
+  ungroup() |> 
+  filter(keep)
 
 # densities of matches
 childcare_pairs %>% 
@@ -154,8 +161,8 @@ childcare_pairs_diffs_means <- childcare_pairs_diffs %>% group_by(sex) %>% summa
 childcare_pairs_diffs %>% 
   ggplot(aes(x = diff)) +
   geom_histogram(fill = 'grey60', bins = 40) +
-  geom_line(data = childcare_pairs_diff_density,
-            aes(x = density_x, y = density_y)) +
+  # geom_line(data = childcare_pairs_diff_density,
+  #           aes(x = density_x, y = density_y)) +
   geom_vline(data = childcare_pairs_diffs_means,
              aes(xintercept = mean), color = 'grey30', linetype = 'dashed') +
   geom_text(data = childcare_pairs_diffs_means,
@@ -167,10 +174,12 @@ childcare_pairs_diffs %>%
   labs(title = 'Distribution of differences between matched pairs',
        subtitle = paste0('Only includes respondents with household children under 13\n', 
                          scales::comma_format()(n_distinct(childcare_pairs$pair_id)), " pairs"),
-       caption = glue::glue('Matched {year1}:{year2} Q3 and Q4; 1-to-many'),
+       # caption = glue::glue('Matched {year1}:{year2} Q3 and Q4; 1-to-many'),
        x = 'Difference in hour:minutes on secondary childcare',
        y = 'Count / scaled density')
 # ggsave(file.path('outputs', 'matching', 'diff-matched-2019:2020-q3q4-sex-1tomany.png'),
+#        width = 9, height = 10)
+# ggsave(file.path('outputs', 'matching', 'diff-matched-2019:2020-q3q4-sex-1tomany-couples.png'),
 #        width = 9, height = 10)
 
 # mean difference by gender
@@ -181,8 +190,18 @@ childcare_pairs_diffs |>
 
 # is match quality conditional on PCC/SCC ---------------------------------
 
-# m_matches$pair_distance
-
+# scatter of m-distance vs within pair difference
+childcare_pairs_diffs |> 
+  group_by(pair_id) |> 
+  filter(row_number() == 1) |> 
+  ungroup() |> 
+  dplyr::select(pair_id, diff) |> 
+  left_join(m_matches$pair_distance, by = 'pair_id') |> 
+  filter(distance < 1000000) |> # outliers
+  ggplot(aes(x = diff, y = distance)) +
+  geom_point() +
+  geom_smooth(method = 'lm')
+  
 
 # who is experiencing the 8 hour increase ---------------------------------
 

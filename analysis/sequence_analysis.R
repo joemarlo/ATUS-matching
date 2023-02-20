@@ -87,6 +87,10 @@ saveRDS(clustering_results, 'outputs/SA/backtest_2021.rds')
 
 # post-hoc analysis -------------------------------------------------------
 
+# sample size
+clustering_results$`2019:2020`$clusters |> group_by(year) |> tally()
+clustering_results$`2020:2021`$clusters |> group_by(year) |> tally()
+
 # sequences_clustered <- clustering_results$`2018:2019`
 sequences_clustered <- clustering_results$`2019:2020`
 # sequences_clustered <- clustering_results$`2020:2021`
