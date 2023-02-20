@@ -253,7 +253,7 @@ childcare_pairs_groups |>
   mutate(prop = n / sum(n)) |> 
   arrange(desc(prop))
 
-
+# demographics by 0/8 hour group
 demographics %>% 
   right_join(childcare_pairs_groups, by = 'ID') %>% 
   select(ID, group, pair_id, sex, age_youngest, n_child, labor_force_status, 
