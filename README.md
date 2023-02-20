@@ -4,7 +4,12 @@ Reproducible code for working paper on matching clustered sequence data and unde
 
 <br>
 <p align="center">
-<img src="outputs/SA/seqi_2020.png" width=80%>
+<img src="outputs/SA/seqd_2020_detail.png" width=80%>
+</p>
+
+<br>
+<p align="center">
+<img src="outputs/SA/seqi_2020_detailed.png" width=80%>
 </p>
 
 
