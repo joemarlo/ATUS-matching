@@ -1,0 +1,51 @@
+---
+title: "Location Analysis"
+author: "Joe Marlo"
+date: today
+format: 
+  html:
+    code-fold: true
+    embed-resources: true
+    toc: true
+editor: source
+project:
+  execute-dir: project
+---
+
+<h1 style='color: red'>DRAFT</h1>
+
+### At what date were children most likely to be at home?
+
+We can report the proportion of respondents who are working from home by date. 
+
+> Definition for WFH: is there at least one 30 minute period in their day that is "work" and the location is "Respondent's home or yard"
+
+This definition likely overestimates the number of individuals working-from-home. Survey weights applied via resampling. Sample is not restricted to couples.
+
+<!-- Work in analysis/timeseries.R line 104 -->
+
+![](images/WFH-timeseries.png)
+
+<br>
+
+### Was there a difference in males and females shifting to working from home?
+
+We can report the previous population split by sex.
+
+![](images/WFH-timeseries-by-sex.png)
+
+<br>
+
+### For the WFH population, were women more likely to report secondary childcare? Or is this driven by general gender differences in working from home?
+
+![](images/WFH-SSC-by-sex.png)
+
+<br>
+
+### Provide context of people taken out of employment? More likely to be women or men? Gender difference in reports of child care by the unemployed?
+
+Need to look at unemployment numbers
+
+IIRC there has been some media attention about unemployed men not doing housework  
+- https://slate.com/human-interest/2015/01/gender-and-housework-even-men-who-don-t-work-do-less-than-women.html  
+- https://www.nytimes.com/interactive/2015/01/06/upshot/how-nonemployed-americans-spend-their-weekdays-men-vs-women.html

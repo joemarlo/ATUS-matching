@@ -100,6 +100,58 @@ respondents_with_children <- filter(respondents, n_child_13 > 0)
 #          is_WFH,
 #          partner_working == 'employed')
 
+# 4) WFH proportion over time
+respondents_with_children |> 
+  dplyr::transmute(
+    ID, 
+    survey_weight, 
+    month = lubridate::rollback(diary_date, roll_to_first = TRUE),
+    is_WFH,
+    sex,
+    secondary_childcare
+  ) |> 
+  slice_sample(n = 1e6, weight_by = survey_weight, replace = TRUE) |> 
+  # group_by(month) |>
+  group_by(month, sex) |>
+  summarize(WFH_prop = mean(is_WFH)) |>
+  ggplot(aes(x = month, y = WFH_prop)) + 
+  geom_line() +
+  geom_point() +
+  facet_wrap(~sex) +
+  labs(title = 'Proportion of respondents defined as working-from-home',
+       subtitle = 'Same population as RQ1/2',
+       x = NULL,
+       y = 'Proportion WFH')
+# ggsave(file.path('analysis', 'images', "WFH-timeseries.png"),
+#        height = 5, width = 8)
+# ggsave(file.path('analysis', 'images', "WFH-timeseries-by-sex.png"),
+#        height = 5, width = 8)
+
+# 5) Among WFH sample, what is Secondary childcare by sex
+respondents_with_children |> 
+  dplyr::transmute(
+    ID, 
+    survey_weight, 
+    month = lubridate::rollback(diary_date, roll_to_first = TRUE),
+    is_WFH,
+    sex,
+    secondary_childcare
+  ) |> 
+  group_by(month, sex) |>
+  summarize(weighted_childcare = sum(survey_weight * secondary_childcare) / sum(survey_weight),
+            .groups = 'drop') |> 
+  ggplot(aes(x = month, y = weighted_childcare)) +
+  geom_line() +
+  geom_point() +
+  scale_y_continuous(labels = format_hour_minute) +
+  facet_wrap(~sex) +
+  labs(title = 'Daily minutes on secondary childcare by sex',
+       subtitle = 'Population is the WFH subset of the RQ1/2',
+       x = NULL,
+       y = 'Hour:minutes on secondary childcare')
+# ggsave(file.path('analysis', 'images', "WFH-SSC-by-sex.png"),
+#        height = 5, width = 8)
+
 
 # primary childcare -------------------------------------------------------
 
