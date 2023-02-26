@@ -37,9 +37,18 @@ pipeline <- list()
 
 # data pipelines
 pipeline$data$download <- list(
-  tar_target(
+  tarchetypes::tar_skip(
     name = download_ATUS_files,
-    command = download_ATUS()
+    command = download_ATUS(),
+    skip = all(
+      file.exists(
+        file.path(
+          'inputs', 
+          'ATUS-2003-2021', 
+          c('atusact_0321.dat', 'atuscps_0321.dat', 'atusresp_0321.dat', 'atusrost_0321.dat', 'atussum_0321.dat', 'atuswho_0321.dat')
+          )
+        )
+      )
   )
 )
 pipeline$data$essential_industries <- list(
@@ -63,26 +72,28 @@ pipeline$data$essential_industries <- list(
   ),
   tar_target(
     name = essential_industries,
-    command = create_industries('https://www.cdc.gov/vaccines/covid-19/categories-essential-workers.html', NAICS, crosswalk)
+    command = create_industries('https://web.archive.org/web/20230201185211/https://www.cdc.gov/vaccines/covid-19/categories-essential-workers.html', NAICS, crosswalk)
   ),
   tar_target(
     name = path_essential_industries,
     command = 'data/essential_industries.csv',
     format = "file"
   ),
-  tar_target(
+  tarchetypes::tar_skip(
     name = write_out_essential_industries,
-    command = readr::write_csv(essential_industries, path_essential_industries)
+    command = readr::write_csv(essential_industries, path_essential_industries),
+    skip = file.exists(file.path('data', 'FIPS.csv'))
   )
 )
 pipeline$data$FIPS <- list(
   tar_target(
     name = FIPS,
-    command = create_fips('https://www.nrcs.usda.gov/wps/portal/nrcs/detail/?cid=nrcs143_013696')
+    command = create_fips('https://web.archive.org/web/20200303103620/https://www.nrcs.usda.gov/wps/portal/nrcs/detail/?cid=nrcs143_013696')
   ),
-  tar_target(
+  tarchetypes::tar_skip(
     name = write_out_FIPS,
-    command = readr::write_csv(FIPS, 'data/FIPS.csv')
+    command = readr::write_csv(FIPS, file.path('data', 'FIPS.csv')),
+    skip = file.exists(file.path('data', 'FIPS.csv'))
   )
 )
 pipeline$data$ATUS <- list(

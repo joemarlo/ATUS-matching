@@ -5,8 +5,10 @@ create_industries <- function(url_CDC, NAICS_2017, Census_2012_changes){
 
   # get essential industries table from CDC
   # url_CDC <- 'https://www.cdc.gov/vaccines/covid-19/categories-essential-workers.html'
+  # url_CDC <- 'https://web.archive.org/web/20230201185211/https://www.cdc.gov/vaccines/covid-19/categories-essential-workers.html'
   essential_industries <- rvest::read_html(url_CDC) %>% 
     rvest::html_table() %>%
+    purrr::map(function(tbl) if(!any(stringr::str_detect(colnames(tbl), '2017 NAICS'))) return(tibble::tibble()) else tbl) %>% # sometimes web.archive returns back an incorrect first table
     purrr::map(function(tbl) mutate(tbl, across(everything(), as.character))) %>% 
     bind_rows() %>% 
     setNames(c('NAICS_2017', 'name_2017', 'CISA_sector', 'vax_phase', 'workforce_category'))

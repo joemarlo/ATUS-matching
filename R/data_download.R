@@ -3,6 +3,7 @@ download_ATUS <- function(){
   path <- 'inputs/ATUS-2003-2021'
   dir.create(path)
   
+  # download urls; may become stale
   urls <- c(
     "https://www.bls.gov/tus/special.requests/atusresp-0321.zip",
     'https://www.bls.gov/tus/special.requests/atusrost-0321.zip',
@@ -11,6 +12,8 @@ download_ATUS <- function(){
     'https://www.bls.gov/tus/special.requests/atuswho-0321.zip',
     'https://www.bls.gov/tus/special.requests/atuscps-0321.zip'
   )
+  
+  # names of files to save; must match order of above urls
   file_names <- c(
     'atusresp_0321.dat',
     'atusrost_0321.dat',

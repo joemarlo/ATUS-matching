@@ -5,7 +5,7 @@ data/*.csv
 data/*.tsv
 inputs/ATUS-2003-2018
 inputs/ATUS-2003-2020
-inputs/ATUS-2003-2021
+inputs/ATUS-2003-2021/*.dat
 inputs/ATUS-2018
 outputs/SA/backtest.rds
 outputs/SA/backtest_2021.rds
