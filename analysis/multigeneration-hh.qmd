@@ -1,0 +1,147 @@
+---
+title: "Multigenerational Households"
+author: "Joe Marlo"
+date: today
+format: 
+  html:
+    code-fold: true
+    embed-resources: true
+    toc: true
+editor: source
+project:
+  execute-dir: project
+---
+
+<h1 style='color: red'>DRAFT</h1>
+
+```{r}
+#| warning: false
+#| messages: false
+# setup
+library(dplyr)
+library(purrr)
+library(tidyr)
+library(stringr)
+library(ggplot2)
+
+# functions
+purrr:::walk(list.files('R', full.names = TRUE), source)
+```
+
+
+```{r}
+#| warning: false
+#| messages: false
+# data
+
+# ATUS roster
+atusrost_0321 <- readr::read_csv(file.path("inputs","ATUS-2003-2021", "atusrost_0321.dat"))
+
+# read in data with diary date
+atusresp_0321 <- readr::read_csv(file.path("inputs","ATUS-2003-2021", "atusresp_0321.dat"))
+atusresp_0321 <- atusresp_0321 |> 
+  dplyr::transmute(
+    TUCASEID, 
+    date = lubridate::ymd(TUDIARYDATE),
+    year = lubridate::year(date)
+  )
+
+# TODO: filter to our sample?
+```
+
+
+## Defining a household as multigenerational
+
+```{r}
+#| warning: false
+#| messages: false
+
+# TULINENO is the id of the individual within a household
+  # respondent is TULINENO=1
+# TERRP is relationship to the respondent
+# TESEX is sex: 1 male, 2 female
+# TEAGE is age
+
+terrp_lookup <- tibble::tribble(
+  ~TERRP, ~description,
+  18, 'Self',
+  19, 'Self',
+  20, 'Spouse',
+  21, 'Unmarried partner',
+  22, 'Own household child',
+  23, 'Grandchild',
+  24, 'Parent',
+  25, 'Brother/sister',
+  26, 'Other related person',
+  27, 'Foster child',
+  28, 'Housemate/roommate',
+  29, 'Roomer/boarder',
+  30, 'Other nonrelative',
+  40, 'Own nonhousehold child < 18'
+)
+
+reactable::reactable(terrp_lookup, defaultPageSize = 20)
+```
+
+```{r}
+#| warning: false
+#| messages: false
+#| fig-width: 11
+#| fig-height: 7
+atusrost_0321 |> 
+  dplyr::group_by(TUCASEID) |> 
+  tally() |> 
+  ggplot(aes(x = n)) +
+  geom_histogram() +
+  scale_y_continuous(labels = scales::comma_format()) +
+  labs(title = 'Distribution of number of individuals in a household')
+```
+
+```{r}
+#| warning: false
+#| messages: false
+#| fig-width: 11
+#| fig-height: 7
+atusrost_0321 |> 
+  dplyr::group_by(TUCASEID) |> 
+  summarize(
+    has_parent = any(TERRP == 24),
+    has_hh_child = any(TERRP == 22),
+    has_grandchild = any(TERRP == 23),
+    .groups = 'drop'
+  ) |> 
+  left_join(atusresp_0321, by = 'TUCASEID') |> 
+  dplyr::select(year, has_parent, has_hh_child, has_grandchild) |> 
+  tidyr::pivot_longer(-year) |> 
+  group_by(year, name) |> 
+  summarize(value = mean(value)) |> 
+  # tally() |> 
+  ggplot(aes(x = year, y = value)) +
+  geom_line() +
+  scale_y_continuous(labels = scales::percent_format()) +
+  facet_wrap(~name, scales = 'free_y') +
+  labs(title = 'Proportion of households with ...',
+       subtitle = 'Not weighted',
+       x = NULL,
+       y = NULL)
+```
+
+
+```{r}
+#| warning: false
+#| messages: false
+#| fig-width: 11
+#| fig-height: 7
+```
+
+
+## Quantifying multigenerational households
+
+
+```{r}
+#| warning: false
+#| messages: false
+#| fig-width: 11
+#| fig-height: 7
+```
+
