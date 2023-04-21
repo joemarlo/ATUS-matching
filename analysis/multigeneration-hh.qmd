@@ -9,31 +9,31 @@ format:
     toc: true
 editor: source
 project:
-  execute-dir: project
+  execute-dir: project # this doesn't work?
 ---
-
-<h1 style='color: red'>DRAFT</h1>
 
 ```{r}
 #| warning: false
 #| messages: false
-# setup
-library(dplyr)
-library(purrr)
-library(tidyr)
-library(stringr)
-library(ggplot2)
-
-# functions
-purrr:::walk(list.files('R', full.names = TRUE), source)
+#| echo: false
+knitr::opts_knit$set(root.dir = here::here())
 ```
 
 
 ```{r}
 #| warning: false
 #| messages: false
-# data
+## setup
+library(dplyr)
+library(purrr)
+library(tidyr)
+library(stringr)
+library(ggplot2)
 
+## functions
+purrr:::walk(list.files('R', full.names = TRUE), source)
+
+## data
 # ATUS roster
 atusrost_0321 <- readr::read_csv(file.path("inputs","ATUS-2003-2021", "atusrost_0321.dat"))
 
@@ -42,15 +42,16 @@ atusresp_0321 <- readr::read_csv(file.path("inputs","ATUS-2003-2021", "atusresp_
 atusresp_0321 <- atusresp_0321 |> 
   dplyr::transmute(
     TUCASEID, 
+    survey_weight = ifelse(TUFNWGTP != -1, TUFNWGTP, TU20FWGT), # account for 2020 survey weight
     date = lubridate::ymd(TUDIARYDATE),
     year = lubridate::year(date)
   )
-
-# TODO: filter to our sample?
 ```
 
 
-## Defining a household as multigenerational
+## EDA
+
+The survey provides detailed 'roster' information on the respondent's household including the relationship of individuals in the household to the respondent. It notably does not have a field for 'grandparent'.
 
 ```{r}
 #| warning: false
@@ -83,10 +84,14 @@ terrp_lookup <- tibble::tribble(
 reactable::reactable(terrp_lookup, defaultPageSize = 20)
 ```
 
+<br>
+
+Regardless of relationship, many households have few individuals with most having less than 5.
+
 ```{r}
 #| warning: false
 #| messages: false
-#| fig-width: 11
+#| fig-width: 9
 #| fig-height: 7
 atusrost_0321 |> 
   dplyr::group_by(TUCASEID) |> 
@@ -97,10 +102,45 @@ atusrost_0321 |>
   labs(title = 'Distribution of number of individuals in a household')
 ```
 
+<br>
+
+The mean number of individuals in a household appears to slightly decreasing over time.
+
 ```{r}
 #| warning: false
 #| messages: false
-#| fig-width: 11
+#| fig-width: 9
+#| fig-height: 7
+atusrost_0321 |> 
+  dplyr::group_by(TUCASEID) |> 
+  tally() |> 
+  dplyr::left_join(atusresp_0321, by = 'TUCASEID') |> 
+  group_by(year) |> 
+  summarize(`weighted-mean` = sum(survey_weight * n) / sum(survey_weight),
+            mean = mean(n)) |> 
+  tidyr::pivot_longer(-year) |> 
+  ggplot(aes(x = year, y = value, group = name, color = name)) +
+  # geom_boxplot() +
+  geom_line() +
+  scale_y_continuous(labels = scales::comma_format()) +
+  ggplot2::scale_color_discrete(name = NULL, ) +
+  labs(title = 'Mean number of individuals in a household by year',
+       subtitle = 'Derived from roster file',
+       x = NULL,
+       y = 'Number of individuals in household') +
+  theme(legend.position = 'bottom')
+```
+
+<br>
+
+Since the data is relational to the survey respondent, we can see how certain relationships exist in the households over time. There does not seem to be a clear pandemic effect.
+
+The rise in 'has_grandchild' in the early 2010s is stark. Perhaps related to the Financial Crisis?
+
+```{r}
+#| warning: false
+#| messages: false
+#| fig-width: 9
 #| fig-height: 7
 atusrost_0321 |> 
   dplyr::group_by(TUCASEID) |> 
@@ -111,37 +151,226 @@ atusrost_0321 |>
     .groups = 'drop'
   ) |> 
   left_join(atusresp_0321, by = 'TUCASEID') |> 
-  dplyr::select(year, has_parent, has_hh_child, has_grandchild) |> 
-  tidyr::pivot_longer(-year) |> 
-  group_by(year, name) |> 
-  summarize(value = mean(value)) |> 
+  dplyr::select(year, has_parent, has_hh_child, has_grandchild, survey_weight) |> 
+  tidyr::pivot_longer(-c(year, survey_weight)) |> 
+  group_by(year, var = name) |> 
+  # summarize(value = mean(value)) |> 
+  summarize(prop = mean(value),
+            `weighted-prop` = sum(survey_weight * value) / sum(survey_weight)) |>
+  tidyr::pivot_longer(-c(year, var)) |>
   # tally() |> 
-  ggplot(aes(x = year, y = value)) +
+  ggplot(aes(x = year, y = value, color = name, group = name)) +
   geom_line() +
   scale_y_continuous(labels = scales::percent_format()) +
-  facet_wrap(~name, scales = 'free_y') +
+  ggplot2::scale_color_discrete(name = NULL) +
+  facet_wrap(~var, scales = 'free_y') +
   labs(title = 'Proportion of households with ...',
-       subtitle = 'Not weighted',
+       subtitle = 'Relationship is relative to survey respondent',
        x = NULL,
-       y = NULL)
+       y = NULL) +
+  theme(legend.position = 'bottom')
 ```
 
+<br>
 
-```{r}
-#| warning: false
-#| messages: false
-#| fig-width: 11
-#| fig-height: 7
-```
+## Defining a household as multigenerational
 
+Given the limited data detail, we're defining multigenerational as if the respondent:  
+- has parent AND has own household child  
+- OR has grandchild 
+
+This could further be refined by incorporating the age of individuals. I don't believe this is neccessary given the below findings.
+
+Note: Roster information is based on relationship to the respondent. It does not show "grandparent" has an option.
+
+<br>
 
 ## Quantifying multigenerational households
 
+The above definition results in approximately 3.5% to 5% of households being multigenerational depending on the year. This is in line with a [2012 report by the Census](https://www.census.gov/library/publications/2012/acs/acsbr11-03.html) that showed that 4.0% of households were multigenerational in 2010.
 
 ```{r}
 #| warning: false
 #| messages: false
-#| fig-width: 11
+#| fig-width: 9
 #| fig-height: 7
+
+multi_gen <- atusrost_0321 |> 
+  group_by(TUCASEID) |> 
+  summarize(
+    has_parent_and_child = (any(TERRP == 24) & any(TERRP == 22)),
+    has_grandchild = any(TERRP == 23),
+    .groups = 'drop'
+  ) |> 
+  mutate(is_multi_gen = has_parent_and_child | has_grandchild) |> 
+  select(TUCASEID, is_multi_gen)
+
+# write out to csv
+# readr::write_csv(
+#   multi_gen, 
+#   file.path(here::here(), 'data', 'multi_generational.csv')
+# )
+
+multi_gen |> 
+  dplyr::left_join(atusresp_0321, by = 'TUCASEID') |> 
+  group_by(year) |> 
+  summarize(`weighted-mean` = sum(survey_weight * is_multi_gen) / sum(survey_weight),
+            mean = mean(is_multi_gen)) |> 
+  tidyr::pivot_longer(-year) |> 
+  ggplot(aes(x = year, y = value, group = name, color = name)) +
+  geom_line() +
+  scale_y_continuous(labels = scales::percent_format()) +
+  ggplot2::scale_color_discrete(name = NULL, ) +
+  labs(title = 'Mean proportion of households that are multigenerational',
+      subtitle = 'Multigenerational defined as:\n- Respondent has parent & has own household child\n- OR respondent has grandchild',
+       x = NULL,
+       y = 'Proportion of households') +
+  theme(legend.position = 'bottom')
 ```
 
+
+## RQ1 and RQ2
+
+I've refreshed the RQ1 and RQ2 tables (tables 1 and 2 in the paper). The original tables are presented at the end for reference.
+
+### New tables w/o multigen households
+
+<!-- these were created from timeseries.R. There is a filter in the sensitivity section -->
+
+**Full-sample PCC**
+```
+# A tibble: 9 × 4
+  Coef                    Beta Std.Error `p-value`
+  <chr>                  <dbl>     <dbl>     <dbl>
+1 index                 0.0541    0.0309  8.24e- 2
+2 sexMale             -49.8       1.07    1.11e-79
+3 is_2020TRUE          15.5       4.35    5.04e- 4
+4 is_2021TRUE           1.44      3.22    6.56e- 1
+5 quarter_ex_year2     -1.38      1.46    3.48e- 1
+6 quarter_ex_year3     -5.76      1.45    1.25e- 4
+7 quarter_ex_year4     -1.87      1.45    2.01e- 1
+8 sexMale:is_2020TRUE -19.3       5.94    1.52e- 3
+9 sexMale:is_2021TRUE   3.04      4.27    4.78e- 1
+```
+
+**Couples-only PCC**
+```
+# A tibble: 9 × 4
+  Coef                   Beta Std.Error `p-value`
+  <chr>                 <dbl>     <dbl>     <dbl>
+1 index                 0.107    0.0381  5.75e- 3
+2 sexMale             -59.7      1.32    3.51e-78
+3 is_2020TRUE          16.5      5.37    2.63e- 3
+4 is_2021TRUE           4.39     3.97    2.71e- 1
+5 quarter_ex_year2     -2.43     1.80    1.81e- 1
+6 quarter_ex_year3     -7.38     1.79    6.91e- 5
+7 quarter_ex_year4     -2.49     1.79    1.68e- 1
+8 sexMale:is_2020TRUE -19.6      7.33    8.54e- 3
+9 sexMale:is_2021TRUE   1.99     5.27    7.06e- 1
+```
+
+#### Table 2
+
+**Full-sample SCC**
+```
+# A tibble: 9 × 4
+  Coef                    Beta Std.Error `p-value`
+  <chr>                  <dbl>     <dbl>     <dbl>
+1 index                 -0.327     0.106  2.54e- 3
+2 sexMale             -114.        3.71   2.14e-59
+3 is_2020TRUE           42.1      13.2    1.82e- 3
+4 is_2021TRUE           31.3      10.5    3.52e- 3
+5 quarter_ex_year2      11.1       3.44   1.62e- 3
+6 quarter_ex_year3      25.2       3.74   5.49e-10
+7 quarter_ex_year4       6.74      3.47   5.47e- 2
+8 sexMale:is_2020TRUE   -3.23     17.9    8.57e- 1
+9 sexMale:is_2021TRUE   -1.40     13.8    9.19e- 1
+```
+
+**Couples-only SCC**
+```
+# A tibble: 9 × 4
+  Coef                    Beta Std.Error `p-value`
+  <chr>                  <dbl>     <dbl>     <dbl>
+1 index                 -0.246    0.0839  3.97e- 3
+2 sexMale             -124.       2.90    2.07e-75
+3 is_2020TRUE           72.5     11.8     1.07e- 8
+4 is_2021TRUE           45.1      8.74    9.60e- 7
+5 quarter_ex_year2      10.7      3.97    7.81e- 3
+6 quarter_ex_year3      22.5      3.94    7.90e- 8
+7 quarter_ex_year4       5.15     3.95    1.94e- 1
+8 sexMale:is_2020TRUE  -28.5     16.1     7.95e- 2
+9 sexMale:is_2021TRUE   -7.42    11.6     5.24e- 1
+```
+
+<br>
+
+### Original tables (for reference)
+
+#### Table 1
+
+**Full-sample PCC**
+```
+# A tibble: 9 × 4
+  Coef                    Beta Std.Error `p-value`
+  <chr>                  <dbl>     <dbl>     <dbl>
+1 index                 0.0662    0.0304  3.11e- 2
+2 sexMale             -47.9       1.05    1.47e-78
+3 is_2020TRUE          17.6       4.27    7.00e- 5
+4 is_2021TRUE           0.643     3.16    8.39e- 1
+5 quarter_ex_year2     -2.81      1.44    5.26e- 2
+6 quarter_ex_year3     -6.51      1.43    1.23e- 5
+7 quarter_ex_year4     -2.28      1.43    1.13e- 1
+8 sexMale:is_2020TRUE -22.4       5.84    2.02e- 4
+9 sexMale:is_2021TRUE   2.57      4.20    5.42e- 1
+```
+
+**Couples-only PCC**
+```
+# A tibble: 9 × 4
+  Coef                   Beta Std.Error `p-value`
+  <chr>                 <dbl>     <dbl>     <dbl>
+1 index                 0.103    0.0368  6.12e- 3
+2 sexMale             -57.8      1.27    2.75e-78
+3 is_2020TRUE          15.8      5.18    2.81e- 3
+4 is_2021TRUE           5.42     3.83    1.60e- 1
+5 quarter_ex_year2     -4.14     1.74    1.92e- 2
+6 quarter_ex_year3     -8.55     1.73    2.51e- 6
+7 quarter_ex_year4     -3.23     1.73    6.49e- 2
+8 sexMale:is_2020TRUE -19.2      7.08    7.53e- 3
+9 sexMale:is_2021TRUE   0.506    5.09    9.21e- 1
+```
+
+#### Table 2
+
+**Full-sample SCC**
+```
+# A tibble: 9 × 4
+  Coef                    Beta Std.Error `p-value`
+  <chr>                  <dbl>     <dbl>     <dbl>
+1 index                 -0.309     0.108  4.86e- 3
+2 sexMale             -109.        3.77   1.49e-56
+3 is_2020TRUE           37.8      13.1    4.73e- 3
+4 is_2021TRUE           30.5      10.6    4.65e- 3
+5 quarter_ex_year2      10.6       3.30   1.72e- 3
+6 quarter_ex_year3      25.1       3.62   2.03e-10
+7 quarter_ex_year4       6.17      3.34   6.72e- 2
+8 sexMale:is_2020TRUE   -2.11     17.8    9.06e- 1
+9 sexMale:is_2021TRUE   -2.93     13.9    8.34e- 1
+```
+
+**Couples-only SCC**
+```
+# A tibble: 9 × 4
+  Coef                    Beta Std.Error `p-value`
+  <chr>                  <dbl>     <dbl>     <dbl>
+1 index                 -0.261     0.116  2.59e- 2
+2 sexMale             -121.        4.04   4.76e-58
+3 is_2020TRUE           64.2      14.3    1.55e- 5
+4 is_2021TRUE           43.5      11.4    2.17e- 4
+5 quarter_ex_year2       9.30      3.66   1.23e- 2
+6 quarter_ex_year3      22.5       3.99   1.10e- 7
+7 quarter_ex_year4       4.25      3.70   2.53e- 1
+8 sexMale:is_2020TRUE  -27.9      19.3    1.52e- 1
+9 sexMale:is_2021TRUE   -4.80     15.0    7.50e- 1
+```

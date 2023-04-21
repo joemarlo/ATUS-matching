@@ -50,6 +50,9 @@ descriptions <- atussum_0321 %>%
   fuzzyjoin::regex_left_join(y = curated.codes) %>%
   select(activity = activity.x, description)
 
+# households defined as multigenerational per /analysis/multigenerational-hh.qmd
+multi_gen_hh <- readr::read_csv('data/multi_generational.csv')
+
 
 # count household children under 13 ----------------------------------------
 
@@ -151,6 +154,12 @@ respondents_with_children |>
        y = 'Hour:minutes on secondary childcare')
 # ggsave(file.path('analysis', 'images', "WFH-SSC-by-sex.png"),
 #        height = 5, width = 8)
+
+# 6) Remove multigenerational households
+# respondents_with_children <- respondents_with_children |>
+#   dplyr::left_join(multi_gen_hh, by = c('ID' = 'TUCASEID')) |>
+#   dplyr::filter(!is_multi_gen) |>
+#   dplyr::select(-is_multi_gen)
 
 
 # primary childcare -------------------------------------------------------

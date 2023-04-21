@@ -15,18 +15,29 @@ select_model <- function(...){
   cli::cli_alert_success('Best model is {best_model$call}')
   
   # print best model coef
-  tmp <- summary(best_model)
-  tmp$tTable %>% 
-    as_tibble() %>% 
-    mutate(Coef = names(tmp$coefficients)) %>% 
-    slice(-1) %>% 
-    select(Coef, Beta = Value, Std.Error, `p-value`) %>% 
+  print_model(best_model)
+  # tmp <- summary(best_model)
+  # tmp$tTable %>% 
+  #   as_tibble() %>% 
+  #   mutate(Coef = names(tmp$coefficients)) %>% 
+  #   slice(-1) %>% 
+  #   select(Coef, Beta = Value, Std.Error, `p-value`) %>% 
     print()
   
   # plot coef plot
   print(plot_coef(best_model) + labs(title = 'Best model by BIC', subtitle = best_model$call))
   
   return(best_model)
+}
+
+print_model <- function(model){
+  tmp <- summary(model)
+  tmp$tTable %>% 
+    as_tibble() %>% 
+    mutate(Coef = names(tmp$coefficients)) %>% 
+    slice(-1) %>% 
+    select(Coef, Beta = Value, Std.Error, `p-value`) %>% 
+    print()
 }
 
 #' Plot gls model coefficients
