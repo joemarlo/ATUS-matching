@@ -1,6 +1,10 @@
 .DS_Store
 .DS_store
 
+*.RData
+*.rds
+*.html
+
 data/*.csv
 data/*.tsv
 inputs/ATUS-2003-2018

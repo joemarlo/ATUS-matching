@@ -79,10 +79,12 @@ clustering_results <- local({
 names(clustering_results) <- glue::glue('{years1}:{years2}')
 
 # save the results
-saveRDS(clustering_results, 'outputs/SA/backtest_2021.rds')
+# saveRDS(clustering_results, 'outputs/SA/backtest_2021.rds')
 # saveRDS(clustering_results, 'outputs/SA/backtest_2020_couples.rds') # sensitivity
+saveRDS(clustering_results, 'outputs/SA/backtest_2021_split.rds') # hh-token-split
 # clustering_results <- readRDS('outputs/SA/backtest.rds')
 # clustering_results <- readRDS('outputs/SA/backtest_2021.rds')
+# clustering_results <- readRDS('outputs/SA/backtest_2021_split.rds')
 
 
 # post-hoc analysis -------------------------------------------------------
@@ -146,9 +148,7 @@ names(color_mapping_grey)[length(color_mapping_grey)] <- filler_label
 #     # TRUE ~ 'Other activities'))
 
 ### now with PCC as a separate category ###
-# note that these tokens do not exactly match PCC definitions in time-series analysis
-# note there is only 80 instances (30min intervals) of "Caring For Household Member : SCC" whereas there is 6626 for the 'no SCC'
-PCC_tokens <- c('Caring For Household Member : No SCC', 'Caring For Household Member : SCC')
+PCC_tokens <- c('Caring For Household Members - Child : No SCC') #c('Caring For Household Member : No SCC', 'Caring For Household Member : SCC')
 entropy_fn <- function(x) (sum(x == "Work with SCC") * 1000) + (sum(x == "Other with SCC") * 100) + (sum(x == "PCC") * 50) + (sum(x == "Work without SCC") * 5)
 seqI_groups <- atus_raw %>% 
   right_join(clusters, by = 'ID') %>% 
