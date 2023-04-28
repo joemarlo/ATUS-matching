@@ -195,6 +195,7 @@ seqI_groups %>%
 # ggsave(file.path('outputs', 'SA', glue::glue("seqd_{year2}.png")), height = 6, width = 9)
 # ggsave(file.path('outputs', 'SA', glue::glue("seqd_{year2}_detail.png")), height = 6, width = 11)
 # ggsave(file.path('outputs', 'SA', glue::glue("seqd_{year2}_couples.png")), height = 6, width = 9)
+# ggsave(file.path('outputs', 'SA', glue::glue("seqd_{year2}_split.png")), height = 6, width = 11)
 
 # 2020 seqD by gender -- resampled so each cluster has 1000 individuals 
 # but maintains between sex split within cluster
@@ -265,6 +266,7 @@ resampled_seq %>%
 # ggsave(file.path('outputs', 'SA', glue::glue("seqi_{year2}.png")), height = 6, width = 9)
 # ggsave(file.path('outputs', 'SA', glue::glue("seqi_{year2}_detailed.png")), height = 6, width = 12)
 # ggsave(file.path('outputs', 'SA', glue::glue("seqi_{year2}_couples.png")), height = 6, width = 9)
+# ggsave(file.path('outputs', 'SA', glue::glue("seqi_{year2}_split.png")), height = 6, width = 12)
 
 # how many people are in each cluster:quarter
 # clusters %>% 
