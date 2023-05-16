@@ -29,12 +29,12 @@ clean_atus <- function(atusact_0321){
   # convert the time to minutes where 0 = 4am
   # split the data into individual dataframes for each respondent
   split_ATUS <- ATUS %>% 
-    mutate(start_time = (hour(TUSTARTTIM)*60) + minute(TUSTARTTIM),
-           end_time = (hour(TUSTOPTIME)*60) + minute(TUSTOPTIME),
+    mutate(start_time = (lubridate::hour(TUSTARTTIM)*60) + lubridate::minute(TUSTARTTIM),
+           end_time = (lubridate::hour(TUSTOPTIME)*60) + lubridate::minute(TUSTOPTIME),
            start_time = baseline_time(start_time),
            end_time = baseline_time(end_time),
            # this cuts off things at 4am
-           end_time = if_else(end_time < start_time, 1440, end_time)) %>% 
+           end_time = dplyr::if_else(end_time < start_time, 1440, end_time)) %>% 
     select(TUCASEID, start_time, end_time, description, location) %>% 
     group_split(TUCASEID)
   rm(ATUS)
@@ -45,15 +45,20 @@ clean_atus <- function(atusact_0321){
   }) %>% unlist() == 1440
   split_ATUS <- split_ATUS[whole_day]
   rm(whole_day)
+  
+  Mode <- function(x) {
+    # function calculates mode
+    unique_x <- unique(na.omit(x))
+    unique_x[which.max(tabulate(match(x, unique_x)))]
+  }
  
   # for each respondent, expand the dataframe into increments of 5 minutes
-  # takes about 20min on 4-core i5 desktop
-  # resulting df is 200mm rows so make sure you have >30gb of memory
-  ATUS_1 <- parallel::mclapply(split_ATUS, FUN = function(tbl) {
+  # takes about 20min on 8-core m2 mac
+  # there may be a better way to handle this: crossing?
+  ATUS_30 <- parallel::mclapply(split_ATUS, FUN = function(tbl) {
     # pivot each table so there is a time column with each row representing
     #   a period of 1 minute
-    stretched_tbl <-
-      purrr::pmap_dfr(
+    stretched_tbl <- purrr::pmap_dfr(
         .l = list(tbl$TUCASEID, tbl$start_time, tbl$end_time, tbl$description, tbl$location),
         .f = function(ID, start, end, desc, location) {
           tibble(
@@ -66,30 +71,25 @@ clean_atus <- function(atusact_0321){
       )
     
     # add NAs for missing times
-    final_tbl <- stretched_tbl %>%
+    tbl_with_times <- stretched_tbl %>%
       dplyr::right_join(y = tibble(time = seq(0, 1439, by = 1)), by = 'time') %>%
       ungroup()
     
-    return(final_tbl)
-  }) %>% bind_rows()
+    # collapse down to 30min chunks by taking the mode per each chunk
+    tbl_with_modes <- tbl_with_times %>% 
+      mutate(period = floor(time / 30) + 1) %>% 
+      group_by(ID, period) %>% 
+      summarize(
+        description = Mode(description),
+        location = Mode(location),
+        .groups = 'drop'
+      )
+    
+    return(tbl_with_modes)
+  })
+  ATUS_30 <- dplyr::bind_rows(ATUS_30)
   
-  Mode <- function(x) {
-    # function calculates mode
-    unique_x <- unique(na.omit(x))
-    unique_x[which.max(tabulate(match(x, unique_x)))]
-  }
-  
-  # now collapse down to 30min chunks by taking the mode per each chunk
-  ATUS_30 <- ATUS_1 %>% 
-    group_by(ID) %>% 
-    mutate(period = floor(time / 30) + 1) %>% 
-    group_by(ID, period) %>% 
-    summarize(description = Mode(description),
-              location = Mode(location),
-              .groups = 'drop')
-   
-  
-  return(list(ATUS_1 = ATUS_1, ATUS_30 = ATUS_30))
+  return(list(ATUS_1 = tibble(), ATUS_30 = ATUS_30))
 }
 
 clean_location <- function(ATUS_30){

@@ -33,8 +33,14 @@ curated.codes <- tibble::tribble(
   't1801.*',  'Personal Care',
   't02.*',    'Household Activities',
   't1802.*',  'Household Activities',
-  't03.*',    'Caring For Household Member',
-  't1803.*',  'Caring For Household Member',
+  't030[1-3].*',    'Caring For Household Members - Child', # updated method
+  't030[4-9].*',    'Caring For Household Members - Adult', #
+  't039999',    'Caring For Household Members - Adult', #
+  't18030[1-3].*',  'Caring For Household Members - Child', #
+  't18030[4-5].*',  'Caring For Household Members - Adult', #
+  't180399',  'Caring For Household Members - Adult', #
+  # 't030.*',    'Caring For Household Member', # original method
+  # 't1803.*',  'Caring For Household Member', #
   't04.*',    'Caring For Nonhousehold Members',
   't1804.*',  'Caring For Nonhousehold Members',
   't05.*',    'Work',

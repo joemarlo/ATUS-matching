@@ -22,7 +22,7 @@ select_model <- function(...){
   #   mutate(Coef = names(tmp$coefficients)) %>% 
   #   slice(-1) %>% 
   #   select(Coef, Beta = Value, Std.Error, `p-value`) %>% 
-    print()
+    # print()
   
   # plot coef plot
   print(plot_coef(best_model) + labs(title = 'Best model by BIC', subtitle = best_model$call))
@@ -37,6 +37,12 @@ print_model <- function(model){
     mutate(Coef = names(tmp$coefficients)) %>% 
     slice(-1) %>% 
     select(Coef, Beta = Value, Std.Error, `p-value`) %>% 
+    mutate(stars = dplyr::case_when(
+      `p-value` <= 0.001 ~ "***",
+      `p-value` <= 0.01 ~ "**",
+      `p-value` <= 0.05 ~ "*",
+      TRUE ~ ''
+    )) |> 
     print()
 }
 

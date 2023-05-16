@@ -1,16 +1,18 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
 %notin%|function|c5de772db35799a7|||||||||||||||
+add_WFH_status|function|95804b8a97a344e7|||||||||||||||
 baseline_time|function|adae7c457709e6bd|||||||||||||||
 calculate_balance|function|474b3f4431e14e68|||||||||||||||
-clean_atus|function|6eaf800e407dbd39|||||||||||||||
-clean_ATUS|stem|83dd10dd40d65755|5ab2dd2e6633d181|56a322439955795a|1085636664||t19185.8794780038s|759cf6ab34decfa7|105412219|rds|local|vector|||545.891||
+clean_atus|function|f6847f19bf0326c5|||||||||||||||
+clean_ATUS|stem|83dd10dd40d65755|5ab2dd2e6633d181|2a1bedcbd62f2aee|1085636664||t19185.8794780038s||105412219|rds|local|vector|||3.645||1m22mProblem while computing start_time  lubridatehourTUSTARTTIM  60 ....1mCaused by error in as.POSIXlt.default22m33m39m do not know how to convert x to class POSIXlt
 clean_demographics|function|4dda5b5783ec8ab3|||||||||||||||
+clean_location|function|2e84099613279bf3|||||||||||||||
 cluster_sequences|function|f992ac861b456c16|||||||||||||||
 create_fips|function|17de242012458738|||||||||||||||
-create_industries|function|07ec54e04f659f06|||||||||||||||
+create_industries|function|adf5610f325d8aa2|||||||||||||||
 crosswalk|stem|d921bc7ec5ecef04|177394fe947d45a6|e93927c7435f047b|875902621||t19148.9586141469s|34fe10b9a860addd|282|rds|local|vector|||0.004||
-curated.codes|object|bda76492d0738a0a|||||||||||||||
-data_ATUS|stem|56fdd32f7fb13a66|b6f1f74cea120c55|2bcbe6d6a82d49a7|-591334496||t19185.872335069s|380d1b9b288989b1|181272734|rds|local|vector|||14.673|One or more parsing issues, see problems for details|
+curated.codes|object|6186f8b99e9b016b|||||||||||||||
+data_ATUS|stem|56fdd32f7fb13a66|b6f1f74cea120c55|2bcbe6d6a82d49a7|-591334496||t19185.8723263889s|380d1b9b288989b1|181272734|rds|local|vector|||14.673|One or more parsing issues, see problems for details|
 data_demographics|stem|3ddf5110089d1317|d2a5124b33f27516|efc7cd20ea3b8c65|-1119077615||t19185.8821279853s|1ebf3d1e25c9c020|7315215|rds|local|vector|||6.263||
 df_ATUS|stem|72de26ecbc3c9c82|b6f1f74cea120c55|cb5f0821b7e4a66f|1659187951||t19148.968216133s|776707079457e551|444603288|rds|local|vector|||14.505|One or more parsing issues, see problems for details|
 download_ATUS|function|9179bbc142d77744|||||||||||||||
@@ -30,20 +32,21 @@ NAICS|stem|f8e9e77b43ef7922|ababa7ec3d88dd13|bb5dad8c013f7a17|1898544769||t19148
 path_crosswalk|stem|bdbc578d40832579|c0dc91001490d4e9|ef46db3751d8e999|-2030101556|inputs/crosswalk_2017_Census_to_2012_Census.xlsx|t18730.6966782407s|d8b99f5a475724a0|59209|file|local|vector|||0||
 path_essential_industries|stem|39459a61a3a4f60b|77e87cbcd3e904ac|ef46db3751d8e999|1721908344|data/essential_industries.csv|t19148.962438663s|4f0a148b17ec3070|1999|file|local|vector|||0||
 path_NAICS|stem|7cad01a780b4c3cf|b48acc0d759a987c|ef46db3751d8e999|1662974724|inputs/2017_NAICS_Index_File.xlsx|t18724.7121759259s|dfc2b61f5eb39e44|450239|file|local|vector|||0.571||
-paths_ATUS|stem|5cbb2c7e8d5b0a01|d08edeac03eb6d58|113cdb51d9037a74|456546932||t19185.8714908308s|bf160f080fbf1dbb|99|rds|local|vector|||0||
-pipeline|object|70ca3ec4734b60d4|||||||||||||||
+paths_ATUS|stem|5cbb2c7e8d5b0a01|d08edeac03eb6d58|113cdb51d9037a74|456546932||t19185.8714814815s|bf160f080fbf1dbb|99|rds|local|vector|||0||
+pipeline|object|e936fdb047bcb61d|||||||||||||||
 pipeline_analysis|object|1eb1bc8d77111ded|||||||||||||||
 pipeline_data|object|c22e765e86155b8e|||||||||||||||
 pipeline_data_essential_industries|object|c1e9a5e1c9ff041c|||||||||||||||
 pipeline_data_FIPS|object|777090813d22f1cf|||||||||||||||
 plot_coef|function|f44e395321bc0ac3|||||||||||||||
 plot_diff_means|function|9098054069f6c9cc|||||||||||||||
+print_model|function|58d87f77f4bd2517|||||||||||||||
 read_atus|function|493c9b867e1e5244|||||||||||||||
 scale_01|function|898dfe3f2f7ee24e|||||||||||||||
 scale_color_discrete|function|2c229474c3715b19|||||||||||||||
 scale_colour_discrete|function|2c229474c3715b19|||||||||||||||
 scale_fill_discrete|function|59511b05d33f361d|||||||||||||||
-select_model|function|b1721ffc21edaf6c|||||||||||||||
+select_model|function|ce190a6738a3285f|||||||||||||||
 sequence_prep_atus|function|c1991f74eef39e0e|||||||||||||||
 swap_labels|function|f6de28e13d7ccc80|||||||||||||||
 theme_custom|function|32594e3d0a829ad0|||||||||||||||

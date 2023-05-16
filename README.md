@@ -1,15 +1,15 @@
 # Clustering and matching sequence data
 
-Reproducible code for working paper on matching clustered sequence data and understanding secondary childcare via time use data.
+Reproducible code for paper understanding time-use habits during Covid. Time-series, matching, and sequence clustering. 
 
 <br>
 <p align="center">
-<img src="outputs/SA/seqd_2020_detail.png" width=80%>
+<img src="outputs/SA/seqd_2020_split.png" width=80%>
 </p>
 
 <br>
 <p align="center">
-<img src="outputs/SA/seqi_2020_detailed.png" width=80%>
+<img src="outputs/SA/seqi_2020_split.png" width=80%>
 </p>
 
 
