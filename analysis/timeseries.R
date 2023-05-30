@@ -298,7 +298,7 @@ PCC_by_quarter %>%
   scale_y_continuous(#limits = c(y_min, y_max),
     #breaks = seq(y_min, y_max, by = 15),
     labels = format_hour_minute) +
-  labs(title = 'Mean daily time spent on primary childcare for household children', # confirm age group
+  labs(title = 'Mean daily time spent on primary childcare for household children', 
        subtitle = paste0('Only includes respondents with household children under 13\nn = ', 
                          scales::comma_format()(nrow(respondents_with_children))),
        x = NULL,
@@ -393,9 +393,28 @@ model_PCC_sex <- local({
   return(best_model)
 })
 
+geom_rect(aes(xmin = as.Date('2020-01-01'),
+              xmax = as.Date('2020-09-30'),
+              ymin = y_min,
+              ymax = y_max),
+          fill = 'grey90') +
+  geom_text(data = tibble(x = c(as.Date('2020-06-01'), NA),
+                          y = c(260, NA),
+                          label = c('No data collection', ''),
+                          sex = c('Female', 'Male')),
+            aes(x = x, y = y, label = label),
+            color = 'grey30', angle = -90, size = 4)
+
 # plot it
+y_min <- 40
+y_max <- 130
 PCC_by_quarter_sex %>% 
   ggplot(aes(x = quarter, y = weighted_childcare)) +
+  geom_rect(aes(xmin = as.Date('2020-01-01'),
+                xmax = as.Date('2020-09-30'),
+                ymin = y_min,
+                ymax = y_max),
+            fill = 'grey90') +
   geom_line(data = filter(PCC_by_quarter_sex, quarter %in% as.Date(c('2019-12-31', '2020-09-30'))),
             color = 'grey50', linetype = 'dashed') +
   geom_line(aes(color = is_covid_era), alpha = 0.3) +
@@ -405,11 +424,15 @@ PCC_by_quarter_sex %>%
                           group = PCC_by_quarter_sex$is_covid_era,
                           sex = PCC_by_quarter_sex$sex),
             aes(x = x, y = y, group = group)) +
-  # annotate('text', x = as.Date('2020-06-30'), y = 72, label = 'No data collection',
-  #          color = 'grey30', angle = -90, size = 4) +
+  geom_text(data = tibble(x = c(as.Date('2020-06-01'), NA),
+                          y = c(65, NA),
+                          label = c('No data collection', ''),
+                          sex = c('Female', 'Male')),
+            aes(x = x, y = y, label = label),
+            color = 'grey30', angle = -90, size = 4) +
   ggplot2::scale_color_discrete() +
   scale_x_date(date_breaks = '1 year', date_labels = "'%y") +
-  scale_y_continuous(#limits = c(y_min, y_max),
+  scale_y_continuous(limits = c(y_min, y_max),
     #breaks = seq(y_min, y_max, by = 15),
     labels = format_hour_minute) +
   facet_wrap(~sex) +
@@ -420,8 +443,8 @@ PCC_by_quarter_sex %>%
        y = 'Hour:minutes on primary childcare',
        color = NULL) +
   theme(legend.position = 'bottom')
-# ggsave(file.path('outputs', 'time-series', "childcare_primary_timeseries_by_sex.png"),
-#        height = 5, width = 8)
+ggsave(file.path('outputs', 'time-series', "childcare_primary_timeseries_by_sex.png"),
+       height = 5, width = 8)
 
 # demographics
 # age, sex, n_child, labor_force_status, partner_working, has_partner, elder_in_HH, race, education, metropolitan
@@ -735,8 +758,13 @@ bind_rows(
                 ymin = y_min,
                 ymax = y_max),
             fill = 'grey90') +
-  # geom_line(data = filter(SSC_by_quarter_sex, quarter %in% as.Date(c('2019-12-31', '2020-09-30'))),
-  #           color = 'grey50', linetype = 'dashed') +
+  geom_line(
+    data = bind_rows(
+      PCC_by_quarter |> transmute(quarter, is_covid_era, value = weighted_childcare, type = 'Primary Childcare'),
+      SSC_by_quarter |> transmute(quarter, is_covid_era, value = weighted_secondary_childcare, type = 'Secondary Childcare')
+    ) |> 
+      filter(quarter %in% as.Date(c('2019-12-31', '2020-09-30'))),
+            color = 'grey50', linetype = 'dashed') +
   geom_line(aes(color = is_covid_era), alpha = 0.3) +
   geom_point(aes(color = is_covid_era),  alpha = 0.3) +
   geom_line(data = tibble(x = PCC_by_quarter$quarter,
@@ -749,12 +777,12 @@ bind_rows(
                           group = SSC_by_quarter$is_covid_era,
                           type = 'Secondary Childcare'),
             aes(x = x, y = y, group = group)) +
-  # geom_text(data = tibble(x = c(as.Date('2020-06-01'), NA),
-  #                         y = c(260, NA),
-  #                         label = c('No data collection', ''),
-  #                         sex = c('Female', 'Male')),
-  #           aes(x = x, y = y, label = label),
-  #           color = 'grey30', angle = -90, size = 4) +
+  geom_text(data = tibble(x = c(as.Date('2020-06-01'), NA),
+                          y = c(260, NA),
+                          label = c('No data collection', ''),
+                          type = c('Primary Childcare', 'Secondary Childcare')),
+            aes(x = x, y = y, label = label),
+            color = 'grey30', angle = -90, size = 4) +
   ggplot2::scale_color_discrete() +
   scale_x_date(date_breaks = '2 years', date_labels = "'%y") +
   scale_y_continuous(limits = c(y_min, y_max),
