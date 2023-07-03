@@ -1,6 +1,6 @@
 # Gender equity in the pandemic: Changes in time-use habits
 
-Reproducible code for [paper](https://onlinelibrary.wiley.com/doi/10.1111/ijsw.12622) on understanding gender equity in the pandemic via examining time-use habits.
+Reproducible code for [paper](https://doi.org/10.1111/ijsw.12622) on understanding gender equity in the pandemic via examining time-use habits.
 
 >We model the secular and quarterly trends to predict what would have occurred in the absence of the pandemic, contrasting this to what indeed happened. Our analyses consider aggregate and individual impacts, using methods of sequence analysis, clustering, and matching. Among our results, we find that the division of childcare responsibilities did not become more equitable during the pandemic.
 
